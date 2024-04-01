@@ -1,5 +1,7 @@
 # `rfw`
 
+[![npm](https://img.shields.io/npm/v/%40schlechtwetterfront%2Frfw)](https://www.npmjs.com/package/@schlechtwetterfront/rfw)
+
 2D rendering library for WebGL.
 
 This is not a batteries-included rendering framework or even engine. It's main goal is to provide
@@ -131,3 +133,7 @@ const app = new MyApp(canvas, driver);
 
 await app.initializeAndStart();
 ```
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
