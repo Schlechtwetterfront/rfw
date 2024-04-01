@@ -1,0 +1,56 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1;
+    font-family: sans-serif;
+
+    color: white;
+}
+
+button,
+input {
+    color: #333;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+
+    height: 100vh;
+    width: 100vw;
+}
+
+#diag {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 0;
+    touch-action: none;
+    user-select: none;
+}
+
+.controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    display: flex;
+    flex-flow: row wrap;
+    align-items: baseline;
+}
+
+#diag,
+.controls {
+    padding: 4px;
+}

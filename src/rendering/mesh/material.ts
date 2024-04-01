@@ -1,0 +1,4 @@
+/**
+ * Material.
+ */
+export interface Material {}

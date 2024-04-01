@@ -1,0 +1,51 @@
+{
+    "name": "@schlechtwetterfront/rfw",
+    "version": "0.1.0",
+    "license": "MIT",
+    "author": "rfw contributors",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Schlechtwetterfront/rfw"
+    },
+    "bugs": {
+        "url": "https://github.com/Schlechtwetterfront/rfw/issues"
+    },
+    "type": "module",
+    "files": [
+        "dist"
+    ],
+    "main": "./dist/rfw.cjs",
+    "module": "./dist/rfw.js",
+    "types": "./dist/rfw.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/rfw.js",
+            "require": "./dist/rfw.cjs",
+            "types": "./dist/rfw.d.ts"
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc --project tsconfig.build.json && vite build",
+        "preview": "vite preview",
+        "test": "vitest",
+        "lint": "eslint .",
+        "types:watch": "tsc --noEmit --watch",
+        "types:check": "tsc --project tsconfig.build.json --noEmit --emitDeclarationOnly false",
+        "format": "prettier \"{docs,samples,src,tests}/**/*.{ts,js,css,scss,json}\" --write",
+        "format:check": "prettier \"{docs,samples,src,tests}/**/*.{ts,js,css,scss,json}\" --check"
+    },
+    "devDependencies": {
+        "eslint": "^8.57.0",
+        "prettier": "^3.2.5",
+        "typescript": "^5.0.2",
+        "typescript-eslint": "^7.1.1",
+        "vite": "^5.1.5",
+        "vite-plugin-dts": "^3.8.1",
+        "vitest": "^1.3.1"
+    },
+    "dependencies": {
+        "@types/earcut": "^2.1.4",
+        "earcut": "^2.2.4"
+    }
+}

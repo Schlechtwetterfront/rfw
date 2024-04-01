@@ -1,0 +1,18 @@
+export interface FetchImageBitmapOptions {
+    requestInit?: RequestInit;
+    imageBitmapOptions?: ImageBitmapOptions;
+}
+
+export async function fetchImageBitmap(
+    url: RequestInfo | URL,
+    options?: FetchImageBitmapOptions,
+): Promise<ImageBitmap> {
+    const result = await fetch(url, options?.requestInit);
+
+    const blob = await result.blob();
+
+    return await createImageBitmap(blob, {
+        ...options?.imageBitmapOptions,
+        colorSpaceConversion: 'none',
+    });
+}
