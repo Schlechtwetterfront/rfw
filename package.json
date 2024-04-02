@@ -1,11 +1,11 @@
 {
-    "name": "@schlechtwetterfront/rfw",
+    "name": "rfw2d",
     "version": "0.1.0",
     "license": "MIT",
     "author": "rfw contributors",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Schlechtwetterfront/rfw"
+        "url": "git+https://github.com/Schlechtwetterfront/rfw.git"
     },
     "bugs": {
         "url": "https://github.com/Schlechtwetterfront/rfw/issues"

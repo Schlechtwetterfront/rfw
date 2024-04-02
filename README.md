@@ -1,11 +1,8 @@
 # `rfw`
 
-[![npm](https://img.shields.io/npm/v/%40schlechtwetterfront%2Frfw)](https://www.npmjs.com/package/@schlechtwetterfront/rfw)
+[![npm](https://img.shields.io/npm/v/rfw2d)](https://www.npmjs.com/package/rfw2d)
 
 2D rendering library for WebGL.
-
-This is not a batteries-included rendering framework or even engine. It's main goal is to provide
-the basic tools and setup to create an actual WebGL application.
 
 #### Features
 
@@ -25,13 +22,13 @@ the basic tools and setup to create an actual WebGL application.
 Install via `npm` or your preferred package manager:
 
 ```
-npm install rfw
+npm install rfw2d
 ```
 
-Import from `rfw`:
+Import from `rfw2d`:
 
 ```typescript
-import { App, Vec2, Color } from '@schlechtwetterfront/rfw';
+import { App, Vec2, Color } from 'rfw2d';
 
 // ...
 ```
@@ -49,7 +46,7 @@ import {
     WGLDriver,
     WGLTexturedMeshBatchRenderer,
     buildTriangulatedMesh,
-} from '@schlechtwetterfront/rfw';
+} from 'rfw2d';
 
 // Build a mesh from vertices forming a square.
 const MESH = buildTriangulatedMesh([
