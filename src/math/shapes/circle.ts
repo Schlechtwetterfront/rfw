@@ -1,18 +1,133 @@
-import { Vec2Like } from '../vec2';
+import { Vec2, Vec2Like } from '../vec2';
+import { RectLike } from './rect';
 import { Shape } from './shape';
 
-export class Circle implements Shape, Vec2Like {
+/**
+ * Circle shape interface.
+ *
+ * @remarks
+ * `x` and `y` refer to the circle's center.
+ */
+export interface CircleLike {
+    readonly x: number;
+    readonly y: number;
+    readonly radius: number;
+}
+
+/**
+ * Read-only circle shape.
+ *
+ * @remarks
+ * `x` and `y` refer to the circle's center.
+ */
+export interface ReadOnlyCircle extends CircleLike, Shape {
+    readonly x: number;
+    readonly y: number;
+    readonly radius: number;
+
+    intersectsCircle(other: CircleLike): boolean;
+
+    /** @inheritdoc */
+    intersectsRect(rect: RectLike): boolean;
+
+    /** @inheritdoc */
+    containsPoint({ x, y }: Vec2Like): boolean;
+
+    equals(other: CircleLike, epsilon?: number): boolean;
+
+    clone(): Circle;
+}
+
+const TEMP_VEC = Vec2.ZERO;
+
+/**
+ * Circle shape.
+ *
+ * @remarks
+ * `x` and `y` refer to the circle's center.
+ */
+export class Circle implements ReadOnlyCircle, Vec2Like {
     constructor(
         public x: number,
         public y: number,
         public radius: number,
     ) {}
 
-    contains({ x, y }: Vec2Like): boolean {
-        return (x - this.x) ** 2 + (y - this.y) ** 2 <= this.radius ** 2;
+    set(x: number, y: number): this;
+    set(x: number, y: number, radius: number): this;
+    set(x: number, y: number, radius?: number): this {
+        this.x = x;
+        this.y = y;
+
+        if (typeof radius === 'number') {
+            this.radius = radius;
+        }
+
+        return this;
     }
 
-    equals(other: Circle, epsilon = Number.EPSILON): boolean {
+    intersectsCircle(other: CircleLike): boolean {
+        const d = Vec2.distance(this, other);
+
+        return d < this.radius + other.radius;
+    }
+
+    intersectsRect(rect: RectLike): boolean {
+        const { radius } = this;
+
+        const d = TEMP_VEC.copyFrom(this)
+            .clampSeparate(
+                rect.x,
+                rect.y,
+                rect.x + rect.width,
+                rect.y + rect.height,
+            )
+            .subtractFromVec(this).length;
+
+        return d < radius;
+    }
+
+    containsPoint(point: Vec2Like): boolean {
+        return Vec2.distance(this, point) <= this.radius;
+    }
+
+    /**
+     * Floor this circle.
+     * @returns Self
+     */
+    floor(): this {
+        this.x = Math.floor(this.x);
+        this.y = Math.floor(this.y);
+        this.radius = Math.floor(this.radius);
+
+        return this;
+    }
+
+    /**
+     * Ceil this circle.
+     * @returns Self
+     */
+    ceil(): this {
+        this.x = Math.ceil(this.x);
+        this.y = Math.ceil(this.y);
+        this.radius = Math.ceil(this.radius);
+
+        return this;
+    }
+
+    /**
+     * Round position and radius of this circle.
+     * @returns Self
+     */
+    round(): this {
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        this.radius = Math.round(this.radius);
+
+        return this;
+    }
+
+    equals(other: CircleLike, epsilon = Number.EPSILON): boolean {
         return (
             Math.abs(this.x - other.x) < epsilon &&
             Math.abs(this.y - other.y) < epsilon &&
@@ -20,7 +135,44 @@ export class Circle implements Shape, Vec2Like {
         );
     }
 
+    copyFrom(other: CircleLike): this {
+        this.x = other.x;
+        this.y = other.y;
+        this.radius = other.radius;
+
+        return this;
+    }
+
+    clone(): Circle {
+        return new Circle(this.x, this.y, this.radius);
+    }
+
+    asReadOnly(): ReadOnlyCircle {
+        return this;
+    }
+
+    toString(): string {
+        return `Circle(${this.x}, ${this.y}, ${this.radius})`;
+    }
+
     static fromPoint({ x, y }: Vec2Like, radius: number): Circle {
         return new Circle(x, y, radius);
+    }
+
+    private static readonly _ZERO = new Circle(0, 0, 0);
+    private static readonly _ONE = new Circle(0, 0, 1);
+
+    /**
+     * A new instance initialized to all zeroes.
+     */
+    static get ZERO() {
+        return this._ZERO.clone();
+    }
+
+    /**
+     * A new instance initialized with radius of one.
+     */
+    static get ONE() {
+        return this._ONE.clone();
     }
 }

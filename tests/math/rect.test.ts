@@ -4,101 +4,113 @@ import { Rect } from '../../src/math/shapes/rect';
 import { Vec2 } from '../../src/math/vec2';
 
 describe('rect', () => {
-    test('static getters return new instances', () => {
+    test('instances', () => {
+        const r = new Rect(0, 0, 1, 1);
+        expect(r).not.toBe(r.clone());
+        expect(r.asReadOnly()).toBe(r);
         expect(Rect.ZERO).not.toBe(Rect.ZERO);
         expect(Rect.ONE).not.toBe(Rect.ONE);
     });
 
     test('equals', () => {
         expect(new Rect(1, 2, 3, 4).equals(new Rect(1, 2, 3, 4))).toBe(true);
-        expect(new Rect(1, 2, 3, 4).equals(new Rect(1, 2, 3, 4))).toBe(true);
+        expect(
+            new Rect(1, 2, 3, 4).equals({
+                x: 1,
+                y: 2,
+                width: 3,
+                height: 4,
+            }),
+        ).toBe(true);
     });
 
-    test('contains', () => {
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(0, 0))).toBe(true);
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(0, 4))).toBe(true);
+    test('contains point', () => {
+        expect(new Rect(0, 0, 4, 4).containsPoint(new Vec2(1, 1))).toBe(true);
+        expect(new Rect(0, 0, 4, 4).containsPoint(new Vec2(2, 2))).toBe(true);
+    });
 
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(4, 4))).toBe(true);
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(4, 0))).toBe(true);
+    test('contains border point', () => {
+        expect(new Rect(0, 0, 4, 4).containsPoint(new Vec2(0, 0))).toBe(true);
+        expect(new Rect(0, 0, 4, 4).containsPoint(new Vec2(0, 4))).toBe(true);
 
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(1, 1))).toBe(true);
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(2, 2))).toBe(true);
+        expect(new Rect(0, 0, 4, 4).containsPoint(new Vec2(4, 4))).toBe(true);
+        expect(new Rect(0, 0, 4, 4).containsPoint(new Vec2(4, 0))).toBe(true);
 
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(-0.0001, -0.0001))).toBe(
-            false,
-        );
-        expect(new Rect(0, 0, 4, 4).contains(new Vec2(4.0001, 4.0001))).toBe(
-            false,
-        );
+        expect(
+            new Rect(0, 0, 4, 4).containsPoint(new Vec2(-0.0001, -0.0001)),
+        ).toBe(false);
+        expect(
+            new Rect(0, 0, 4, 4).containsPoint(new Vec2(4.0001, 4.0001)),
+        ).toBe(false);
     });
 
     test('does not intersect corners', () => {
         // Top left point
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(1, 1, 1, 1))).toBe(
+        expect(new Rect(2, 2, 2, 2).intersectsRect(new Rect(1, 1, 1, 1))).toBe(
             false,
         );
         // Bottom right point
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(4, 4, 1, 1))).toBe(
+        expect(new Rect(2, 2, 2, 2).intersectsRect(new Rect(4, 4, 1, 1))).toBe(
             false,
         );
     });
 
     test('does not intersect borders', () => {
         // Left border
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(1, 2, 1, 2))).toBe(
+        expect(new Rect(2, 2, 2, 2).intersectsRect(new Rect(1, 2, 1, 2))).toBe(
             false,
         );
         // Top border
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(2, 1, 2, 1))).toBe(
+        expect(new Rect(2, 2, 2, 2).intersectsRect(new Rect(2, 1, 2, 1))).toBe(
             false,
         );
         // Right border
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(4, 2, 1, 2))).toBe(
+        expect(new Rect(2, 2, 2, 2).intersectsRect(new Rect(4, 2, 1, 2))).toBe(
             false,
         );
         // Bottom border
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(2, 4, 2, 1))).toBe(
+        expect(new Rect(2, 2, 2, 2).intersectsRect(new Rect(2, 4, 2, 1))).toBe(
             false,
         );
     });
 
     test('intersects partial overlaps', () => {
         // Left and top overlap
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(1.5, 1.5, 1, 1))).toBe(
-            true,
-        );
+        expect(
+            new Rect(2, 2, 2, 2).intersectsRect(new Rect(1.5, 1.5, 1, 1)),
+        ).toBe(true);
         // Left overlap
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(1.5, 2.5, 1, 1))).toBe(
-            true,
-        );
+        expect(
+            new Rect(2, 2, 2, 2).intersectsRect(new Rect(1.5, 2.5, 1, 1)),
+        ).toBe(true);
         // Top overlap
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(2.5, 1.5, 1, 1))).toBe(
-            true,
-        );
+        expect(
+            new Rect(2, 2, 2, 2).intersectsRect(new Rect(2.5, 1.5, 1, 1)),
+        ).toBe(true);
         // Right overlap
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(3.5, 2.5, 1, 1))).toBe(
-            true,
-        );
+        expect(
+            new Rect(2, 2, 2, 2).intersectsRect(new Rect(3.5, 2.5, 1, 1)),
+        ).toBe(true);
         // Bottom overlap
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(2.5, 3.5, 1, 1))).toBe(
-            true,
-        );
+        expect(
+            new Rect(2, 2, 2, 2).intersectsRect(new Rect(2.5, 3.5, 1, 1)),
+        ).toBe(true);
         // Bottom and right overlap
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(3.5, 3.5, 1, 1))).toBe(
-            true,
-        );
+        expect(
+            new Rect(2, 2, 2, 2).intersectsRect(new Rect(3.5, 3.5, 1, 1)),
+        ).toBe(true);
     });
 
     test('intersects contained', () => {
         // Contained
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(1, 1, 4, 4))).toBe(
+        expect(new Rect(2, 2, 2, 2).intersectsRect(new Rect(1, 1, 4, 4))).toBe(
             true,
         );
 
         // Contains
-        expect(new Rect(2, 2, 2, 2).intersects(new Rect(2.5, 2.5, 1, 1))).toBe(
-            true,
-        );
+        expect(
+            new Rect(2, 2, 2, 2).intersectsRect(new Rect(2.5, 2.5, 1, 1)),
+        ).toBe(true);
     });
 
     test('matrix mult', () => {

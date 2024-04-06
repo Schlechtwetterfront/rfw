@@ -89,7 +89,7 @@ class QuadTreeApp extends SampleApp {
                     this.sceneMouse,
                 );
 
-                for (const entry of intersections) {
+                for (const entry of intersections.values) {
                     this.quadTree.delete(entry);
 
                     const line = this.quadTreeEntries.get(entry);
@@ -225,7 +225,7 @@ class QuadTreeApp extends SampleApp {
             const intersects = this.quadTree.intersections(this.sceneMouse);
             this.intersectionTime.finish();
 
-            intersects.forEach(r => {
+            intersects.values.forEach(r => {
                 const line = this.quadTreeEntries.get(r)!;
                 line.style.color.copyFrom(RECT_COLOR_INTERSECTED);
                 this.lineBatches.change(line);

@@ -1,28 +1,119 @@
-import { Vec2, Vec2Like } from '../vec2';
-import { Rect } from './rect';
+import { linesIntersect } from '../util';
+import { ReadOnlyVec2, Vec2, Vec2Like } from '../vec2';
+import { Rect, RectLike } from './rect';
 import { Shape } from './shape';
 
-const TEMP_RECT = Rect.ZERO;
+export interface PolyLike {
+    readonly points: readonly Vec2Like[];
+}
 
-export class Poly implements Shape {
+export interface ReadOnlyPoly extends PolyLike, Shape {
+    readonly points: readonly ReadOnlyVec2[];
+
+    /** @inheritdoc */
+    intersectsRect(other: RectLike): boolean;
+
+    /** @inheritdoc */
+    containsPoint(point: Vec2Like): boolean;
+
+    equals(other: PolyLike, epsilon?: number): boolean;
+
+    clone(): Poly;
+}
+
+const TEMP_RECT = Rect.ZERO;
+const TEMP_VEC0 = Vec2.ZERO;
+const TEMP_VEC1 = Vec2.ZERO;
+
+export class Poly implements ReadOnlyPoly {
     points: Vec2[];
 
     constructor(...points: Vec2[]) {
-        if (points.length < 3) {
-            throw new Error(
-                `Polygon must have at least 3 points (has ${points.length})`,
-            );
+        this.points = points;
+    }
+
+    /** @inheritdoc */
+    intersectsRect(rect: RectLike): boolean {
+        if (!this.points.length) {
+            return false;
         }
 
-        this.points = points;
+        const bounds = TEMP_RECT.setFromPoints(this.points);
+
+        if (!bounds.intersectsRect(rect)) {
+            return false;
+        }
+
+        if (this.containsPointOnly(rect)) {
+            return true;
+        }
+
+        const p = this.points[0]!;
+
+        TEMP_RECT.copyFrom(rect);
+
+        if (TEMP_RECT.containsPoint(p)) {
+            return true;
+        }
+
+        const { points } = this;
+        const pointCount = points.length;
+
+        for (let i = 0; i < 4; i++) {
+            switch (i) {
+                case 0:
+                    TEMP_VEC0.set(rect.x, rect.y);
+                    TEMP_VEC1.set(rect.x + rect.width, rect.y);
+                    break;
+
+                case 1:
+                    TEMP_VEC0.set(rect.x + rect.width, rect.y);
+                    TEMP_VEC1.set(rect.x + rect.width, rect.y + rect.height);
+                    break;
+
+                case 2:
+                    TEMP_VEC0.set(rect.x + rect.width, rect.y + rect.height);
+                    TEMP_VEC1.set(rect.x, rect.y + rect.height);
+                    break;
+
+                case 3:
+                    TEMP_VEC0.set(rect.x, rect.y + rect.height);
+                    TEMP_VEC1.set(rect.x, rect.y);
+                    break;
+            }
+
+            for (let k = 0, l = pointCount - 1; k < pointCount; l = k++) {
+                const p2 = points[k]!;
+                const p3 = points[l]!;
+
+                if (linesIntersect(TEMP_VEC0, TEMP_VEC1, p2, p3)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // todo: Switch to robust algorithm (for points on boundary)? Other primitives are robust and
     // contain points on their border
-    contains(point: Vec2Like): boolean {
+    /** @inheritdoc */
+    containsPoint(point: Vec2Like): boolean {
+        if (this.points.length < 3) {
+            return false;
+        }
+
         const bounds = TEMP_RECT.setFromPoints(this.points);
 
-        if (!bounds.contains(point)) {
+        if (!bounds.containsPoint(point)) {
+            return false;
+        }
+
+        return this.containsPointOnly(point);
+    }
+
+    containsPointOnly(point: Vec2Like): boolean {
+        if (this.points.length < 3) {
             return false;
         }
 
@@ -45,5 +136,39 @@ export class Poly implements Shape {
         }
 
         return hasHit;
+    }
+
+    /** @inheritdoc */
+    equals(other: PolyLike, epsilon = Number.EPSILON): boolean {
+        const { points } = this;
+        const pointCount = points.length;
+
+        if (other.points.length !== pointCount) {
+            return false;
+        }
+
+        const otherPoints = other.points;
+
+        for (let i = 0; i < pointCount; i++) {
+            const p = points[i]!;
+            const po = otherPoints[i]!;
+
+            if (!p.equalsVec(po, epsilon)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    asReadOnly(): ReadOnlyPoly {
+        return this;
+    }
+
+    /** @inheritdoc */
+    clone(): Poly {
+        const points = this.points.map(p => p.clone());
+
+        return new Poly(...points);
     }
 }

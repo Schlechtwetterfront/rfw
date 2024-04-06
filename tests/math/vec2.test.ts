@@ -32,10 +32,6 @@ describe('vec2', () => {
         expect(new Vec2(1, 1).length).toBeCloseTo(1.4142, 4);
         expect(new Vec2(0, 1).length).toBeCloseTo(1);
         expect(new Vec2(1, 0).length).toBeCloseTo(1);
-
-        expect(Vec2.lengthOfVec({ x: 1, y: 1 })).toBeCloseTo(1.4142, 4);
-        expect(Vec2.lengthOfVec({ x: 0, y: 1 })).toBeCloseTo(1);
-        expect(Vec2.lengthOfVec({ x: 1, y: 0 })).toBeCloseTo(1);
     });
 
     test('dot', () => {

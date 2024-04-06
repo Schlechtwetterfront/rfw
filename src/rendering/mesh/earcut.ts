@@ -1,7 +1,7 @@
 import earcut from 'earcut';
 import { Mesh, Vertex } from './mesh';
 
-const SHARED_FLAT_POSITIONS: number[] = [];
+const TEMP_FLAT_POSITIONS: number[] = [];
 
 /**
  * Triangulate the polygon defined by `vertices`.
@@ -20,18 +20,18 @@ export function triangulate(
     let islandStart = 0;
 
     for (let island = 0; island < islandCount; island++) {
-        SHARED_FLAT_POSITIONS.length = 0;
+        TEMP_FLAT_POSITIONS.length = 0;
 
         const islandEnd = islandMarkers[island] ?? vertices.length;
 
         for (let i = islandStart; i < islandEnd; i++) {
-            SHARED_FLAT_POSITIONS.push(
+            TEMP_FLAT_POSITIONS.push(
                 vertices[i]!.position.x,
                 vertices[i]!.position.y,
             );
         }
 
-        const islandIndices = earcut(SHARED_FLAT_POSITIONS);
+        const islandIndices = earcut(TEMP_FLAT_POSITIONS);
 
         for (let i = 0; i < islandIndices.length; i++) {
             indices.push(islandStart + islandIndices[i]!);
@@ -40,7 +40,7 @@ export function triangulate(
         islandStart = islandEnd;
     }
 
-    SHARED_FLAT_POSITIONS.length = 0;
+    TEMP_FLAT_POSITIONS.length = 0;
 
     return indices;
 }

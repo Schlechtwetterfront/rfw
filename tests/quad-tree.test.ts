@@ -14,12 +14,12 @@ class RectEntry implements QuadTreeEntry {
         this.rect = new Rect(x, y, w, h);
     }
 
-    contains(point: Vec2Like): boolean {
-        return this.rect.contains(point);
+    containsPoint(point: Vec2Like): boolean {
+        return this.rect.containsPoint(point);
     }
 
-    intersects(rect: RectLike): boolean {
-        return this.rect.intersects(rect);
+    intersectsRect(rect: RectLike): boolean {
+        return this.rect.intersectsRect(rect);
     }
 }
 
@@ -124,36 +124,6 @@ describe('quad tree', () => {
 
         expect(t.size).toEqual(0);
         expect([...t.quads()]).toHaveLength(1);
-    });
-
-    test('gets overlaps', () => {
-        const t = new QuadTree({ x: 0, y: 0, width: 40, height: 20 }, 1);
-
-        const e1 = new RectEntry(5, 2);
-        const e2 = new RectEntry(10, 2);
-
-        t.add(e1);
-        t.add(e2);
-
-        const overlaps1 = t.overlaps({ x: 4.999, y: 4.999 });
-
-        expect(overlaps1.has(e1)).toBe(false);
-        expect(overlaps1.has(e2)).toBe(false);
-
-        const overlaps2 = t.overlaps({ x: 5, y: 5 });
-
-        expect(overlaps2.has(e1)).toBe(true);
-        expect(overlaps2.has(e2)).toBe(false);
-
-        const overlaps3 = t.overlaps({ x: 7, y: 7 });
-
-        expect(overlaps3.has(e1)).toBe(true);
-        expect(overlaps3.has(e2)).toBe(false);
-
-        const overlaps4 = t.overlaps({ x: 7.001, y: 7.001 });
-
-        expect(overlaps4.has(e1)).toBe(false);
-        expect(overlaps4.has(e2)).toBe(false);
     });
 
     test('gets intersections', () => {

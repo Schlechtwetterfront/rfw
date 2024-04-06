@@ -52,12 +52,12 @@ class RenderModeObject extends MeshObject implements QuadTreeEntry {
         super(options);
     }
 
-    contains(point: Vec2Like): boolean {
-        return this.bounds.contains(point);
+    containsPoint(point: Vec2Like): boolean {
+        return this.bounds.containsPoint(point);
     }
 
-    intersects(rect: RectLike): boolean {
-        return this.bounds.intersects(rect);
+    intersectsRect(rect: RectLike): boolean {
+        return this.bounds.intersectsRect(rect);
     }
 }
 
@@ -150,7 +150,10 @@ class RenderModeApp extends SampleApp {
         }
 
         this.tickers.add(() => {
-            const overlaps = this.quadTree.overlaps(this.sceneMouse);
+            const overlaps = this.quadTree.filter(
+                e => e.containsPoint(this.sceneMouse),
+                r => r.containsPoint(this.sceneMouse),
+            );
 
             for (let i = 0; i < this.entries.length; i++) {
                 const entry = this.entries[i]!;

@@ -3,7 +3,7 @@ import { Vec2Like } from '../vec2';
 import { Shape } from './shape';
 
 /**
- * Rectangle shape.
+ * Rectangle shape interface.
  *
  * @remarks
  * `x` and `y` refer to the rectangle's top-left coordinates.
@@ -15,13 +15,23 @@ export interface RectLike {
     readonly height: number;
 }
 
+/**
+ * Read-only rectangle shape.
+ *
+ * @remarks
+ * `x` and `y` refer to the rectangle's top-left coordinates.
+ */
 export interface ReadOnlyRect extends RectLike, Shape {
     readonly left: number;
     readonly right: number;
     readonly top: number;
     readonly bottom: number;
 
-    intersects(other: RectLike): boolean;
+    /** @inheritdoc */
+    intersectsRect(other: RectLike): boolean;
+
+    /** @inheritdoc */
+    containsPoint(point: Vec2Like): boolean;
 
     equals(other: RectLike, epsilon?: number): boolean;
 
@@ -189,7 +199,7 @@ export class Rect implements ReadOnlyRect, Vec2Like {
      * @returns Self
      */
     clip(other: RectLike): this {
-        if (!this.intersects(other)) {
+        if (!this.intersectsRect(other)) {
             this.width = this.height = 0;
 
             return this;
@@ -216,12 +226,8 @@ export class Rect implements ReadOnlyRect, Vec2Like {
         return this;
     }
 
-    /**
-     * Check if this rect and `other` intersect.
-     * @param other - Other rect
-     * @returns `true` if the rects intersect
-     */
-    intersects(other: RectLike): boolean {
+    /** @inheritdoc */
+    intersectsRect(other: RectLike): boolean {
         if (
             other.x < this.x + this.width &&
             this.x < other.x + other.width &&
@@ -233,12 +239,8 @@ export class Rect implements ReadOnlyRect, Vec2Like {
         return false;
     }
 
-    /**
-     * Check if this rect contains `param0`.
-     * @param param0 - Point to check
-     * @returns `true` if this rect contains the point
-     */
-    contains({ x, y }: Vec2Like): boolean {
+    /** @inheritdoc */
+    containsPoint({ x, y }: Vec2Like): boolean {
         const { x: thisX, y: thisY } = this;
 
         if (
@@ -292,7 +294,7 @@ export class Rect implements ReadOnlyRect, Vec2Like {
         return this;
     }
 
-    equals(other: Rect, epsilon = Number.EPSILON): boolean {
+    equals(other: RectLike, epsilon = Number.EPSILON): boolean {
         return (
             Math.abs(this.x - other.x) < epsilon &&
             Math.abs(this.y - other.y) < epsilon &&
@@ -354,7 +356,7 @@ export class Rect implements ReadOnlyRect, Vec2Like {
     }
 
     /**
-     * A new instance initialized to all ones.
+     * A new instance initialized with extents of one.
      */
     static get ONE() {
         return this._ONE.clone();

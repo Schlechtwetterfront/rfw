@@ -93,9 +93,23 @@ export class Vec2 implements ReadOnlyVec2 {
         return this;
     }
 
+    subtractFrom(x: number, y?: number): this {
+        this.x = x - this.x;
+        this.y = (y ?? x) - this.y;
+
+        return this;
+    }
+
     subtractVec(vec: Vec2Like): this {
         this.x -= vec.x;
         this.y -= vec.y;
+
+        return this;
+    }
+
+    subtractFromVec(vec: Vec2Like): this {
+        this.x = vec.x - this.x;
+        this.y = vec.y - this.y;
 
         return this;
     }
@@ -149,9 +163,23 @@ export class Vec2 implements ReadOnlyVec2 {
         return this;
     }
 
+    divideFrom(x: number, y?: number): this {
+        this.x = x / this.x;
+        this.y = (y ?? x) / this.y;
+
+        return this;
+    }
+
     divideVec(vec: Vec2Like): this {
         this.x /= vec.x;
         this.y /= vec.y;
+
+        return this;
+    }
+
+    divideFromVec(vec: Vec2Like): this {
+        this.x = vec.x / this.x;
+        this.y = vec.y / this.y;
 
         return this;
     }
@@ -296,60 +324,12 @@ export class Vec2 implements ReadOnlyVec2 {
         return `Vec2(${this.x}, ${this.y})`;
     }
 
-    static sum(...vecs: Vec2Like[]): Vec2 {
-        const vec = Vec2.ZERO;
-
-        for (const v of vecs) {
-            vec.addVec(v);
-        }
-
-        return vec;
-    }
-
-    static difference(...vecs: Vec2Like[]): Vec2 {
-        const vec = Vec2.ZERO;
-
-        for (const v of vecs) {
-            vec.subtractVec(v);
-        }
-
-        return vec;
-    }
-
-    static product(...vecs: Vec2Like[]): Vec2 {
-        const vec = Vec2.ZERO;
-
-        for (const v of vecs) {
-            vec.multiplyVec(v);
-        }
-
-        return vec;
-    }
-
-    static division(...vecs: Vec2Like[]): Vec2 {
-        const vec = Vec2.ZERO;
-
-        for (const v of vecs) {
-            vec.divideVec(v);
-        }
-
-        return vec;
-    }
-
-    static lengthOf(x: number, y: number): number {
-        return Math.sqrt(x ** 2 + y ** 2);
-    }
-
-    static lengthOfVec(vec: Vec2Like): number {
-        return this.lengthOf(vec.x, vec.y);
+    static distance(from: Vec2Like, to: Vec2Like): number {
+        return TEMP_VEC.copyFrom(from).subtractVec(to).length;
     }
 
     static from(v: Vec2Like): Vec2 {
         return new Vec2(v.x, v.y);
-    }
-
-    static maybeFrom(v: Vec2Like): Vec2 {
-        return v instanceof Vec2 ? v : new Vec2(v.x, v.y);
     }
 
     private static _ZERO = new Vec2(0, 0);
@@ -385,3 +365,5 @@ export class Vec2 implements ReadOnlyVec2 {
         return this._UP.clone();
     }
 }
+
+const TEMP_VEC = Vec2.ZERO;

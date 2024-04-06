@@ -1,5 +1,5 @@
-import { Vec2Like } from '../math';
 import { ReadOnlyRect, Rect, RectLike } from '../math/shapes';
+import { ArraySet } from './array-set';
 import { Pool } from './pool';
 
 /**
@@ -7,18 +7,11 @@ import { Pool } from './pool';
  */
 export interface QuadTreeEntry {
     /**
-     * Check if the shape of the entry contains `point`.
-     * @param point - Point to check
-     * @returns `true` if entry contains `point`
-     */
-    contains(point: Vec2Like): boolean;
-
-    /**
      * Check if the shape of this entry intersects `rect`.
      * @param rect - Rectangle to check
      * @returns `true` if the entry intersects with `rect`
      */
-    intersects(rect: RectLike): boolean;
+    intersectsRect(rect: RectLike): boolean;
 }
 
 /**
@@ -80,7 +73,7 @@ export class QuadTree<E extends QuadTreeEntry> {
     }
 
     private tryAdd(quad: _Quad<E>, entry: E): boolean {
-        if (!entry.intersects(quad.bounds)) {
+        if (!entry.intersectsRect(quad.bounds)) {
             return false;
         }
 
@@ -240,117 +233,60 @@ export class QuadTree<E extends QuadTreeEntry> {
     }
 
     /**
-     * Get all entries that overlap `point`.
-     * @param point - Point to check overlaps against
-     * @param results - Optional `Set` to put results into. Will allocate a new `Set` otherwise
-     * @returns A `Set` containing all overlapping entries
-     */
-    overlaps(point: Vec2Like, results?: Set<E>): Set<E> {
-        results ??= new Set();
-
-        this.getOverlaps(this.root, point, results);
-
-        return results;
-    }
-
-    private getOverlaps(quad: _Quad<E>, point: Vec2Like, results: Set<E>) {
-        if (!quad.bounds.contains(point)) {
-            return;
-        }
-
-        if (quad.isSubdivided()) {
-            this.getOverlaps(quad.topLeft, point, results);
-            this.getOverlaps(quad.topRight, point, results);
-            this.getOverlaps(quad.bottomLeft, point, results);
-            this.getOverlaps(quad.bottomRight, point, results);
-
-            return;
-        }
-
-        const entryCount = quad.entries.length;
-
-        for (let i = 0; i < entryCount; i++) {
-            const entry = quad.entries[i]!;
-
-            if (entry.contains(point)) {
-                results.add(entry);
-            }
-        }
-    }
-
-    /**
      * Get all entries that intersect `rect`.
      * @param rect - Rect to intersect with
      * @param results - Optional `Set` to put results into. Will allocate a new `Set` otherwise
      * @returns A `Set` containing all intersecting entries
      */
-    intersections(rect: RectLike, results?: Set<E>): Set<E> {
-        results ??= new Set();
+    intersections(rect: RectLike, results?: ArraySet<E>): ArraySet<E> {
+        results?.clear();
 
-        this.getIntersections(this.root, rect, results);
+        results ??= new ArraySet();
+
+        this._filter(
+            this.root,
+            e => e.intersectsRect(rect),
+            r => r.intersectsRect(rect),
+            results,
+        );
 
         return results;
-    }
-
-    private getIntersections(quad: _Quad<E>, rect: RectLike, results: Set<E>) {
-        if (!quad.bounds.intersects(rect)) {
-            return;
-        }
-
-        if (quad.isSubdivided()) {
-            this.getIntersections(quad.topLeft, rect, results);
-            this.getIntersections(quad.topRight, rect, results);
-            this.getIntersections(quad.bottomLeft, rect, results);
-            this.getIntersections(quad.bottomRight, rect, results);
-
-            return;
-        }
-
-        const entryCount = quad.entries.length;
-
-        for (let i = 0; i < entryCount; i++) {
-            const entry = quad.entries[i]!;
-
-            if (entry.intersects(rect)) {
-                results.add(entry);
-            }
-        }
     }
 
     /**
      * Get all entries that match the predicate.
-     * @param predicate - Entry predicate
-     * @param intersects - Optional predicate to pre-filter entries. Will be called with quad bounds
+     * @param entryPredicate - Entry predicate
+     * @param quadPredicate - Quad predicate. Will be called with quad bounds
      * @param results - Optional `Set` to put results into. Will allocate a new `Set` otherwise
      * @returns A `Set` containing all matched entries
      */
-    find(
-        predicate: (entry: E) => boolean,
-        intersects?: (rect: ReadOnlyRect) => boolean,
-        results?: Set<E>,
-    ): Set<E> {
-        results ??= new Set();
+    filter(
+        entryPredicate: (entry: E) => boolean,
+        quadPredicate: (rect: ReadOnlyRect) => boolean,
+        results?: ArraySet<E>,
+    ): ArraySet<E> {
+        results ??= new ArraySet();
 
-        this._find(this.root, predicate, intersects, results);
+        this._filter(this.root, entryPredicate, quadPredicate, results);
 
         return results;
     }
 
-    private _find(
+    private _filter(
         quad: _Quad<E>,
         predicate: (entry: E) => boolean,
-        intersects: ((rect: ReadOnlyRect) => boolean) | undefined,
-        results: Set<E>,
+        intersects: (rect: ReadOnlyRect) => boolean,
+        results: ArraySet<E>,
     ) {
-        if (intersects?.(quad.bounds) === false) {
+        if (intersects(quad.bounds) === false) {
             return;
         }
 
         if (quad.isSubdivided()) {
-            this._find(quad.topLeft, predicate, intersects, results);
-            this._find(quad.topRight, predicate, intersects, results);
-            this._find(quad.bottomLeft, predicate, intersects, results);
-            this._find(quad.bottomRight, predicate, intersects, results);
+            this._filter(quad.topLeft, predicate, intersects, results);
+            this._filter(quad.topRight, predicate, intersects, results);
+            this._filter(quad.bottomLeft, predicate, intersects, results);
+            this._filter(quad.bottomRight, predicate, intersects, results);
 
             return;
         }
