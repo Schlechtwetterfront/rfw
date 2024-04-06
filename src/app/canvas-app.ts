@@ -10,9 +10,9 @@ import { Textures } from './textures';
  * defaults.
  */
 export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
-    protected readonly transforms = new TransformPropagator(this.changeTracker);
-
     protected readonly canvasResizer: CanvasResizer;
+
+    readonly transforms = new TransformPropagator(this.changeTracker);
 
     readonly textures: Textures;
 
