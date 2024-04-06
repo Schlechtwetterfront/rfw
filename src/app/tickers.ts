@@ -15,7 +15,12 @@ const TEMP_ELAPSED = {
 
 export type TickHandler = (elapsed: Elapsed) => void;
 
-export class TickerHandle {}
+export class TickerHandle {
+    constructor(
+        /** @internal */
+        readonly id: number,
+    ) {}
+}
 
 class Ticker {
     constructor(
@@ -59,6 +64,7 @@ export function parseInterval(interval: Interval | undefined): number {
  * Manages tickers. Tickers are executed periodically.
  */
 export class Tickers {
+    private id = 0;
     private tickers = new Map<TickerHandle, Ticker>();
 
     /**
@@ -109,7 +115,7 @@ export class Tickers {
 
         const ticker = new Ticker(intervalInMS, handler);
 
-        const handle = new TickerHandle();
+        const handle = new TickerHandle(this.id++);
 
         this.tickers.set(handle, ticker);
 
