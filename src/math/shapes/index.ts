@@ -1,3 +1,4 @@
+export * from './builder';
 export * from './circle';
 export * from './poly';
 export * from './rect';
