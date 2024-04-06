@@ -12,14 +12,10 @@ export class ArrayMap<K, V> {
     }
 
     /** Read-only array of keys in the map. */
-    get keys(): readonly K[] {
-        return this._keys;
-    }
+    readonly keys: readonly K[] = this._keys;
 
     /** Read-only array of values in the map. */
-    get values(): readonly V[] {
-        return this._values;
-    }
+    readonly values: readonly V[] = this._values;
 
     /**
      * Check if a key exists in the map.
