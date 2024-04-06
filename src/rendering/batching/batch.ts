@@ -332,10 +332,18 @@ export class Batch<
      */
     clear(): void {
         this.objectEntries.clear();
-        this._entries.length = 0;
         this.entryChanges.length = 0;
         this.firstChangedEntryIndex = undefined;
         this.lastChangedEntryIndex = undefined;
         this.size = 0;
+        this.initialized = false;
+
+        const entries = this._entries;
+
+        for (let i = 0; i < entries.length; i++) {
+            this.entryPool.return(entries[i]!);
+        }
+
+        this._entries.length = 0;
     }
 }

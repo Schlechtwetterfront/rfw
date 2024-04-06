@@ -104,6 +104,7 @@ export class TextBatch
         super.clear();
 
         this.fonts.clear();
+        this.cachedTextures.length = 0;
     }
 
     private updateCachedTextures() {
