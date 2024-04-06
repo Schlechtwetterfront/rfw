@@ -34,7 +34,7 @@ export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
 
     /** @inheritdoc */
     protected override tick(elapsed: number): void {
-        const resized = this.canvasResizer.maybeResize();
+        const resized = this.canvasResizer.resize();
 
         if (resized) {
             this.driver.dimensions = this.canvasResizer.dimensions;
