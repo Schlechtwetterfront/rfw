@@ -1,5 +1,6 @@
 export * from './array-buffer-cache';
 export * from './array-map';
+export * from './array-set';
 export * from './arrays';
 export * from './assert';
 export * from './canvas-resizer';
