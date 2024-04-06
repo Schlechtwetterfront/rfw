@@ -180,7 +180,8 @@ export class TextBatcher extends Batcher<TextLike, TextBatchEntry, TextBatch> {
         this.maxGlyphCount = maxSize;
     }
 
-    add(object: TextLike): void {
+    /** @inheritdoc */
+    add(object: TextLike): this {
         const entry = this.entryPool.take();
 
         entry.object = object;
@@ -188,6 +189,8 @@ export class TextBatcher extends Batcher<TextLike, TextBatchEntry, TextBatch> {
         entry.font = object.font;
 
         this.addEntryQueued(entry);
+
+        return this;
     }
 
     protected override changeEntry(

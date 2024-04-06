@@ -159,7 +159,8 @@ export class MeshBatcher<O extends TexturedMeshLike> extends Batcher<
         this.maxVertexCount = maxSize;
     }
 
-    add(object: O): void {
+    /** @inheritdoc */
+    add(object: O): this {
         const entry = this.entryPool.take();
 
         entry.object = object;
@@ -167,6 +168,8 @@ export class MeshBatcher<O extends TexturedMeshLike> extends Batcher<
         entry.texture = object.material.texture;
 
         this.addEntryQueued(entry);
+
+        return this;
     }
 
     protected override changeEntry(

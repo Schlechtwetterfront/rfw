@@ -1,4 +1,5 @@
 import { ChangeTracker } from '../../app/change-tracking';
+import { ObjectSet } from '../../collections';
 import { Pool } from '../../util/pool';
 import { Batch } from './batch';
 import { BatchEntry, BatchEntryChange } from './entry';
@@ -31,14 +32,15 @@ export abstract class Batcher<
     O extends WeakKey,
     E extends BatchEntry<O> = BatchEntry<O>,
     B extends Batch<O, E> = Batch<O, E>,
-> {
+> implements ObjectSet<O>
+{
     protected readonly _batches: B[] = [];
 
     /** Newly added entries are queued until all changes are applied to a batch. */
     protected readonly queuedAdds: E[] = [];
 
     /** For faster lookup of object -> batch. */
-    protected readonly objectBatches = new WeakMap<O, B>();
+    protected objectBatches = new WeakMap<O, B>();
 
     /**
      * Batches. All batches in this collection are at least partially occupied.
@@ -60,6 +62,12 @@ export abstract class Batcher<
     ) {}
 
     /**
+     * Add an object to the batcher.
+     * @param object - Object to add
+     */
+    abstract add(object: O): this;
+
+    /**
      * Queue an entry for adding. Apply with {@link Batcher.finalize}.
      * @param entry - Entry to add
      */
@@ -67,6 +75,32 @@ export abstract class Batcher<
         this.queuedAdds.push(entry);
 
         this.changeTracker.registerChange();
+    }
+
+    /**
+     * Check if `object` is part of this batcher.
+     * @param object - Object
+     * @returns `true` if batcher contains the object
+     */
+    has(object: O): boolean {
+        const { queuedAdds } = this;
+
+        const batch = this.objectBatches.get(object);
+        const entry = batch?.getEntry(object);
+
+        if (entry) {
+            return true;
+        }
+
+        for (let i = 0; i < queuedAdds.length; i++) {
+            const entry = queuedAdds[i]!;
+
+            if (entry.object === object) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -104,8 +138,9 @@ export abstract class Batcher<
     /**
      * Delete an object and its entry. Deletes are queued, apply with {@link Batcher.finalize}.
      * @param object - Object to delete
+     * @returns `true` if an entry was deleted
      */
-    delete(object: O): void {
+    delete(object: O): boolean {
         const { queuedAdds } = this;
 
         const batch = this.objectBatches.get(object);
@@ -119,7 +154,7 @@ export abstract class Batcher<
 
             this.changeTracker.registerChange();
 
-            return;
+            return true;
         }
 
         for (let i = 0; i < queuedAdds.length; i++) {
@@ -127,8 +162,25 @@ export abstract class Batcher<
 
             if (entry.object === object) {
                 queuedAdds.splice(i, 1);
-                return;
+
+                return true;
             }
+        }
+
+        return false;
+    }
+
+    clear(): void {
+        const { batches } = this;
+
+        this.objectBatches = new WeakMap();
+
+        this.queuedAdds.length = 0;
+
+        for (let i = 0; i < batches.length; i++) {
+            const batch = batches[i]!;
+
+            batch.clear();
         }
     }
 

@@ -1,4 +1,5 @@
 export * from './app';
+export * from './collections';
 export * from './colors';
 export * from './math';
 export * from './math/shapes';

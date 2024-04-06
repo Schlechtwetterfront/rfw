@@ -49,11 +49,8 @@ export class SizedBatcher<
         super(maxSize, entryPool, batchPool, options.changeTracker);
     }
 
-    /**
-     * Add an object to this collection.
-     * @param object - Object to add
-     */
-    add(object: O): void {
+    /** @inheritdoc */
+    add(object: O): this {
         const entry = this.entryPool.take();
 
         entry.object = object;
@@ -61,6 +58,8 @@ export class SizedBatcher<
         entry.newSize = object.size;
 
         this.addEntryQueued(entry);
+
+        return this;
     }
 
     protected override changeEntry(
