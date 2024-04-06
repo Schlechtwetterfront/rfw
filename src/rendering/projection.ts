@@ -75,10 +75,9 @@ export function makeBottomLeftViewportProjection(
 export function projectViewportToScene(
     pos: Vec2,
     dimensions: Vec2Like,
-    camera?: Camera2D,
+    camera: Camera2D,
 ): void {
-    const cameraProjection =
-        camera?.compose(CAMERA_MAT) ?? CAMERA_MAT.makeIdentity();
+    const cameraProjection = camera.compose(CAMERA_MAT);
 
     const mat = PROJECTION_MAT;
 
@@ -86,8 +85,8 @@ export function projectViewportToScene(
     mat.b = 0;
     mat.c = 0;
     mat.d = 1;
-    mat.tx = camera?.origin === 'center' ? dimensions.x * 0.5 : 0;
-    mat.ty = camera?.origin === 'center' ? dimensions.y * 0.5 : 0;
+    mat.tx = camera.origin === 'center' ? dimensions.x * 0.5 : 0;
+    mat.ty = camera.origin === 'center' ? dimensions.y * 0.5 : 0;
 
     mat.multiplyMat(cameraProjection);
 
@@ -97,10 +96,9 @@ export function projectViewportToScene(
 export function projectViewportRectToScene(
     rect: Rect,
     dimensions: Vec2Like,
-    camera?: Camera2D,
+    camera: Camera2D,
 ): void {
-    const cameraProjection =
-        camera?.compose(CAMERA_MAT) ?? CAMERA_MAT.makeIdentity();
+    const cameraProjection = camera.compose(CAMERA_MAT);
 
     const mat = PROJECTION_MAT;
 
@@ -108,8 +106,8 @@ export function projectViewportRectToScene(
     mat.b = 0;
     mat.c = 0;
     mat.d = 1;
-    mat.tx = camera?.origin === 'center' ? dimensions.x * 0.5 : 0;
-    mat.ty = camera?.origin === 'center' ? dimensions.y * 0.5 : 0;
+    mat.tx = camera.origin === 'center' ? dimensions.x * 0.5 : 0;
+    mat.ty = camera.origin === 'center' ? dimensions.y * 0.5 : 0;
 
     mat.multiplyMat(cameraProjection);
 
@@ -119,11 +117,11 @@ export function projectViewportRectToScene(
 export class Projections {
     constructor(private readonly driver: RenderDriver) {}
 
-    fromViewportToScene(point: Vec2, camera?: Camera2D): void {
+    fromViewportToScene(point: Vec2, camera: Camera2D): void {
         projectViewportToScene(point, this.driver.dimensions, camera);
     }
 
-    rectFromViewportToScene(rect: Rect, camera?: Camera2D): void {
+    rectFromViewportToScene(rect: Rect, camera: Camera2D): void {
         projectViewportRectToScene(rect, this.driver.dimensions, camera);
     }
 }
