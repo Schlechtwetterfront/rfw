@@ -14,13 +14,13 @@
     "files": [
         "dist"
     ],
-    "main": "./dist/rfw.cjs",
-    "module": "./dist/rfw.js",
+    "main": "./dist/rfw2d.cjs",
+    "module": "./dist/rfw2d.js",
     "types": "./dist/rfw.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/rfw.js",
-            "require": "./dist/rfw.cjs",
+            "import": "./dist/rfw2d.js",
+            "require": "./dist/rfw2d.cjs",
             "types": "./dist/rfw.d.ts"
         }
     },

@@ -1,6 +1,4 @@
-# `rfw`
-
-[![npm](https://img.shields.io/npm/v/rfw2d)](https://www.npmjs.com/package/rfw2d)
+# `rfw` [![npm](https://img.shields.io/npm/v/rfw2d)](https://www.npmjs.com/package/rfw2d)
 
 2D rendering library for WebGL.
 
