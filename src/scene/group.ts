@@ -3,7 +3,6 @@ import { Base, BaseOptions, OBJECT_KIND, ObjectKind } from './graph';
 
 export interface GroupOptions extends BaseOptions {
     children?: SceneGraphObject[];
-    parent?: Group;
 }
 
 export class Group extends Base {
@@ -26,7 +25,6 @@ export class Group extends Base {
     constructor(options?: GroupOptions) {
         super(options);
 
-        options?.parent?.add(this);
         options?.children?.forEach(c => this.add(c));
     }
 

@@ -10,7 +10,6 @@ export const OBJECT_KIND = Symbol('kind');
 
 export interface BaseOptions {
     label?: string;
-    visible?: boolean;
     x?: number;
     y?: number;
     z?: number;
