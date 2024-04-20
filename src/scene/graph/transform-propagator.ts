@@ -8,8 +8,13 @@ export class TransformPropagator {
 
     constructor(private readonly changeTracker: ChangeTracker) {}
 
-    change(e: SceneGraphObject): void {
-        let actualObject = e;
+    /**
+     * Mark an object's tree as changed. Transforms for the full tree will be composed and
+     * propagated on the next call of {@link TransformPropagator.propagate}.
+     * @param o - Scene graph object
+     */
+    change(o: SceneGraphObject): void {
+        let actualObject = o;
 
         while (actualObject.parent) {
             actualObject = actualObject.parent;
@@ -18,6 +23,18 @@ export class TransformPropagator {
         this.rootObjects.add(actualObject);
     }
 
+    /**
+     * Update an object's (and its subtree's) transform immediately with the current (i.e., last
+     * frame's) transforms.
+     * @param o - Scene graph object
+     */
+    update(o: SceneGraphObject): void {
+        this.traverseAndPropagate(o);
+    }
+
+    /**
+     * Compose changed transforms and propagate along scene graph.
+     */
     propagate(): void {
         if (this.rootObjects.size > 0) {
             this.changeTracker.registerChange();
@@ -30,11 +47,11 @@ export class TransformPropagator {
         this.rootObjects.clear();
     }
 
-    private traverseAndPropagate(e: SceneGraphObject) {
-        e.transform.composeWorld(e.parent?.transform);
+    private traverseAndPropagate(o: SceneGraphObject) {
+        o.transform.composeWorld(o.parent?.transform);
 
-        if (e[OBJECT_KIND] & ObjectKind.GROUP) {
-            const { children } = e as Group;
+        if (o[OBJECT_KIND] & ObjectKind.GROUP) {
+            const { children } = o as Group;
             const childCount = children.length;
 
             for (let i = 0; i < childCount; i++) {
@@ -43,7 +60,7 @@ export class TransformPropagator {
                 if (child[OBJECT_KIND] & ObjectKind.GROUP) {
                     this.traverseAndPropagate(child);
                 } else {
-                    child.transform.composeWorld(e.transform);
+                    child.transform.composeWorld(o.transform);
                 }
             }
         }
