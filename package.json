@@ -1,6 +1,6 @@
 {
     "name": "rfw2d",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "license": "MIT",
     "author": "rfw contributors",
     "repository": {
@@ -24,6 +24,7 @@
             "types": "./dist/rfw.d.ts"
         }
     },
+    "sideEffects": false,
     "scripts": {
         "dev": "vite",
         "build": "tsc --project tsconfig.build.json && vite build",
