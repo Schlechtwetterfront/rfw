@@ -3,6 +3,7 @@ import '../assets/styles.css';
 import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
+import { projectRectToScene } from '../../src';
 import { Color } from '../../src/colors';
 import { Vec2, Vec2Like } from '../../src/math';
 import { Rect, RectLike } from '../../src/math/shapes';
@@ -110,8 +111,9 @@ class RenderModeApp extends SampleApp {
 
         this.sceneMouse.copyFrom(this.mouse);
 
-        this.driver.projections.rectFromViewportToScene(
+        projectRectToScene(
             this.sceneMouse,
+            this.driver.dimensions,
             this.camera,
         );
     }

@@ -138,7 +138,7 @@ export class Vec2 implements ReadOnlyVec2 {
     }
 
     // Sync: Mat2D.invert
-    multiplyInverse(mat: Mat2DLike): this {
+    multiplyMatInverse(mat: Mat2DLike): this {
         const determinant = mat.a * mat.d - mat.b * mat.c;
 
         const a = mat.d / determinant;

@@ -180,12 +180,12 @@ describe('vec2', () => {
             y: 10,
         });
 
-        expect(Vec2.RIGHT.multiplyInverse(scaleMat)).toEqual({
+        expect(Vec2.RIGHT.multiplyMatInverse(scaleMat)).toEqual({
             x: 0.5,
             y: 0,
         });
-        expect(Vec2.RIGHT.multiplyInverse(rotationMat).degrees).toEqual(270);
-        expect(Vec2.RIGHT.multiplyInverse(translationMat)).toEqual({
+        expect(Vec2.RIGHT.multiplyMatInverse(rotationMat).degrees).toEqual(270);
+        expect(Vec2.RIGHT.multiplyMatInverse(translationMat)).toEqual({
             x: -9,
             y: -10,
         });

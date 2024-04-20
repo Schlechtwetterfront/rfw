@@ -4,6 +4,7 @@ import '../assets/styles.css';
 import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
+import { projectPointToScene, projectRectToScene } from '../../src';
 import { Color } from '../../src/colors';
 import { Vec2 } from '../../src/math';
 import { Rect } from '../../src/math/shapes';
@@ -77,7 +78,7 @@ class QuadTreeApp extends SampleApp {
         canvas.addEventListener('click', e => {
             if (e.ctrlKey) {
                 const pos = new Vec2(e.clientX, e.clientY);
-                this.driver.projections.fromViewportToScene(pos, this.camera);
+                projectPointToScene(pos, this.driver.dimensions, this.camera);
 
                 this.addRect(pos.x, pos.y);
             }
@@ -115,8 +116,9 @@ class QuadTreeApp extends SampleApp {
 
         this.sceneMouse.copyFrom(this.mouse);
 
-        this.driver.projections.rectFromViewportToScene(
+        projectRectToScene(
             this.sceneMouse,
+            this.driver.dimensions,
             this.camera,
         );
     }

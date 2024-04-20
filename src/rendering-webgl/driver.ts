@@ -6,7 +6,6 @@ import {
     RenderDiagnostics,
     RenderDriver,
 } from '../rendering';
-import { Projections } from '../rendering/projection';
 import { WGLShaders } from './shaders';
 import { WGLTextures } from './textures';
 
@@ -22,7 +21,6 @@ export class WGLDriver implements RenderDriver {
 
     readonly textures: WGLTextures;
     readonly shaders: WGLShaders;
-    readonly projections: Projections;
 
     get dimensions(): ReadOnlyVec2 {
         return this._dimensions;
@@ -39,7 +37,6 @@ export class WGLDriver implements RenderDriver {
     ) {
         this.textures = new WGLTextures(this);
         this.shaders = new WGLShaders(this);
-        this.projections = new Projections(this);
 
         canvas.addEventListener(
             'webglcontextlost',
