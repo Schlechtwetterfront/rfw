@@ -7,7 +7,7 @@ import {
     RenderDriver,
 } from '../rendering';
 import { WGLShaders } from './shaders';
-import { WGLTextures } from './textures';
+import { WGLTextures } from './textures/textures';
 
 const DEFAULT_CONTEXT_ATTRS = {
     alpha: false,

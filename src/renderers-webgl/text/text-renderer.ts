@@ -5,13 +5,15 @@ import { WGLDriver } from '../../rendering-webgl/driver';
 import {
     bindMultiTextureOneSampler,
     buildMultiTextureSamplingAndSizeShaders,
+    getUniformLocations,
 } from '../../rendering-webgl/shaders';
+import { setSamplerParameters } from '../../rendering-webgl/textures';
+import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
 import { getUseOnceClipProjectionArray } from '../../rendering/projection';
 import { TextureHandle, getMaxTextures } from '../../rendering/textures';
-import { assert, assertDefined } from '../../util/assert';
-import { BYTE_SIZE, FLOAT_SIZE } from '../../util/sizes';
+import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './text.template.frag?raw';
 import VERT_SRC from './text.vert?raw';
 
@@ -52,38 +54,26 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
 
         this.programs = shaderInfos.map(i => {
             const program = this.driver.shaders.get(i.handle)!;
-            const projectionLocation = gl.getUniformLocation(
-                program,
-                'u_projection',
-            );
-
-            assertDefined(
-                projectionLocation,
-                'No location for projection uniform',
-            );
-
-            const samplerLocation = gl.getUniformLocation(program, 'u_sampler');
-
-            assertDefined(samplerLocation, 'No location for sampler uniform');
 
             const samplerUnits = new Int32Array(i.textureCount);
             samplerUnits.forEach((_, i) => (samplerUnits[i] = i));
 
             return {
                 program,
-                projectionLocation,
-                samplerLocation,
+                ...getUniformLocations(gl, program, {
+                    projectionLocation: 'u_projection',
+                    samplerLocation: 'u_sampler',
+                }),
                 samplerUnits,
             };
         });
 
         this.sampler = gl.createSampler()!;
 
-        gl.samplerParameteri(this.sampler, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.samplerParameteri(this.sampler, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-        gl.samplerParameteri(this.sampler, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.samplerParameteri(this.sampler, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        setSamplerParameters(gl, this.sampler, {
+            wrap: 'clamp',
+            filter: 'linear',
+        });
     }
 
     override async uninitialize(): Promise<void> {
@@ -161,58 +151,37 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, buffers[0]!);
 
-        // Pos
-        gl.enableVertexAttribArray(0);
-        gl.vertexAttribPointer(
-            0,
-            3,
-            gl.FLOAT,
-            false,
-            BYTES_PER_GLYPH_VERTEX,
-            0,
-        );
-
-        // UV
-        gl.enableVertexAttribArray(1);
-        gl.vertexAttribPointer(
-            1,
-            2,
-            gl.FLOAT,
-            false,
-            BYTES_PER_GLYPH_VERTEX,
-            3 * FLOAT_SIZE,
-        );
-
-        // Color
-        gl.enableVertexAttribArray(2);
-        gl.vertexAttribPointer(
-            2,
-            4,
-            gl.UNSIGNED_BYTE,
-            true,
-            BYTES_PER_GLYPH_VERTEX,
-            3 * FLOAT_SIZE + 2 * FLOAT_SIZE,
-        );
-
-        // Screen pixel range
-        gl.enableVertexAttribArray(3);
-        gl.vertexAttribPointer(
-            3,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_GLYPH_VERTEX,
-            3 * FLOAT_SIZE + 2 * FLOAT_SIZE + 4 * BYTE_SIZE,
-        );
-
-        // Texture ID
-        gl.enableVertexAttribArray(4);
-        gl.vertexAttribIPointer(
-            4,
-            1,
-            gl.INT,
-            BYTES_PER_GLYPH_VERTEX,
-            3 * FLOAT_SIZE + 2 * FLOAT_SIZE + 4 * BYTE_SIZE + FLOAT_SIZE,
+        setVertexAttributes(
+            gl,
+            [
+                // Pos
+                {
+                    size: 3,
+                    type: 'float',
+                },
+                // UV
+                {
+                    size: 2,
+                    type: 'float',
+                },
+                // Color
+                {
+                    size: 4,
+                    type: 'unsignedByte',
+                    normalize: true,
+                },
+                // Screen pixel range
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                // Texture ID
+                {
+                    size: 1,
+                    type: 'int',
+                },
+            ],
+            { stride: BYTES_PER_GLYPH_VERTEX },
         );
     }
 }

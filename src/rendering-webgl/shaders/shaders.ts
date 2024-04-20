@@ -29,6 +29,16 @@ export class WGLShaders implements Shaders, RenderContextLifeCycleHandler {
         return Promise.resolve(handle);
     }
 
+    async loadProgram(
+        label: string,
+        vertexSource: string,
+        fragmentSource: string,
+    ): Promise<[ShaderHandle, WebGLProgram]> {
+        const handle = await this.load(label, vertexSource, fragmentSource);
+
+        return [handle, this.get(handle)!];
+    }
+
     initialize(): Promise<void> {
         return Promise.resolve();
     }

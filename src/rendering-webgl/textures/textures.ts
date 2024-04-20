@@ -1,7 +1,11 @@
-import { RenderContextLifeCycleHandler, ResourceOptions } from '../rendering';
-import { DriverTextures, TextureHandle } from '../rendering/textures';
-import { ManualPromise } from '../util/promises';
-import { WGLDriver } from './driver';
+import {
+    RenderContextLifeCycleHandler,
+    ResourceOptions,
+} from '../../rendering';
+import { DriverTextures, TextureHandle } from '../../rendering/textures';
+import { ManualPromise } from '../../util/promises';
+import { WGLDriver } from '../driver';
+import { setTextureParameters } from './util';
 
 const WHITE_PIXEL = new Uint8Array([255, 255, 255, 255]);
 
@@ -136,11 +140,10 @@ export class WGLTextures
             );
         }
 
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+        setTextureParameters(gl, {
+            filter: 'linear',
+            wrap: 'clamp',
+        });
 
         gl.bindTexture(gl.TEXTURE_2D, null);
 

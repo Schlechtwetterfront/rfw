@@ -1,5 +1,5 @@
 import { TextureHandle } from '../../rendering/textures';
-import { WGLTextures } from '../textures';
+import { WGLTextures } from '../textures/textures';
 
 export function bindMultiTextureOneSampler(
     gl: WebGL2RenderingContext,
@@ -40,4 +40,33 @@ export function bindMultiTexture(
             gl.bindTexture(gl.TEXTURE_2D, tex);
         }
     }
+}
+
+type UniformLocationsQuery = {
+    [k: string]: string;
+};
+
+type UniformLocations<Q> = {
+    [K in keyof Q]: WebGLUniformLocation;
+};
+
+export function getUniformLocations<Q extends UniformLocationsQuery>(
+    gl: WebGL2RenderingContext,
+    program: WebGLProgram,
+    uniforms: Q,
+): UniformLocations<Q> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const results = {} as UniformLocations<any>;
+
+    for (const k of Object.getOwnPropertyNames(uniforms)) {
+        const location = gl.getUniformLocation(program, uniforms[k]!);
+
+        if (!location) {
+            throw new Error(`Uniform ${uniforms[k]} does not exist`);
+        }
+
+        results[k] = location;
+    }
+
+    return results;
 }

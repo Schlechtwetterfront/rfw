@@ -1,11 +1,12 @@
 import { BYTES_PER_LINE_SEGMENT } from '../../renderers/lines';
 import { WGLBatchedRenderer } from '../../rendering-webgl/batched-renderer';
 import { WGLDriver } from '../../rendering-webgl/driver';
+import { getUniformLocations } from '../../rendering-webgl/shaders';
+import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
 import { getUseOnceClipProjectionArray } from '../../rendering/projection';
 import { assert, assertDefined } from '../../util/assert';
-import { FLOAT_SIZE } from '../../util/sizes';
 import FRAG_SRC from './lines.frag?raw';
 import VERT_SRC from './lines.vert?raw';
 
@@ -28,23 +29,19 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
 
         const { gl } = this;
 
-        const programHandle = await this.driver.shaders.load(
+        const [_, program] = await this.driver.shaders.loadProgram(
             'lines',
             VERT_SRC,
             FRAG_SRC,
         );
-        const program = this.driver.shaders.get(programHandle)!;
 
-        const projectionLocation = gl.getUniformLocation(
+        this.program = {
             program,
-            'u_projection',
-        )!;
-        const cameraScaleLocation = gl.getUniformLocation(
-            program,
-            'u_cameraScale',
-        )!;
-
-        this.program = { program, projectionLocation, cameraScaleLocation };
+            ...getUniformLocations(this.gl, program, {
+                projectionLocation: 'u_projection',
+                cameraScaleLocation: 'u_cameraScale',
+            }),
+        };
 
         this.meshData = {
             buffer: gl.createBuffer()!,
@@ -140,148 +137,75 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
 
         gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
 
-        // Before
-        gl.enableVertexAttribArray(1);
-        gl.vertexAttribPointer(
-            1,
-            2,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            0,
+        setVertexAttributes(
+            gl,
+            [
+                // Before
+                {
+                    size: 2,
+                    type: 'float',
+                },
+                // Start
+                {
+                    size: 2,
+                    type: 'float',
+                },
+                // End
+                {
+                    size: 2,
+                    type: 'float',
+                },
+                // After
+                {
+                    size: 2,
+                    type: 'float',
+                },
+                // Z
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                // Thickness
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                // Alignment
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                // Dash size
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                // Gap size
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                // Distance start
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                // Distance end
+                {
+                    size: 1,
+                    type: 'float',
+                },
+                {
+                    size: 4,
+                    type: 'unsignedByte',
+                    normalize: true,
+                },
+            ],
+            {
+                index: 1,
+                stride: BYTES_PER_LINE_SEGMENT,
+                divisor: 1,
+            },
         );
-        gl.vertexAttribDivisor(1, 1);
-
-        // Start
-        gl.enableVertexAttribArray(2);
-        gl.vertexAttribPointer(
-            2,
-            2,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            2 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(2, 1);
-
-        // End
-        gl.enableVertexAttribArray(3);
-        gl.vertexAttribPointer(
-            3,
-            2,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            4 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(3, 1);
-
-        // After
-        gl.enableVertexAttribArray(4);
-        gl.vertexAttribPointer(
-            4,
-            2,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            6 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(4, 1);
-
-        // Z
-        gl.enableVertexAttribArray(5);
-        gl.vertexAttribPointer(
-            5,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            8 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(5, 1);
-
-        // Thickness
-        gl.enableVertexAttribArray(6);
-        gl.vertexAttribPointer(
-            6,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            9 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(6, 1);
-
-        // Alignment
-        gl.enableVertexAttribArray(7);
-        gl.vertexAttribPointer(
-            7,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            10 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(7, 1);
-
-        // Dash size
-        gl.enableVertexAttribArray(8);
-        gl.vertexAttribPointer(
-            8,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            11 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(8, 1);
-
-        // Gap size
-        gl.enableVertexAttribArray(9);
-        gl.vertexAttribPointer(
-            9,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            12 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(9, 1);
-
-        // Distance start
-        gl.enableVertexAttribArray(10);
-        gl.vertexAttribPointer(
-            10,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            13 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(10, 1);
-
-        // Distance end
-        gl.enableVertexAttribArray(11);
-        gl.vertexAttribPointer(
-            11,
-            1,
-            gl.FLOAT,
-            false,
-            BYTES_PER_LINE_SEGMENT,
-            14 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(11, 1);
-
-        // Color
-        gl.enableVertexAttribArray(12);
-        gl.vertexAttribPointer(
-            12,
-            4,
-            gl.UNSIGNED_BYTE,
-            true,
-            BYTES_PER_LINE_SEGMENT,
-            15 * FLOAT_SIZE,
-        );
-        gl.vertexAttribDivisor(12, 1);
     }
 }

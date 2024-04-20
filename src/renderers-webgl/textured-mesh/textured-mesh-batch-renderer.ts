@@ -5,13 +5,14 @@ import { WGLDriver } from '../../rendering-webgl/driver';
 import {
     bindMultiTexture,
     buildMultiTextureSamplingShaders,
+    getUniformLocations,
 } from '../../rendering-webgl/shaders';
+import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
 import { getUseOnceClipProjectionArray } from '../../rendering/projection';
 import { TextureHandle, getMaxTextures } from '../../rendering/textures';
-import { assert, assertDefined } from '../../util/assert';
-import { BYTE_SIZE, FLOAT_SIZE } from '../../util/sizes';
+import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './textured-mesh-batch.template.frag?raw';
 import VERT_SRC from './textured-mesh-batch.vert?raw';
 
@@ -51,27 +52,16 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
 
         this.programs = shaderInfos.map(i => {
             const program = this.driver.shaders.get(i.handle)!;
-            const projectionLocation = gl.getUniformLocation(
-                program,
-                'u_projection',
-            );
-
-            assertDefined(
-                projectionLocation,
-                'No location for projection uniform',
-            );
-
-            const samplerLocation = gl.getUniformLocation(program, 'u_sampler');
-
-            assertDefined(samplerLocation, 'No location for sampler uniform');
 
             const samplerUnits = new Int32Array(i.textureCount);
             samplerUnits.forEach((_, i) => (samplerUnits[i] = i));
 
             return {
                 program,
-                projectionLocation,
-                samplerLocation,
+                ...getUniformLocations(gl, program, {
+                    projectionLocation: 'u_projection',
+                    samplerLocation: 'u_sampler',
+                }),
                 samplerUnits,
             };
         });
@@ -141,40 +131,32 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
 
         gl.bindBuffer(this.gl.ARRAY_BUFFER, buffers[0]!);
 
-        // Pos
-        gl.enableVertexAttribArray(0);
-        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, BYTES_PER_VERTEX, 0);
-
-        // UV
-        gl.enableVertexAttribArray(1);
-        gl.vertexAttribPointer(
-            1,
-            2,
-            gl.FLOAT,
-            false,
-            BYTES_PER_VERTEX,
-            3 * FLOAT_SIZE,
-        );
-
-        // Color
-        gl.enableVertexAttribArray(2);
-        gl.vertexAttribPointer(
-            2,
-            4,
-            gl.UNSIGNED_BYTE,
-            true,
-            BYTES_PER_VERTEX,
-            3 * FLOAT_SIZE + 2 * FLOAT_SIZE,
-        );
-
-        // Texture ID
-        gl.enableVertexAttribArray(3);
-        gl.vertexAttribIPointer(
-            3,
-            1,
-            gl.INT,
-            BYTES_PER_VERTEX,
-            3 * FLOAT_SIZE + 2 * FLOAT_SIZE + 4 * BYTE_SIZE,
+        setVertexAttributes(
+            gl,
+            [
+                // Pos
+                {
+                    size: 3,
+                    type: 'float',
+                },
+                // UV
+                {
+                    size: 2,
+                    type: 'float',
+                },
+                // Color
+                {
+                    size: 4,
+                    type: 'unsignedByte',
+                    normalize: true,
+                },
+                // Texture ID
+                {
+                    size: 1,
+                    type: 'int',
+                },
+            ],
+            { stride: BYTES_PER_VERTEX },
         );
     }
 }
