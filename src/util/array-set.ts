@@ -13,6 +13,30 @@ export class ArraySet<V> {
     /** Read-only array of values in the set. */
     readonly values: readonly V[] = this._values;
 
+    constructor();
+    constructor(map: Set<V>);
+    constructor(map: ArraySet<V>);
+    constructor(entries: readonly V[] | null);
+    constructor(init?: Set<V> | ArraySet<V> | readonly V[] | null) {
+        if (!init) {
+            return;
+        }
+
+        if (init instanceof Set) {
+            for (const v of init.values()) {
+                this.add(v);
+            }
+        } else if (init instanceof ArraySet) {
+            for (let i = 0; i < init.size; i++) {
+                this.add(init.values[i]!);
+            }
+        } else {
+            for (const v of init) {
+                this.add(v);
+            }
+        }
+    }
+
     /**
      * Check if a value exists in the set.
      * @param v - Value

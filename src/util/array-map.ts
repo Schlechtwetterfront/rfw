@@ -17,6 +17,32 @@ export class ArrayMap<K, V> {
     /** Read-only array of values in the map. */
     readonly values: readonly V[] = this._values;
 
+    constructor();
+    constructor(map: Map<K, V>);
+    constructor(map: ArrayMap<K, V>);
+    constructor(entries: readonly (readonly [K, V])[] | null);
+    constructor(
+        init?: Map<K, V> | ArrayMap<K, V> | readonly (readonly [K, V])[] | null,
+    ) {
+        if (!init) {
+            return;
+        }
+
+        if (init instanceof Map) {
+            for (const [k, v] of init.entries()) {
+                this.set(k, v);
+            }
+        } else if (init instanceof ArrayMap) {
+            for (let i = 0; i < init.size; i++) {
+                this.set(init.keys[i]!, init.values[i]!);
+            }
+        } else {
+            for (const [k, v] of init) {
+                this.set(k, v);
+            }
+        }
+    }
+
     /**
      * Check if a key exists in the map.
      * @param k - Key

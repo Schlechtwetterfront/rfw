@@ -10,6 +10,42 @@ describe('array set', () => {
         expect(m.values.length).toBe(0);
     });
 
+    test('init from Set', () => {
+        const set = new Set();
+        set.add(1).add(2).add(3);
+
+        const m = new ArraySet(set);
+
+        expect(m).toBeDefined();
+        expect(m.size).toBe(3);
+        expect(m.values.length).toBe(3);
+
+        expect(m.values[1]).toBe(2);
+    });
+
+    test('init from ArraySet', () => {
+        const set = new ArraySet();
+        set.add(1).add(2).add(3);
+
+        const m = new ArraySet(set);
+
+        expect(m).toBeDefined();
+        expect(m.size).toBe(3);
+        expect(m.values.length).toBe(3);
+
+        expect(m.values[1]).toBe(2);
+    });
+
+    test('init from iter', () => {
+        const m = new ArraySet([1, 2, 3]);
+
+        expect(m).toBeDefined();
+        expect(m.size).toBe(3);
+        expect(m.values.length).toBe(3);
+
+        expect(m.values[1]).toBe(2);
+    });
+
     test('add', () => {
         const m = new ArraySet<number>();
 

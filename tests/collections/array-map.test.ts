@@ -11,6 +11,52 @@ describe('array map', () => {
         expect(m.values.length).toBe(0);
     });
 
+    test('init from Map', () => {
+        const map = new Map();
+        map.set(1, 10).set(2, 20).set(3, 30);
+
+        const m = new ArrayMap(map);
+
+        expect(m).toBeDefined();
+        expect(m.size).toBe(3);
+        expect(m.keys.length).toBe(3);
+        expect(m.values.length).toBe(3);
+
+        expect(m.keys[1]).toBe(2);
+        expect(m.values[1]).toBe(20);
+    });
+
+    test('init from ArrayMap', () => {
+        const map = new ArrayMap();
+        map.set(1, 10).set(2, 20).set(3, 30);
+
+        const m = new ArrayMap(map);
+
+        expect(m).toBeDefined();
+        expect(m.size).toBe(3);
+        expect(m.keys.length).toBe(3);
+        expect(m.values.length).toBe(3);
+
+        expect(m.keys[1]).toBe(2);
+        expect(m.values[1]).toBe(20);
+    });
+
+    test('init from iter', () => {
+        const m = new ArrayMap([
+            [1, 10],
+            [2, 20],
+            [3, 30],
+        ]);
+
+        expect(m).toBeDefined();
+        expect(m.size).toBe(3);
+        expect(m.keys.length).toBe(3);
+        expect(m.values.length).toBe(3);
+
+        expect(m.keys[1]).toBe(2);
+        expect(m.values[1]).toBe(20);
+    });
+
     test('set', () => {
         const m = new ArrayMap<number, number>();
 
