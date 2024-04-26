@@ -62,7 +62,7 @@ export class ArrayMap<K, V> {
      * @returns Value or `undefined`
      */
     at(index: number): V | undefined {
-        return this._values[index];
+        return this._values.at(index);
     }
 
     /**
@@ -71,7 +71,7 @@ export class ArrayMap<K, V> {
      * @returns Key or `undefined`
      */
     keyAt(index: number): K | undefined {
-        return this._keys[index];
+        return this._keys.at(index);
     }
 
     /**
@@ -101,8 +101,19 @@ export class ArrayMap<K, V> {
             return false;
         }
 
-        this._keys.splice(index, 1);
-        this._values.splice(index, 1);
+        if (this.size > 1 && index !== this.size - 1) {
+            // Swap
+            const lastIndex = this.size - 1;
+
+            this.indices.set(this._keys[lastIndex]!, index);
+
+            this._keys.copyWithin(index, lastIndex, lastIndex + 1);
+            this._values.copyWithin(index, lastIndex, lastIndex + 1);
+        }
+
+        this._keys.length--;
+        this._values.length--;
+
         this.indices.delete(k);
 
         return true;

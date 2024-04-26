@@ -52,7 +52,7 @@ export class ArraySet<V> {
      * @returns Value or `undefined`
      */
     at(index: number): V | undefined {
-        return this._values[index];
+        return this._values.at(index);
     }
 
     /**
@@ -67,7 +67,17 @@ export class ArraySet<V> {
             return false;
         }
 
-        this._values.splice(index, 1);
+        if (this.size > 1 && index !== this.size - 1) {
+            // Swap
+            const lastIndex = this.size - 1;
+
+            this.indices.set(this._values[lastIndex]!, index);
+
+            this._values.copyWithin(index, lastIndex, lastIndex + 1);
+        }
+
+        this._values.length--;
+
         this.indices.delete(v);
 
         return true;
