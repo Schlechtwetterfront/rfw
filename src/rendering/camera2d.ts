@@ -1,13 +1,8 @@
 import { ChangeTracker } from '../app/change-tracking';
 import { Mat2D, Transform2D, Vec2Like } from '../math';
 
-/**
- * Defines where the origin is for a {@link Camera2D}.
- */
-export type CameraOrigin = 'center' | 'topLeft';
-
 export interface CameraOptions {
-    origin?: CameraOrigin;
+    centered?: boolean;
     changeTracker?: ChangeTracker;
 }
 
@@ -19,10 +14,10 @@ export class Camera2D {
 
     readonly transform = new Transform2D();
 
-    readonly origin: CameraOrigin;
+    readonly centered: boolean;
 
     constructor(options?: CameraOptions) {
-        this.origin = options?.origin ?? 'center';
+        this.centered = options?.centered ?? false;
         this.changeTracker = options?.changeTracker;
     }
 

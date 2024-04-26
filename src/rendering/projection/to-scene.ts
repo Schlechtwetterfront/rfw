@@ -35,8 +35,8 @@ export function getUseOnceToSceneProjection(
     mat.b = 0;
     mat.c = 0;
     mat.d = 1;
-    mat.tx = camera.origin === 'center' ? dimensions.x * 0.5 : 0;
-    mat.ty = camera.origin === 'center' ? dimensions.y * 0.5 : 0;
+    mat.tx = camera.centered ? dimensions.x * 0.5 : 0;
+    mat.ty = camera.centered ? dimensions.y * 0.5 : 0;
 
     mat.multiplyMat(cameraProjection);
 

@@ -10,7 +10,7 @@ describe('projection to scene', () => {
     const dims = new Vec2(10, 10);
 
     test('centered', () => {
-        const centerCam = new Camera2D({ origin: 'center' });
+        const centerCam = new Camera2D({ centered: true });
         const p = new Vec2(5, 5);
 
         projectPointToScene(p, dims, centerCam);
@@ -25,7 +25,7 @@ describe('projection to scene', () => {
     });
 
     test('centered & moved', () => {
-        const centerCam = new Camera2D({ origin: 'center' });
+        const centerCam = new Camera2D({ centered: true });
         centerCam.pan(5, 5);
 
         const p = new Vec2(5, 5);
@@ -42,7 +42,7 @@ describe('projection to scene', () => {
     });
 
     test('topleft', () => {
-        const topLeftCam = new Camera2D({ origin: 'topLeft' });
+        const topLeftCam = new Camera2D({ centered: false });
         const p = new Vec2(5, 5);
 
         projectPointToScene(p, dims, topLeftCam);
@@ -57,7 +57,7 @@ describe('projection to scene', () => {
     });
 
     test('topleft & moved', () => {
-        const topLeftCam = new Camera2D({ origin: 'topLeft' });
+        const topLeftCam = new Camera2D({ centered: false });
         topLeftCam.pan(5, 5);
 
         const p = new Vec2(5, 5);
@@ -78,7 +78,7 @@ describe('projection to viewport', () => {
     const dims = new Vec2(10, 10);
 
     test('centered', () => {
-        const centerCam = new Camera2D({ origin: 'center' });
+        const centerCam = new Camera2D({ centered: true });
         const p = new Vec2(5, 5);
 
         projectPointToViewport(p, dims, centerCam);
@@ -93,7 +93,7 @@ describe('projection to viewport', () => {
     });
 
     test('centered & moved', () => {
-        const centerCam = new Camera2D({ origin: 'center' });
+        const centerCam = new Camera2D({ centered: true });
         centerCam.pan(5, 5);
 
         const p = new Vec2(5, 5);
@@ -110,7 +110,7 @@ describe('projection to viewport', () => {
     });
 
     test('topleft', () => {
-        const topLeftCam = new Camera2D({ origin: 'topLeft' });
+        const topLeftCam = new Camera2D({ centered: false });
         const p = new Vec2(5, 5);
 
         projectPointToViewport(p, dims, topLeftCam);
@@ -125,7 +125,7 @@ describe('projection to viewport', () => {
     });
 
     test('topleft & moved', () => {
-        const topLeftCam = new Camera2D({ origin: 'topLeft' });
+        const topLeftCam = new Camera2D({ centered: false });
         topLeftCam.pan(5, 5);
 
         const p = new Vec2(5, 5);

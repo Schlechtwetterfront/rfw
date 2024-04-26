@@ -70,7 +70,7 @@ export class SizedBatcher<
         const sizeChanged = object.size !== entry.size;
         const sizeDiff = object.size - entry.size;
 
-        entry.size = object.size;
+        entry.newSize = object.size;
 
         if (!batch) {
             return;
