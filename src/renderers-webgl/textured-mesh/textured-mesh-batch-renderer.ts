@@ -31,7 +31,7 @@ interface ProgramData {
 }
 
 export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMeshRenderBatch> {
-    private programs: ProgramData[] = [];
+    protected programs: ProgramData[] = [];
 
     constructor(driver: WGLDriver) {
         super(driver);

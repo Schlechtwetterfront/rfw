@@ -17,8 +17,8 @@ interface ProgramData {
 }
 
 export class WGLLineRenderer extends WGLBatchedRenderer {
-    private program?: ProgramData;
-    private meshData?: { buffer: WebGLBuffer };
+    protected program?: ProgramData;
+    protected meshData?: { buffer: WebGLBuffer };
 
     constructor(driver: WGLDriver) {
         super(driver);

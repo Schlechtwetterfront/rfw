@@ -32,8 +32,8 @@ interface ProgramData {
 }
 
 export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
-    private programs: ProgramData[] = [];
-    private sampler?: WebGLSampler;
+    protected programs: ProgramData[] = [];
+    protected sampler?: WebGLSampler;
 
     constructor(driver: WGLDriver) {
         super(driver);
