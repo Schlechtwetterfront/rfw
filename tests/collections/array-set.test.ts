@@ -52,7 +52,6 @@ describe('array set', () => {
         m.add(10);
 
         expect(m.size).toBe(1);
-
         expect(m.values.length).toBe(1);
 
         expect(m.values[0]).toBe(10);
@@ -63,7 +62,6 @@ describe('array set', () => {
         m.add(20);
 
         expect(m.size).toBe(2);
-
         expect(m.values.length).toBe(2);
 
         expect(m.values[1]).toBe(20);
@@ -83,7 +81,6 @@ describe('array set', () => {
         m.add(10);
 
         expect(m.size).toBe(1);
-
         expect(m.values.length).toBe(1);
 
         expect(m.values[0]).toBe(10);
@@ -105,8 +102,8 @@ describe('array set', () => {
 
         // Order
         expect(m.indexOf(10)).toBe(0);
-
         expect(m.indexOf(30)).toBe(1);
+        expect(m.at(1)).toBe(30);
     });
 
     test('clear', () => {

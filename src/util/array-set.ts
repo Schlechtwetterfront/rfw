@@ -2,8 +2,8 @@
  * Array-backed set. Trades memory for iteration speed
  */
 export class ArraySet<V> {
-    private readonly indices = new Map<V, number>();
-    private readonly _values: V[] = [];
+    private readonly indices: Map<V, number>;
+    private readonly _values: V[];
 
     /** Number of entries in the set. */
     get size() {
@@ -11,30 +11,28 @@ export class ArraySet<V> {
     }
 
     /** Read-only array of values in the set. */
-    readonly values: readonly V[] = this._values;
+    readonly values: readonly V[];
 
     constructor();
-    constructor(map: Set<V>);
-    constructor(map: ArraySet<V>);
-    constructor(entries: readonly V[] | null);
-    constructor(init?: Set<V> | ArraySet<V> | readonly V[] | null) {
-        if (!init) {
-            return;
+
+    constructor(set: ArraySet<V>);
+    constructor(entries: Iterable<V> | null);
+    constructor(init?: ArraySet<V> | Iterable<V> | null) {
+        if (init instanceof ArraySet) {
+            this.indices = new Map(init.indices);
+            this._values = [...init._values];
+        } else {
+            this.indices = new Map();
+            this._values = [];
+
+            if (init) {
+                for (const v of init) {
+                    this.add(v);
+                }
+            }
         }
 
-        if (init instanceof Set) {
-            for (const v of init.values()) {
-                this.add(v);
-            }
-        } else if (init instanceof ArraySet) {
-            for (let i = 0; i < init.size; i++) {
-                this.add(init.values[i]!);
-            }
-        } else {
-            for (const v of init) {
-                this.add(v);
-            }
-        }
+        this.values = this._values;
     }
 
     /**

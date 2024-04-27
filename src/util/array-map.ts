@@ -2,9 +2,9 @@
  * Array-backed map. Trades memory for iteration speed
  */
 export class ArrayMap<K, V> {
-    private readonly indices = new Map<K, number>();
-    private readonly _keys: K[] = [];
-    private readonly _values: V[] = [];
+    private readonly indices: Map<K, number>;
+    private readonly _keys: K[];
+    private readonly _values: V[];
 
     /** Number of entries in the map. */
     get size() {
@@ -12,35 +12,33 @@ export class ArrayMap<K, V> {
     }
 
     /** Read-only array of keys in the map. */
-    readonly keys: readonly K[] = this._keys;
+    readonly keys: readonly K[];
 
     /** Read-only array of values in the map. */
-    readonly values: readonly V[] = this._values;
+    readonly values: readonly V[];
 
     constructor();
-    constructor(map: Map<K, V>);
     constructor(map: ArrayMap<K, V>);
-    constructor(entries: readonly (readonly [K, V])[] | null);
-    constructor(
-        init?: Map<K, V> | ArrayMap<K, V> | readonly (readonly [K, V])[] | null,
-    ) {
-        if (!init) {
-            return;
+    constructor(entries: Iterable<readonly [K, V]> | null);
+    constructor(init?: ArrayMap<K, V> | Iterable<readonly [K, V]> | null) {
+        if (init instanceof ArrayMap) {
+            this.indices = new Map(init.indices);
+            this._keys = [...init._keys];
+            this._values = [...init._values];
+        } else {
+            this.indices = new Map();
+            this._keys = [];
+            this._values = [];
+
+            if (init) {
+                for (const [k, v] of init) {
+                    this.set(k, v);
+                }
+            }
         }
 
-        if (init instanceof Map) {
-            for (const [k, v] of init.entries()) {
-                this.set(k, v);
-            }
-        } else if (init instanceof ArrayMap) {
-            for (let i = 0; i < init.size; i++) {
-                this.set(init.keys[i]!, init.values[i]!);
-            }
-        } else {
-            for (const [k, v] of init) {
-                this.set(k, v);
-            }
-        }
+        this.keys = this._keys;
+        this.values = this._values;
     }
 
     /**
