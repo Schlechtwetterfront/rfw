@@ -97,7 +97,7 @@ export interface ReadOnlyColor extends ColorLike {
     clone(): Color;
 }
 
-const CACHED_COLOR: number[] = [];
+const TEMP_COLOR: number[] = [];
 
 /**
  * RGBA color.
@@ -491,13 +491,13 @@ export class Color implements ReadOnlyColor, RGBA {
     }
 
     static fromHexString(hex: string): Color {
-        const colors = parseHexColor(hex, true, CACHED_COLOR);
+        const colors = parseHexColor(hex, true, TEMP_COLOR);
 
         return new Color(...colors);
     }
 
     static fromHSV(h: number, s = 1, v = 1, a?: number) {
-        const color = Color.WHITE;
+        const color = Color.white();
 
         color.setHSV(h, s, v, a);
 
@@ -505,36 +505,34 @@ export class Color implements ReadOnlyColor, RGBA {
     }
 
     static fromHSL(h: number, s = 1, l = 1, a?: number) {
-        const color = Color.WHITE;
+        const color = Color.white();
 
         color.setHSL(h, s, l, a);
 
         return color;
     }
 
-    private static readonly _BLACK: ReadOnlyColor = new Color(0, 0, 0, 1);
-    private static readonly _WHITE: ReadOnlyColor = new Color(1, 1, 1, 1);
-    private static readonly _TRANSPARENT: ReadOnlyColor = new Color(0, 0, 0, 0);
-    private static readonly _RED: ReadOnlyColor = new Color(1, 0, 0, 1);
-    private static readonly _GREEN: ReadOnlyColor = new Color(0, 1, 0, 1);
-    private static readonly _BLUE: ReadOnlyColor = new Color(0, 0, 1, 1);
+    static black() {
+        return new Color(0, 0, 0, 1);
+    }
 
-    static get BLACK() {
-        return this._BLACK.clone();
+    static white() {
+        return new Color(1, 1, 1, 1);
     }
-    static get WHITE() {
-        return this._WHITE.clone();
+
+    static transparent() {
+        return new Color(0, 0, 0, 0);
     }
-    static get TRANSPARENT() {
-        return this._TRANSPARENT.clone();
+
+    static red() {
+        return new Color(1, 0, 0, 1);
     }
-    static get RED() {
-        return this._RED.clone();
+
+    static green() {
+        return new Color(0, 1, 0, 1);
     }
-    static get GREEN() {
-        return this._GREEN.clone();
-    }
-    static get BLUE() {
-        return this._BLUE.clone();
+
+    static blue() {
+        return new Color(0, 0, 1, 1);
     }
 }

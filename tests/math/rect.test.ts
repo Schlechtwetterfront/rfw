@@ -8,8 +8,8 @@ describe('rect', () => {
         const r = new Rect(0, 0, 1, 1);
         expect(r).not.toBe(r.clone());
         expect(r.asReadOnly()).toBe(r);
-        expect(Rect.ZERO).not.toBe(Rect.ZERO);
-        expect(Rect.ONE).not.toBe(Rect.ONE);
+        expect(Rect.zero()).not.toBe(Rect.zero());
+        expect(Rect.one()).not.toBe(Rect.one());
     });
 
     test('equals', () => {
@@ -114,9 +114,9 @@ describe('rect', () => {
     });
 
     test('matrix mult', () => {
-        const tra = Mat2D.IDENTITY.translate(10, -10);
-        const rot = Mat2D.IDENTITY.rotateDegrees(90);
-        const sca = Mat2D.IDENTITY.scale(2);
+        const tra = Mat2D.identity().translate(10, -10);
+        const rot = Mat2D.identity().rotateDegrees(90);
+        const sca = Mat2D.identity().scale(2);
 
         const rect = new Rect(2, 2, 2, 2);
 
@@ -145,9 +145,9 @@ describe('rect', () => {
     });
 
     test('matrix mult inverse', () => {
-        const tra = Mat2D.IDENTITY.translate(10, -10);
-        const rot = Mat2D.IDENTITY.rotateDegrees(90);
-        const sca = Mat2D.IDENTITY.scale(2);
+        const tra = Mat2D.identity().translate(10, -10);
+        const rot = Mat2D.identity().rotateDegrees(90);
+        const sca = Mat2D.identity().scale(2);
 
         const rect = new Rect(2, 2, 2, 2);
 

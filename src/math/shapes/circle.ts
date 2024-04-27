@@ -38,7 +38,7 @@ export interface ReadOnlyCircle extends CircleLike, Shape {
     clone(): Circle;
 }
 
-const TEMP_VEC = Vec2.ZERO;
+const TEMP_VEC = Vec2.zero();
 
 /**
  * Circle shape.
@@ -159,20 +159,17 @@ export class Circle implements ReadOnlyCircle, Vec2Like {
         return new Circle(x, y, radius);
     }
 
-    private static readonly _ZERO = new Circle(0, 0, 0);
-    private static readonly _ONE = new Circle(0, 0, 1);
-
     /**
      * A new instance initialized to all zeroes.
      */
-    static get ZERO() {
-        return this._ZERO.clone();
+    static zero() {
+        return new Circle(0, 0, 0);
     }
 
     /**
      * A new instance initialized with radius of one.
      */
-    static get ONE() {
-        return this._ONE.clone();
+    static one() {
+        return new Circle(0, 0, 1);
     }
 }

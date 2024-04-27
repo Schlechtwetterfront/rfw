@@ -15,7 +15,7 @@ export const buildLineBatchStorage: BatchStorageFactory<
     return new LineBufferManager(maxSize);
 };
 
-const TEMP_VEC = Vec2.ZERO;
+const TEMP_VEC = Vec2.zero();
 
 export class LineBufferManager extends ElementByteBuffersManager<
     BatchEntry<LineLike>

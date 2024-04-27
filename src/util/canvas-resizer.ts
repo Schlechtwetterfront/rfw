@@ -6,7 +6,7 @@ import { ReadOnlyVec2, Vec2 } from '../math';
  */
 export class CanvasResizer {
     private readonly resizeObserver: ResizeObserver;
-    private readonly _dimensions = Vec2.ZERO;
+    private readonly _dimensions = Vec2.zero();
     private _resize = true;
 
     /** Current dimensions. */

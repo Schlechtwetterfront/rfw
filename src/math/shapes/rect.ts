@@ -342,23 +342,20 @@ export class Rect implements ReadOnlyRect, Vec2Like {
     }
 
     static fromPoints(points: readonly Vec2Like[]): Rect {
-        return this.ZERO.setFromPoints(points);
+        return this.zero().setFromPoints(points);
     }
-
-    private static readonly _ZERO = new Rect(0, 0, 0, 0);
-    private static readonly _ONE = new Rect(0, 0, 1, 1);
 
     /**
      * A new instance initialized to all zeroes.
      */
-    static get ZERO() {
-        return this._ZERO.clone();
+    static zero() {
+        return new Rect(0, 0, 0, 0);
     }
 
     /**
      * A new instance initialized with extents of one.
      */
-    static get ONE() {
-        return this._ONE.clone();
+    static one() {
+        return new Rect(0, 0, 1, 1);
     }
 }

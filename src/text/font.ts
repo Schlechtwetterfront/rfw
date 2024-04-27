@@ -11,7 +11,7 @@ export class Glyph {
         public readonly rect: Rect,
         public readonly xAdvance: number,
         public readonly page: number = 0,
-        public readonly offset: Vec2 = Vec2.ZERO,
+        public readonly offset: Vec2 = Vec2.zero(),
     ) {}
 }
 

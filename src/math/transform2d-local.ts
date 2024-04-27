@@ -29,7 +29,7 @@ export class LocalTransform2D
     extends Transform2D
     implements ReadOnlyLocalTransform2D
 {
-    readonly worldMatrix = Mat2D.IDENTITY;
+    readonly worldMatrix = Mat2D.identity();
 
     composeWorld(parent?: LocalTransform2DLike): void {
         this.compose();

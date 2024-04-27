@@ -1,34 +1,38 @@
 import { describe, expect, test } from 'vitest';
 import { Mat2D, Vec2 } from '../../src/math';
 
+function right() {
+    return new Vec2(1, 0);
+}
+
 describe('vec2', () => {
     test('vec2', () => {
-        expect(Vec2.ZERO).toEqual({ x: 0, y: 0 });
+        expect(Vec2.zero()).toEqual({ x: 0, y: 0 });
 
-        expect(Vec2.ZERO.equalsVec(Vec2.ZERO)).toEqual(true);
-        expect(Vec2.RIGHT.equalsVec(Vec2.ZERO)).toEqual(false);
-        expect(Vec2.RIGHT.equals(1, 0)).toEqual(true);
-        expect(Vec2.RIGHT.equals(1.5, 0, 0.6)).toEqual(true);
+        expect(Vec2.zero().equalsVec(Vec2.zero())).toEqual(true);
+        expect(Vec2.one().equalsVec(Vec2.zero())).toEqual(false);
+        expect(Vec2.one().equals(1, 1)).toEqual(true);
+        expect(Vec2.one().equals(1.5, 0.5, 0.6)).toEqual(true);
 
-        expect(Vec2.RIGHT.clone()).toEqual(Vec2.RIGHT);
+        expect(Vec2.one().clone()).toEqual(Vec2.one());
 
-        const v = Vec2.RIGHT;
+        const v = Vec2.one();
         expect(v.clone()).not.toBe(v);
 
-        expect(new Vec2(10, 0).normalize()).toEqual(Vec2.RIGHT);
-        expect(new Vec2(0, 1).normalize()).toEqual(Vec2.UP);
+        expect(new Vec2(10, 0).normalize()).toEqual(new Vec2(1, 0));
+        expect(new Vec2(0, 1).normalize()).toEqual(new Vec2(0, 1));
 
         expect(new Vec2(0, 0).copyFrom(new Vec2(2, 4))).toEqual(new Vec2(2, 4));
     });
 
     test('set', () => {
-        expect(Vec2.ZERO).toEqual({ x: 0, y: 0 });
-        expect(Vec2.ZERO.set(1)).toEqual({ x: 1, y: 1 });
-        expect(Vec2.ZERO.set(1, 0.5)).toEqual({ x: 1, y: 0.5 });
+        expect(Vec2.zero()).toEqual({ x: 0, y: 0 });
+        expect(Vec2.zero().set(1)).toEqual({ x: 1, y: 1 });
+        expect(Vec2.zero().set(1, 0.5)).toEqual({ x: 1, y: 0.5 });
     });
 
     test('length', () => {
-        expect(Vec2.ZERO.length).toEqual(0);
+        expect(Vec2.zero().length).toEqual(0);
         expect(new Vec2(1, 1).length).toBeCloseTo(1.4142, 4);
         expect(new Vec2(0, 1).length).toBeCloseTo(1);
         expect(new Vec2(1, 0).length).toBeCloseTo(1);
@@ -40,7 +44,7 @@ describe('vec2', () => {
     });
 
     test('angle', () => {
-        expect(Vec2.ZERO.radians).toEqual(0);
+        expect(Vec2.zero().radians).toEqual(0);
 
         expect(new Vec2(1, 0).radians).toBeCloseTo(0, 1);
         expect(new Vec2(0, 1).radians).toBeCloseTo(Math.PI / 2);
@@ -76,71 +80,63 @@ describe('vec2', () => {
     });
 
     test('rotate degrees', () => {
-        expect(Vec2.RIGHT.rotateDegrees(90).x).toBeCloseTo(0);
-        expect(Vec2.RIGHT.rotateDegrees(90).y).toBeCloseTo(1);
-        expect(Vec2.RIGHT.rotateDegrees(-90).y).toBeCloseTo(-1);
-        expect(Vec2.RIGHT.rotateDegrees(180).x).toBeCloseTo(-1);
+        expect(right().rotateDegrees(90).x).toBeCloseTo(0);
+        expect(right().rotateDegrees(90).y).toBeCloseTo(1);
+        expect(right().rotateDegrees(-90).y).toBeCloseTo(-1);
+        expect(right().rotateDegrees(180).x).toBeCloseTo(-1);
 
-        expect(Vec2.RIGHT.rotateDegrees(90, 0, 0).x).toBeCloseTo(0);
-        expect(Vec2.RIGHT.rotateDegrees(90, 0, 0).y).toBeCloseTo(1);
+        expect(right().rotateDegrees(90, 0, 0).x).toBeCloseTo(0);
+        expect(right().rotateDegrees(90, 0, 0).y).toBeCloseTo(1);
 
-        expect(Vec2.RIGHT.rotateDegreesVec(90, new Vec2(0, 0)).x).toBeCloseTo(
-            0,
-        );
-        expect(Vec2.RIGHT.rotateDegreesVec(90, new Vec2(0, 0)).y).toBeCloseTo(
-            1,
-        );
+        expect(right().rotateDegreesVec(90, new Vec2(0, 0)).x).toBeCloseTo(0);
+        expect(right().rotateDegreesVec(90, new Vec2(0, 0)).y).toBeCloseTo(1);
 
-        expect(Vec2.RIGHT.rotateDegreesVec(90, new Vec2(0, 1)).x).toBeCloseTo(
-            1,
-        );
-        expect(Vec2.RIGHT.rotateDegreesVec(90, new Vec2(0, 1)).y).toBeCloseTo(
-            2,
-        );
+        expect(right().rotateDegreesVec(90, new Vec2(0, 1)).x).toBeCloseTo(1);
+        expect(right().rotateDegreesVec(90, new Vec2(0, 1)).y).toBeCloseTo(2);
     });
 
     test('rotate radians', () => {
-        expect(Vec2.RIGHT.rotateRadians(Math.PI / 2).x).toBeCloseTo(0);
-        expect(Vec2.RIGHT.rotateRadians(Math.PI / 2).y).toBeCloseTo(1);
-        expect(Vec2.RIGHT.rotateRadians(-Math.PI / 2).y).toBeCloseTo(-1);
-        expect(Vec2.RIGHT.rotateRadians(Math.PI).x).toBeCloseTo(-1);
+        expect(right().rotateRadians(Math.PI / 2).x).toBeCloseTo(0);
+        expect(right().rotateRadians(Math.PI / 2).y).toBeCloseTo(1);
+        expect(right().rotateRadians(-Math.PI / 2).y).toBeCloseTo(-1);
+        expect(right().rotateRadians(Math.PI).x).toBeCloseTo(-1);
 
-        expect(Vec2.RIGHT.rotateRadians(Math.PI / 2, 0, 0).x).toBeCloseTo(0);
-        expect(Vec2.RIGHT.rotateRadians(Math.PI / 2, 0, 0).y).toBeCloseTo(1);
+        expect(right().rotateRadians(Math.PI / 2, 0, 0).x).toBeCloseTo(0);
+        expect(right().rotateRadians(Math.PI / 2, 0, 0).y).toBeCloseTo(1);
 
         expect(
-            Vec2.RIGHT.rotateRadiansVec(Math.PI / 2, new Vec2(0, 0)).x,
+            right().rotateRadiansVec(Math.PI / 2, new Vec2(0, 0)).x,
         ).toBeCloseTo(0);
         expect(
-            Vec2.RIGHT.rotateRadiansVec(Math.PI / 2, new Vec2(0, 0)).y,
+            right().rotateRadiansVec(Math.PI / 2, new Vec2(0, 0)).y,
         ).toBeCloseTo(1);
 
         expect(
-            Vec2.RIGHT.rotateRadiansVec(Math.PI / 2, new Vec2(0, 1)).x,
+            right().rotateRadiansVec(Math.PI / 2, new Vec2(0, 1)).x,
         ).toBeCloseTo(1);
         expect(
-            Vec2.RIGHT.rotateRadiansVec(Math.PI / 2, new Vec2(0, 1)).y,
+            right().rotateRadiansVec(Math.PI / 2, new Vec2(0, 1)).y,
         ).toBeCloseTo(2);
     });
 
     test('add', () => {
-        expect(Vec2.ZERO.add(2)).toEqual({ x: 2, y: 2 });
-        expect(Vec2.ZERO.add(2, 1)).toEqual({ x: 2, y: 1 });
-        expect(Vec2.ZERO.addVec({ x: 3, y: 1 })).toEqual({ x: 3, y: 1 });
+        expect(Vec2.zero().add(2)).toEqual({ x: 2, y: 2 });
+        expect(Vec2.zero().add(2, 1)).toEqual({ x: 2, y: 1 });
+        expect(Vec2.zero().addVec({ x: 3, y: 1 })).toEqual({ x: 3, y: 1 });
 
-        const v = Vec2.ZERO;
+        const v = Vec2.zero();
         expect(v.add(1)).toBe(v);
     });
 
     test('sub', () => {
-        expect(Vec2.ZERO.subtract(2)).toEqual({ x: -2, y: -2 });
-        expect(Vec2.ZERO.subtract(2, 1)).toEqual({ x: -2, y: -1 });
-        expect(Vec2.ZERO.subtractVec({ x: 3, y: 1 })).toEqual({
+        expect(Vec2.zero().subtract(2)).toEqual({ x: -2, y: -2 });
+        expect(Vec2.zero().subtract(2, 1)).toEqual({ x: -2, y: -1 });
+        expect(Vec2.zero().subtractVec({ x: 3, y: 1 })).toEqual({
             x: -3,
             y: -1,
         });
 
-        const v = Vec2.ZERO;
+        const v = Vec2.zero();
         expect(v.subtract(1)).toBe(v);
     });
 
@@ -152,7 +148,7 @@ describe('vec2', () => {
             y: 2,
         });
 
-        const v = Vec2.ZERO;
+        const v = Vec2.zero();
         expect(v.multiply(1)).toBe(v);
     });
 
@@ -164,7 +160,7 @@ describe('vec2', () => {
             y: 2,
         });
 
-        const v = Vec2.ZERO;
+        const v = Vec2.zero();
         expect(v.divide(1)).toBe(v);
     });
 
@@ -173,24 +169,24 @@ describe('vec2', () => {
         const rotationMat = Mat2D.fromRotation(90);
         const translationMat = Mat2D.fromTranslation(10, 10);
 
-        expect(Vec2.RIGHT.multiplyMat(scaleMat)).toEqual({ x: 2, y: 0 });
-        expect(Vec2.RIGHT.multiplyMat(rotationMat).degrees).toEqual(90);
-        expect(Vec2.RIGHT.multiplyMat(translationMat)).toEqual({
+        expect(right().multiplyMat(scaleMat)).toEqual({ x: 2, y: 0 });
+        expect(right().multiplyMat(rotationMat).degrees).toEqual(90);
+        expect(right().multiplyMat(translationMat)).toEqual({
             x: 11,
             y: 10,
         });
 
-        expect(Vec2.RIGHT.multiplyMatInverse(scaleMat)).toEqual({
+        expect(right().multiplyMatInverse(scaleMat)).toEqual({
             x: 0.5,
             y: 0,
         });
-        expect(Vec2.RIGHT.multiplyMatInverse(rotationMat).degrees).toEqual(270);
-        expect(Vec2.RIGHT.multiplyMatInverse(translationMat)).toEqual({
+        expect(right().multiplyMatInverse(rotationMat).degrees).toEqual(270);
+        expect(right().multiplyMatInverse(translationMat)).toEqual({
             x: -9,
             y: -10,
         });
 
-        const sr = Vec2.RIGHT.multiplyMat(scaleMat).multiplyMat(rotationMat);
+        const sr = right().multiplyMat(scaleMat).multiplyMat(rotationMat);
 
         expect(sr.degrees).toEqual(90);
         expect(sr.x).toBeCloseTo(0);
@@ -202,7 +198,8 @@ describe('vec2', () => {
 
         expect(st).toEqual({ x: 1 * 2 + 10, y: 0 * 2 + 10 });
 
-        const tsr = Vec2.RIGHT.multiplyMat(translationMat)
+        const tsr = right()
+            .multiplyMat(translationMat)
             .multiplyMat(scaleMat)
             .multiplyMat(rotationMat);
 

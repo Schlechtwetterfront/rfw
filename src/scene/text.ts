@@ -96,7 +96,7 @@ export class TextObject extends SceneObject implements TextLike {
         this._font = options.font;
         this._style = textStyleOrDefaults(options.style);
         this._width = options.width ?? Number.POSITIVE_INFINITY;
-        this._anchor = options.anchor ?? Vec2.ZERO;
+        this._anchor = options.anchor ?? Vec2.zero();
 
         this.relayout();
     }

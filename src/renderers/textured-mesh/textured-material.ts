@@ -8,6 +8,6 @@ import { TextureHandle } from '../../rendering/textures';
 export class TexturedMaterial implements Material {
     constructor(
         public texture: TextureHandle,
-        public color = Color.WHITE,
+        public color = Color.white(),
     ) {}
 }

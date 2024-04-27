@@ -4,13 +4,13 @@ import { Mat2D, Vec2 } from '../../src/math';
 describe('mat2d', () => {
     test('init', () => {
         expect(new Mat2D(1, 2, 3, 4, 5, 6).makeIdentity()).toEqual(
-            Mat2D.IDENTITY,
+            Mat2D.identity(),
         );
 
-        const m = Mat2D.IDENTITY;
+        const m = Mat2D.identity();
         expect(m.clone()).not.toBe(m);
 
-        expect(Mat2D.IDENTITY.copyFrom(new Mat2D(1, 2, 3, 4, 5, 6))).toEqual({
+        expect(Mat2D.identity().copyFrom(new Mat2D(1, 2, 3, 4, 5, 6))).toEqual({
             a: 1,
             b: 2,
             c: 3,
@@ -21,10 +21,10 @@ describe('mat2d', () => {
     });
 
     test('scales', () => {
-        expect(Mat2D.IDENTITY.scale(10, 10)).toEqual(
+        expect(Mat2D.identity().scale(10, 10)).toEqual(
             new Mat2D(10, 0, 0, 10, 0, 0),
         );
-        expect(Mat2D.IDENTITY.scaleVec(new Vec2(10, 10))).toEqual(
+        expect(Mat2D.identity().scaleVec(new Vec2(10, 10))).toEqual(
             new Mat2D(10, 0, 0, 10, 0, 0),
         );
 
@@ -32,10 +32,10 @@ describe('mat2d', () => {
     });
 
     test('translates', () => {
-        expect(Mat2D.IDENTITY.translate(10, 10)).toEqual(
+        expect(Mat2D.identity().translate(10, 10)).toEqual(
             new Mat2D(1, 0, 0, 1, 10, 10),
         );
-        expect(Mat2D.IDENTITY.translateVec(new Vec2(10, 10))).toEqual(
+        expect(Mat2D.identity().translateVec(new Vec2(10, 10))).toEqual(
             new Mat2D(1, 0, 0, 1, 10, 10),
         );
 
@@ -45,9 +45,9 @@ describe('mat2d', () => {
     });
 
     test('mults', () => {
-        expect(Mat2D.IDENTITY.multiplyMat(new Mat2D(1, 2, 3, 4, 5, 6))).toEqual(
-            new Mat2D(1, 2, 3, 4, 5, 6),
-        );
+        expect(
+            Mat2D.identity().multiplyMat(new Mat2D(1, 2, 3, 4, 5, 6)),
+        ).toEqual(new Mat2D(1, 2, 3, 4, 5, 6));
 
         expect(
             new Mat2D(1, 2, 3, 4, 5, 6).multiplyMat(

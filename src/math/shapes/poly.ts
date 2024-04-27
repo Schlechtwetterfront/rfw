@@ -21,9 +21,9 @@ export interface ReadOnlyPoly extends PolyLike, Shape {
     clone(): Poly;
 }
 
-const TEMP_RECT = Rect.ZERO;
-const TEMP_VEC0 = Vec2.ZERO;
-const TEMP_VEC1 = Vec2.ZERO;
+const TEMP_RECT = Rect.zero();
+const TEMP_VEC0 = Vec2.zero();
+const TEMP_VEC1 = Vec2.zero();
 
 export class Poly implements ReadOnlyPoly {
     points: Vec2[];

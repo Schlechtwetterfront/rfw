@@ -28,12 +28,12 @@ export class Transform2D implements ReadOnlyTransform2D {
      *
      * Compose via {@link Transform2D.compose}.
      */
-    readonly matrix = Mat2D.IDENTITY;
+    readonly matrix = Mat2D.identity();
 
     /**
      * Position.
      */
-    readonly position = Vec2.ZERO;
+    readonly position = Vec2.zero();
 
     /**
      * Z value (layer).
@@ -43,7 +43,7 @@ export class Transform2D implements ReadOnlyTransform2D {
     /**
      * Scale.
      */
-    readonly scale = Vec2.ONE;
+    readonly scale = Vec2.one();
 
     /**
      * Rotation in radians.

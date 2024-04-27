@@ -8,8 +8,8 @@ describe('circle', () => {
         const c = new Circle(0, 0, 1);
         expect(c).not.toBe(c.clone());
         expect(c.asReadOnly()).toBe(c);
-        expect(Circle.ZERO).not.toBe(Circle.ZERO);
-        expect(Circle.ONE).not.toBe(Circle.ONE);
+        expect(Circle.zero()).not.toBe(Circle.zero());
+        expect(Circle.one()).not.toBe(Circle.one());
     });
 
     test('equals', () => {

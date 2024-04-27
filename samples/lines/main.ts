@@ -94,7 +94,7 @@ export class LinesApp extends SampleApp {
             );
 
             const a = new Vec2(0, 0);
-            const b = Vec2.RIGHT.rotateDegrees(30).multiply(100);
+            const b = new Vec2(1, 0).rotateDegrees(30).multiply(100);
             const c = b.clone().rotateDegrees(120).addVec(b);
 
             lines.push(

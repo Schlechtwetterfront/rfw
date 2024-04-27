@@ -25,7 +25,7 @@ describe('transform2d', () => {
         t.scale.x = 3;
         t.scale.y = 6;
 
-        const m = Mat2D.IDENTITY;
+        const m = Mat2D.identity();
         t.compose(m);
 
         const tt = new Transform2D();
@@ -38,7 +38,7 @@ describe('transform2d', () => {
 
     test('fromMatrix', () => {
         const t = new Transform2D();
-        const m = Mat2D.IDENTITY;
+        const m = Mat2D.identity();
 
         m.scale(1, 2).translate(3, 4);
 

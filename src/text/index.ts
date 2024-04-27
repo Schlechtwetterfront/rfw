@@ -35,7 +35,7 @@ export interface TextStyle {
 
 export function textStyleOrDefaults(style?: Partial<TextStyle>): TextStyle {
     return {
-        color: Color.WHITE,
+        color: Color.white(),
         size: 16,
         lineHeight: new LineHeight(1),
         align: 'start',

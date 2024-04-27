@@ -27,7 +27,7 @@ export function lineStyleOrDefaults(style?: Partial<LineStyle>): LineStyle {
         alignment: 0.5,
         dashSize: 1,
         gapSize: 0,
-        color: Color.WHITE,
+        color: Color.white(),
         ...style,
     };
 }

@@ -303,7 +303,7 @@ export class Mat2D implements ReadOnlyMat2D {
     }
 
     static sum(...mats: Mat2DLike[]): Mat2D {
-        const mat = this.IDENTITY.clone();
+        const mat = this.identity();
 
         for (const m of mats) {
             mat.add(m);
@@ -313,7 +313,7 @@ export class Mat2D implements ReadOnlyMat2D {
     }
 
     static difference(...mats: Mat2DLike[]): Mat2D {
-        const mat = this.IDENTITY.clone();
+        const mat = this.identity();
 
         for (const m of mats) {
             mat.subtract(m);
@@ -341,18 +341,16 @@ export class Mat2D implements ReadOnlyMat2D {
     static fromTranslation(vec: Vec2Like): Mat2D;
     static fromTranslation(vecOrX: Vec2Like | number, y?: number): Mat2D {
         if (typeof vecOrX === 'object') {
-            return this.IDENTITY.translateVec(vecOrX);
+            return this.identity().translateVec(vecOrX);
         }
 
-        return this.IDENTITY.translate(vecOrX, y);
+        return this.identity().translate(vecOrX, y);
     }
-
-    private static readonly _IDENTITY = new Mat2D(1, 0, 0, 1, 0, 0);
 
     /**
      * A new {@link Mat2D} initialized to the identity matrix.
      */
-    static get IDENTITY() {
-        return this._IDENTITY.clone();
+    static identity() {
+        return new Mat2D(1, 0, 0, 1, 0, 0);
     }
 }

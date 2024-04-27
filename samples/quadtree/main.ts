@@ -24,7 +24,7 @@ import { Quad, QuadTree } from '../../src/util/quad-tree';
 import { usePanAndZoom } from '../interaction';
 import { SampleApp, setupWGL } from '../shared';
 
-const TEMP_VEC = Vec2.ZERO;
+const TEMP_VEC = Vec2.zero();
 const RECT_COLOR = new Color(1, 1, 1);
 const RECT_COLOR_INTERSECTED = new Color(0, 1, 0);
 
@@ -64,7 +64,7 @@ class QuadTreeApp extends SampleApp {
     private cursor!: LineObject;
 
     private mouse = new Rect(0, 0, 24, 24);
-    private sceneMouse = Rect.ZERO;
+    private sceneMouse = Rect.zero();
 
     private intersectionTime = new TimeSampler('intersections');
 

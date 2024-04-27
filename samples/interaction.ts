@@ -33,9 +33,9 @@ export function usePanAndZoom(
     let pointerDown = false;
     let panning = false;
 
-    const lastPosition = Vec2.ZERO;
-    const initialPosition = Vec2.ZERO;
-    const delta = Vec2.ZERO;
+    const lastPosition = Vec2.zero();
+    const initialPosition = Vec2.zero();
+    const delta = Vec2.zero();
     let cumulativeDistance = 0;
 
     function updateDelta({ x, y }: { x: number; y: number }) {

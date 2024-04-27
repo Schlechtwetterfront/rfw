@@ -93,7 +93,7 @@ class RenderModeApp extends SampleApp {
     private font!: Font;
 
     private mouse = new Rect(0, 0, 24, 24);
-    private sceneMouse = Rect.ZERO;
+    private sceneMouse = Rect.zero();
 
     private renderCount = 0;
 

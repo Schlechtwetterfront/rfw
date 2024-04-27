@@ -332,38 +332,19 @@ export class Vec2 implements ReadOnlyVec2 {
         return new Vec2(v.x, v.y);
     }
 
-    private static _ZERO = new Vec2(0, 0);
-    private static _ONE = new Vec2(1, 1);
-    private static _RIGHT = new Vec2(1, 0);
-    private static _UP = new Vec2(0, 1);
-
     /**
      * A new {@link Vec2} initialized to 0,0.
      */
-    static get ZERO(): Vec2 {
-        return this._ZERO.clone();
+    static zero(): Vec2 {
+        return new Vec2(0, 0);
     }
 
     /**
      * A new {@link Vec2} initialized to 1,1.
      */
-    static get ONE(): Vec2 {
-        return this._ONE.clone();
-    }
-
-    /**
-     * A new {@link Vec2} initialized to 1,0.
-     */
-    static get RIGHT() {
-        return this._RIGHT.clone();
-    }
-
-    /**
-     * A new {@link Vec2} initialized to 0,1.
-     */
-    static get UP() {
-        return this._UP.clone();
+    static one(): Vec2 {
+        return new Vec2(1, 1);
     }
 }
 
-const TEMP_VEC = Vec2.ZERO;
+const TEMP_VEC = Vec2.zero();

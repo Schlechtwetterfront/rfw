@@ -5,10 +5,10 @@ import { Font, Glyph, layoutText, textStyleOrDefaults } from '../../src/text';
 
 const LINE_HEIGHT = 20;
 
-const FONT = new Font('test', 16, LINE_HEIGHT, 18, Vec2.ONE, [], 4, [
-    new Glyph(' '.codePointAt(0)!, ' ', Rect.ONE, 1),
-    new Glyph('w'.codePointAt(0)!, 'w', Rect.ONE, 1),
-    new Glyph('🫥'.codePointAt(0)!, '🫥', Rect.ONE, 1),
+const FONT = new Font('test', 16, LINE_HEIGHT, 18, Vec2.one(), [], 4, [
+    new Glyph(' '.codePointAt(0)!, ' ', Rect.one(), 1),
+    new Glyph('w'.codePointAt(0)!, 'w', Rect.one(), 1),
+    new Glyph('🫥'.codePointAt(0)!, '🫥', Rect.one(), 1),
 ]);
 
 describe('text layout', () => {

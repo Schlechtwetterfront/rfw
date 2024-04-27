@@ -75,7 +75,7 @@ export class TextApp extends SampleApp {
 
                     const t = texts[index]!;
 
-                    if (t.style.color?.equalsColorWithAlpha(Color.WHITE)) {
+                    if (t.style.color?.equalsColorWithAlpha(Color.white())) {
                         const hue =
                             (Math.sqrt(
                                 t.transform.position.x ** 2 +

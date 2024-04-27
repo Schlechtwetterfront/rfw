@@ -15,8 +15,8 @@ export const buildMeshBatchStorage: MeshBatchStorageFactory<
     TexturedMeshLike
 > = maxSize => new MeshBufferManager(maxSize);
 
-const TEMP_VEC = Vec2.ZERO;
-const TEMP_COLOR = Color.WHITE;
+const TEMP_VEC = Vec2.zero();
+const TEMP_COLOR = Color.white();
 
 export class MeshBufferManager<
     O extends TexturedMeshLike,

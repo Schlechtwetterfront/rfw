@@ -11,8 +11,8 @@ import { TextBatchEntry, TextBatchStorageFactory } from './text-batching';
 export const buildTextBatchStorage: TextBatchStorageFactory = maxSize =>
     new TextBufferManager(maxSize);
 
-const TEMP_VEC = Vec2.ZERO;
-const TEMP_VEC2 = Vec2.ZERO;
+const TEMP_VEC = Vec2.zero();
+const TEMP_VEC2 = Vec2.zero();
 
 export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry> {
     private buffer: ElementByteBufferManager;

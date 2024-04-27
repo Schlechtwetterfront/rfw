@@ -424,7 +424,7 @@ class _Quad<E extends QuadTreeEntry> implements Quad {
     }
 
     constructor(
-        public readonly bounds: Rect = Rect.ZERO,
+        public readonly bounds: Rect = Rect.zero(),
         public depth: number = 0,
     ) {}
 

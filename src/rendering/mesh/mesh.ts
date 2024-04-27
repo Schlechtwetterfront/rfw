@@ -3,8 +3,8 @@ import { Vec2 } from '../../math';
 
 export class Vertex {
     constructor(
-        public readonly position = Vec2.ZERO,
-        public readonly uv = Vec2.ZERO,
+        public readonly position = Vec2.zero(),
+        public readonly uv = Vec2.zero(),
         public color?: Color,
     ) {}
 
