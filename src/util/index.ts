@@ -11,3 +11,4 @@ export * from './promises';
 export * from './quad-tree';
 export * from './ref-counts';
 export * from './sizes';
+export * from './sparse-set';
