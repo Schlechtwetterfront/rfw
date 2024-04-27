@@ -51,6 +51,10 @@ export class SizedBatcher<
 
     /** @inheritdoc */
     add(object: O): this {
+        if (this.has(object)) {
+            return this;
+        }
+
         const entry = this.entryPool.take();
 
         entry.object = object;

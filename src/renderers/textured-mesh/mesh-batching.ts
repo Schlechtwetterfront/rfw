@@ -161,6 +161,10 @@ export class MeshBatcher<O extends TexturedMeshLike> extends Batcher<
 
     /** @inheritdoc */
     add(object: O): this {
+        if (this.has(object)) {
+            return this;
+        }
+
         const entry = this.entryPool.take();
 
         entry.object = object;

@@ -183,6 +183,10 @@ export class TextBatcher extends Batcher<TextLike, TextBatchEntry, TextBatch> {
 
     /** @inheritdoc */
     add(object: TextLike): this {
+        if (this.has(object)) {
+            return this;
+        }
+
         const entry = this.entryPool.take();
 
         entry.object = object;
