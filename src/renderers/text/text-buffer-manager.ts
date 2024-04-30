@@ -58,7 +58,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
             throw new Error(`Missing font ${font.name} of ${object}`);
         }
 
-        buffer.markChanged(glyphOffset, layout.glyphCount);
+        buffer.markChanged(glyphOffset, glyphOffset + layout.glyphCount);
 
         const textStyle = style;
 

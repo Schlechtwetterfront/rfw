@@ -64,7 +64,7 @@ export class MeshBufferManager<
 
         const triangleVertexCount = indices.length;
 
-        buffer.markChanged(vertexOffset, triangleVertexCount);
+        buffer.markChanged(vertexOffset, vertexOffset + triangleVertexCount);
 
         const posVec = TEMP_VEC;
         const z = object.transform.z / MAX_Z;

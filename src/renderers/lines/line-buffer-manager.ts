@@ -48,7 +48,7 @@ export class LineBufferManager extends ElementByteBuffersManager<
 
         const segmentCount = object.segmentCount;
 
-        buffer.markChanged(segmentOffset, segmentCount);
+        buffer.markChanged(segmentOffset, segmentOffset + segmentCount);
 
         const posVec = TEMP_VEC;
 

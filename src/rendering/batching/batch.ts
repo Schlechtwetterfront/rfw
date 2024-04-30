@@ -268,17 +268,17 @@ export class Batch<
             } else if (change & BatchEntryChange.SIZE_DECREASE) {
                 const diff = entry.size - entry.newSize;
 
-                totalSize -= diff;
-
-                // First copy everything to the right left by our decreased size...
+                // First copy everything to the left by our decreased size...
                 storage.copyWithin(
                     // To: current right end of this entry's section
                     offset + entry.newSize,
-                    // From: _previous_ right end of this entry's section in the buffer
+                    // Start: _previous_ right end of this entry's section in the buffer
                     offset + entry.size,
-                    // Length: everything to the right of the entry's section
-                    totalSize - offset - entry.newSize,
+                    // End: everything to the right of the entry's section
+                    totalSize,
                 );
+
+                totalSize -= diff;
 
                 // ...then update the left, remaining part
                 storage.update(entry, offset);
@@ -289,14 +289,10 @@ export class Batch<
 
                 hasRemovedElements = true;
             } else if (change & BatchEntryChange.DELETE) {
-                totalSize -= entry.size;
-
                 // Copy everything to the right over the now-free space
-                storage.copyWithin(
-                    offset,
-                    offset + entry.size,
-                    totalSize - offset,
-                );
+                storage.copyWithin(offset, offset + entry.size, totalSize);
+
+                totalSize -= entry.size;
 
                 this._entries.splice(i, 1);
                 this.entryChanges.splice(i, 1);

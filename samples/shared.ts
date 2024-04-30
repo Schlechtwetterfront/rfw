@@ -3,7 +3,7 @@ import { Color } from '../src/colors';
 import { Vec2 } from '../src/math';
 import { RenderMode } from '../src/rendering';
 import { WGLDriver } from '../src/rendering-webgl';
-import { Mesh, Vertex } from '../src/rendering/mesh';
+import { Vertex, buildTriangulatedMesh } from '../src/rendering/mesh';
 import { DefaultWGLRenderBundle } from './webgl-render-bundle';
 
 const BACKGROUND_COLOR = new Color(0.15, 0.15, 0.15);
@@ -59,7 +59,7 @@ export async function setupWGL() {
 }
 
 export function buildAMesh() {
-    return new Mesh(
+    return buildTriangulatedMesh(
         [
             new Vertex(new Vec2(-5, -8)),
             new Vertex(new Vec2(0, -4)),
@@ -87,7 +87,6 @@ export function buildAMesh() {
             new Vertex(new Vec2(-6, 8)),
             new Vertex(new Vec2(-4, 4)),
         ],
-
         [6, 14],
     );
 }

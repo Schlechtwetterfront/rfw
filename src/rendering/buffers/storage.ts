@@ -7,17 +7,17 @@ export interface ChangeTrackedStorage {
 
     /**
      * Set the range that has changed.
-     * @param from - Starting offset of change
-     * @param length - Number of elements that have changed
+     * @param start - Starting offset of change
+     * @param end - Changed range end
      */
-    setChanged(from: number, length: number): void;
+    setChanged(start: number, end: number): void;
 
     /**
      * Mark a range that has changed. Will combine with existing marked ranges.
-     * @param from - Starting offset of change
-     * @param length - Number of elements that have changed
+     * @param start - Starting offset of change
+     * @param end - Changed range end
      */
-    markChanged(from: number, length: number): void;
+    markChanged(start: number, end: number): void;
 }
 
 /**
@@ -33,9 +33,9 @@ export interface ObjectStorage<O> extends ChangeTrackedStorage {
 
     /**
      * Copy a range of the storage within itself.
-     * @param to - Element offset to copy the range to
-     * @param from - Element offset to copy the range from
-     * @param length - Number of elements to copy
+     * @param target - Element offset to copy the range to
+     * @param start - Element offset to copy the range from
+     * @param end - Element offset end
      */
-    copyWithin(to: number, from: number, length: number): void;
+    copyWithin(target: number, start: number, end: number): void;
 }

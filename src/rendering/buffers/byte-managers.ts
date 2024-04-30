@@ -48,25 +48,24 @@ export class ByteBufferManager implements ByteBuffer, WriteBuffer {
     }
 
     /** @inheritdoc */
-    setChanged(from: number, length: number): void {
-        this._changedFromByte = from;
-        this._changedByteLength = length;
+    setChanged(start: number, end: number): void {
+        this._changedFromByte = start;
+        this._changedByteLength = end - start;
     }
 
     /** @inheritdoc */
-    markChanged(from: number, length: number): void {
+    markChanged(start: number, end: number): void {
         if (this._changedByteLength === 0) {
-            this._changedByteLength = length;
-            this._changedFromByte = from;
+            this._changedFromByte = start;
+            this._changedByteLength = end - start;
 
             return;
         }
 
-        const currentRight = this._changedFromByte + this._changedByteLength;
-        const right = from + length;
+        const currentEnd = this._changedFromByte + this._changedByteLength;
 
-        this._changedFromByte = Math.min(this._changedFromByte, from);
+        this._changedFromByte = Math.min(this._changedFromByte, start);
         this._changedByteLength =
-            Math.max(right, currentRight) - this._changedFromByte;
+            Math.max(end, currentEnd) - this._changedFromByte;
     }
 }

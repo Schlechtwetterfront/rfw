@@ -11,10 +11,20 @@ export interface CameraOptions {
  */
 export class Camera2D {
     private readonly changeTracker?: ChangeTracker;
+    private _centered = true;
 
     readonly transform = new Transform2D();
 
-    readonly centered: boolean;
+    get centered() {
+        return this._centered;
+    }
+    set centered(centered: boolean) {
+        if (centered !== this._centered) {
+            this.changeTracker?.registerChange();
+        }
+
+        this._centered = centered;
+    }
 
     constructor(options?: CameraOptions) {
         this.centered = options?.centered ?? false;

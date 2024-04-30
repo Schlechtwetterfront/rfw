@@ -16,18 +16,23 @@ export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
 
     readonly textures: Textures;
 
-    readonly camera = new Camera2D({ changeTracker: this.changeTracker });
+    readonly camera: Camera2D;
 
     constructor(
         canvas: HTMLCanvasElement,
         driver: G,
         renderMode: RenderMode = 'always',
+        camera?: Camera2D,
     ) {
         super(driver, renderMode);
 
         this.canvasResizer = new CanvasResizer(canvas);
 
         this.textures = new Textures(driver.textures);
+
+        this.camera =
+            camera ??
+            new Camera2D({ centered: true, changeTracker: this.changeTracker });
 
         driver.addLifeCycleHandler(this.textures);
     }

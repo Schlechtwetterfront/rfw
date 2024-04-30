@@ -52,30 +52,29 @@ export class ElementByteBufferManager implements WriteElementByteBuffer {
     }
 
     /** @inheritdoc */
-    setChanged(from: number, length: number): void {
-        this._changedFromByte = from * this.elementByteLength;
-        this._changedByteLength = length * this.elementByteLength;
+    setChanged(start: number, end: number): void {
+        this._changedFromByte = start * this.elementByteLength;
+        this._changedByteLength = (end - start) * this.elementByteLength;
     }
 
     /** @inheritdoc */
-    markChanged(from: number, length: number): void {
+    markChanged(start: number, end: number): void {
         if (this._changedByteLength === 0) {
-            this._changedByteLength = length * this.elementByteLength;
-            this._changedFromByte = from * this.elementByteLength;
+            this._changedFromByte = start * this.elementByteLength;
+            this._changedByteLength = (end - start) * this.elementByteLength;
 
             return;
         }
 
-        const currentRight = this._changedFromByte + this._changedByteLength;
-        const right =
-            from * this.elementByteLength + length * this.elementByteLength;
+        const currentEnd = this._changedFromByte + this._changedByteLength;
 
         this._changedFromByte = Math.min(
             this._changedFromByte,
-            from * this.elementByteLength,
+            start * this.elementByteLength,
         );
         this._changedByteLength =
-            Math.max(right, currentRight) - this._changedFromByte;
+            Math.max(end * this.elementByteLength, currentEnd) -
+            this._changedFromByte;
     }
 }
 
@@ -98,20 +97,20 @@ export abstract class ElementByteBuffersManager<O>
     }
 
     /** @inheritdoc */
-    setChanged(from: number, length: number): void {
+    setChanged(start: number, end: number): void {
         for (let i = 0; i < this.buffers.length; i++) {
             const buffer = this.buffers[i]!;
 
-            buffer.setChanged(from, length);
+            buffer.setChanged(start, end);
         }
     }
 
     /** @inheritdoc */
-    markChanged(from: number, length: number): void {
+    markChanged(start: number, end: number): void {
         for (let i = 0; i < this.buffers.length; i++) {
             const buffer = this.buffers[i]!;
 
-            buffer.markChanged(from, length);
+            buffer.markChanged(start, end);
         }
     }
 
@@ -119,16 +118,21 @@ export abstract class ElementByteBuffersManager<O>
     abstract update(object: O, offset: number): void;
 
     /** @inheritdoc */
-    copyWithin(to: number, from: number, length: number): void {
+    copyWithin(target: number, start: number, end: number): void {
         for (let i = 0; i < this.buffers.length; i++) {
             const buffer = this.buffers[i]!;
 
-            buffer.markChanged(Math.min(from, to), Math.max(from, to) + length);
+            const length = end - start;
+
+            buffer.markChanged(
+                Math.min(start, target),
+                Math.max(start + length, target + length),
+            );
 
             buffer.u8View.copyWithin(
-                to * buffer.elementByteLength,
-                from * buffer.elementByteLength,
-                length * buffer.elementByteLength,
+                target * buffer.elementByteLength,
+                start * buffer.elementByteLength,
+                end * buffer.elementByteLength,
             );
         }
     }
