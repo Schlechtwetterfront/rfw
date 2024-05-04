@@ -1,143 +1,148 @@
 import { describe, expect, test } from 'vitest';
-import {
-    Camera2D,
-    Vec2,
-    projectPointToScene,
-    projectPointToViewport,
-} from '../src';
+import { Camera2D, DefaultProjections, Vec2 } from '../src';
+import { DefaultRenderContext } from '../src/rendering/render-context';
+
+const dims = new Vec2(8, 8);
+const context = new DefaultRenderContext(dims);
+const centeredProjections = new DefaultProjections(context, {
+    centered: true,
+    x: 'right',
+    y: 'up',
+});
+const projections = new DefaultProjections(context, {
+    centered: false,
+    x: 'right',
+    y: 'up',
+});
 
 describe('projection to scene', () => {
-    const dims = new Vec2(10, 10);
-
     test('centered', () => {
-        const centerCam = new Camera2D({ centered: true });
-        const p = new Vec2(5, 5);
+        const cam = new Camera2D();
+        const p = new Vec2(4, 4);
 
-        projectPointToScene(p, dims, centerCam);
+        centeredProjections.projectPointToScene(p, cam);
 
         expect(p).toEqual({ x: 0, y: 0 });
 
-        p.set(0, 0);
+        p.set(2, 2);
 
-        projectPointToScene(p, dims, centerCam);
+        centeredProjections.projectPointToScene(p, cam);
 
-        expect(p).toEqual({ x: -5, y: -5 });
+        expect(p).toEqual({ x: -2, y: 2 });
     });
 
     test('centered & moved', () => {
-        const centerCam = new Camera2D({ centered: true });
-        centerCam.pan(5, 5);
+        const cam = new Camera2D();
+        cam.pan(4, 4);
 
-        const p = new Vec2(5, 5);
+        const p = new Vec2(2, 2);
 
-        projectPointToScene(p, dims, centerCam);
+        centeredProjections.projectPointToScene(p, cam);
 
-        expect(p).toEqual({ x: 5, y: 5 });
+        expect(p).toEqual({ x: 2, y: 6 });
 
-        p.set(0, 0);
+        p.set(6, 6);
 
-        projectPointToScene(p, dims, centerCam);
+        centeredProjections.projectPointToScene(p, cam);
 
-        expect(p).toEqual({ x: 0, y: 0 });
+        expect(p).toEqual({ x: 6, y: 2 });
     });
 
-    test('topleft', () => {
-        const topLeftCam = new Camera2D({ centered: false });
-        const p = new Vec2(5, 5);
+    test('not centered', () => {
+        const cam = new Camera2D();
+        const p = new Vec2(4, 4);
 
-        projectPointToScene(p, dims, topLeftCam);
+        projections.projectPointToScene(p, cam);
 
-        expect(p).toEqual({ x: 5, y: 5 });
+        expect(p).toEqual({ x: 4, y: 4 });
 
-        p.set(0, 0);
+        p.set(2, 2);
 
-        projectPointToScene(p, dims, topLeftCam);
+        projections.projectPointToScene(p, cam);
 
-        expect(p).toEqual({ x: 0, y: 0 });
+        expect(p).toEqual({ x: 2, y: 6 });
     });
 
-    test('topleft & moved', () => {
-        const topLeftCam = new Camera2D({ centered: false });
-        topLeftCam.pan(5, 5);
+    test('not centered & moved', () => {
+        const cam = new Camera2D();
+        cam.pan(4, 4);
 
-        const p = new Vec2(5, 5);
+        const p = new Vec2(4, 4);
 
-        projectPointToScene(p, dims, topLeftCam);
+        projections.projectPointToScene(p, cam);
 
-        expect(p).toEqual({ x: 10, y: 10 });
+        expect(p).toEqual({ x: 8, y: 8 });
 
         p.set(0, 0);
 
-        projectPointToScene(p, dims, topLeftCam);
+        projections.projectPointToScene(p, cam);
 
-        expect(p).toEqual({ x: 5, y: 5 });
+        expect(p).toEqual({ x: 4, y: 12 });
     });
 });
 
 describe('projection to viewport', () => {
-    const dims = new Vec2(10, 10);
-
     test('centered', () => {
-        const centerCam = new Camera2D({ centered: true });
-        const p = new Vec2(5, 5);
+        const cam = new Camera2D();
+        const p = new Vec2(4, 4);
 
-        projectPointToViewport(p, dims, centerCam);
+        centeredProjections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: 10, y: 10 });
+        expect(p).toEqual({ x: 8, y: 0 });
 
-        p.set(0, 0);
+        p.set(2, 2);
 
-        projectPointToViewport(p, dims, centerCam);
+        centeredProjections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: 5, y: 5 });
+        expect(p).toEqual({ x: 6, y: 2 });
     });
 
     test('centered & moved', () => {
-        const centerCam = new Camera2D({ centered: true });
-        centerCam.pan(5, 5);
+        const cam = new Camera2D();
+        cam.pan(4, 4);
 
-        const p = new Vec2(5, 5);
+        const p = new Vec2(2, 2);
 
-        projectPointToViewport(p, dims, centerCam);
+        centeredProjections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: 5, y: 5 });
+        expect(p).toEqual({ x: 2, y: 6 });
 
-        p.set(0, 0);
+        p.set(6, 6);
 
-        projectPointToViewport(p, dims, centerCam);
+        centeredProjections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: 0, y: 0 });
+        expect(p).toEqual({ x: 6, y: 2 });
     });
 
-    test('topleft', () => {
-        const topLeftCam = new Camera2D({ centered: false });
-        const p = new Vec2(5, 5);
+    test('not centered', () => {
+        const cam = new Camera2D();
+        const p = new Vec2(4, 4);
 
-        projectPointToViewport(p, dims, topLeftCam);
+        projections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: 5, y: 5 });
+        expect(p).toEqual({ x: 4, y: 4 });
 
-        p.set(0, 0);
+        p.set(2, 2);
 
-        projectPointToViewport(p, dims, topLeftCam);
+        projections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: 0, y: 0 });
+        expect(p).toEqual({ x: 2, y: 6 });
     });
 
-    test('topleft & moved', () => {
-        const topLeftCam = new Camera2D({ centered: false });
-        topLeftCam.pan(5, 5);
+    test('not centered & moved', () => {
+        const cam = new Camera2D();
+        cam.pan(4, 4);
 
-        const p = new Vec2(5, 5);
+        const p = new Vec2(4, 4);
 
-        projectPointToViewport(p, dims, topLeftCam);
+        projections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: 0, y: 0 });
+        expect(p).toEqual({ x: 0, y: 8 });
 
         p.set(0, 0);
 
-        projectPointToViewport(p, dims, topLeftCam);
+        projections.projectPointToViewport(p, cam);
 
-        expect(p).toEqual({ x: -5, y: -5 });
+        expect(p).toEqual({ x: -4, y: 12 });
     });
 });

@@ -1,3 +1,4 @@
+import { Mat2D } from '../../math';
 import { BYTES_PER_LINE_SEGMENT } from '../../renderers/lines';
 import { WGLBatchedRenderer } from '../../rendering-webgl/batched-renderer';
 import { WGLDriver } from '../../rendering-webgl/driver';
@@ -5,7 +6,6 @@ import { getUniformLocations } from '../../rendering-webgl/shaders';
 import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
-import { getUseOnceClipProjectionArray } from '../../rendering/projection';
 import { assert, assertDefined } from '../../util/assert';
 import FRAG_SRC from './lines.frag?raw';
 import VERT_SRC from './lines.vert?raw';
@@ -15,6 +15,9 @@ interface ProgramData {
     projectionLocation: WebGLUniformLocation;
     cameraScaleLocation: WebGLUniformLocation;
 }
+
+const PROJECTION_MAT = Mat2D.identity();
+const PROJECTION_ARRAY = new Float32Array(6);
 
 export class WGLLineRenderer extends WGLBatchedRenderer {
     protected program?: ProgramData;
@@ -103,11 +106,11 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
 
         gl.useProgram(program);
 
-        gl.uniformMatrix3x2fv(
-            projectionLocation,
-            false,
-            getUseOnceClipProjectionArray(this.driver.dimensions, camera),
-        );
+        this.driver.projections
+            .getClipProjection(camera, PROJECTION_MAT)
+            .copyTo3x2(PROJECTION_ARRAY);
+
+        gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
 
         gl.uniform1f(cameraScaleLocation, 1 / (camera?.transform.scale.x ?? 1));
     }

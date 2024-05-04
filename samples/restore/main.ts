@@ -44,10 +44,10 @@ export class RestoreApp extends SampleApp {
         this.bunnyTexWhite =
             await this.textures.addFromURL(BUNNY_WHITE_TEX_URL);
         this.bunnyMesh = buildTriangulatedMesh([
-            new Vertex(new Vec2(-12.5, -16), new Vec2(0, 0)),
-            new Vertex(new Vec2(12.5, -16), new Vec2(1, 0)),
-            new Vertex(new Vec2(12.5, 16), new Vec2(1, 1)),
-            new Vertex(new Vec2(-12.5, 16), new Vec2(0, 1)),
+            new Vertex(new Vec2(-12.5, 16), new Vec2(0, 0)),
+            new Vertex(new Vec2(12.5, 16), new Vec2(1, 0)),
+            new Vertex(new Vec2(12.5, -16), new Vec2(1, 1)),
+            new Vertex(new Vec2(-12.5, -16), new Vec2(0, 1)),
         ]);
 
         {

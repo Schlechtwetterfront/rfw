@@ -31,8 +31,7 @@ export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
         this.textures = new Textures(driver.textures);
 
         this.camera =
-            camera ??
-            new Camera2D({ centered: true, changeTracker: this.changeTracker });
+            camera ?? new Camera2D({ changeTracker: this.changeTracker });
 
         driver.addLifeCycleHandler(this.textures);
     }
@@ -42,7 +41,7 @@ export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
         const resized = this.canvasResizer.resize();
 
         if (resized) {
-            this.driver.dimensions = this.canvasResizer.dimensions;
+            this.driver.context.setDimensions(this.canvasResizer.dimensions);
 
             this.changeTracker.registerChange();
         }

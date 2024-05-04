@@ -25,7 +25,7 @@ export class LinesApp extends SampleApp {
             lines.push(
                 new LineObject({
                     x: -600,
-                    y: -400,
+                    y: 400,
                     style: {
                         color: Color.fromHSV(90),
                         dashSize: 2,
@@ -36,7 +36,7 @@ export class LinesApp extends SampleApp {
 
                 new LineObject({
                     x: -600,
-                    y: -340,
+                    y: 340,
                     style: {
                         color: Color.fromHSV(180),
                         thickness: 2,
@@ -48,7 +48,7 @@ export class LinesApp extends SampleApp {
 
                 new LineObject({
                     x: -600,
-                    y: -280,
+                    y: 280,
                     style: {
                         color: Color.fromHSV(270),
                         thickness: 4,
@@ -77,7 +77,7 @@ export class LinesApp extends SampleApp {
             lines.push(
                 new LineObject({
                     x: -600,
-                    y: -200,
+                    y: 200,
                     style: {
                         color: Color.fromHSV(100),
                         thickness: 12,
@@ -100,7 +100,7 @@ export class LinesApp extends SampleApp {
             lines.push(
                 new LineObject({
                     x: -600,
-                    y: -100,
+                    y: 100,
                     style: {
                         color: Color.fromHSV(100),
                         thickness: 12,

@@ -126,7 +126,7 @@ export function usePanAndZoom(
         }
 
         if (panning) {
-            camera.panLocallyVec(delta);
+            camera.panLocally(delta.x, -delta.y);
         }
     }
 
@@ -140,7 +140,7 @@ export function usePanAndZoom(
         if (panning) {
             updateDelta(xy);
 
-            camera.panLocallyVec(delta);
+            camera.panLocally(delta.x, -delta.y);
         }
 
         cancelPan();

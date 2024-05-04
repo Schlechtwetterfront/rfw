@@ -1,6 +1,7 @@
 import { RenderContextLifeCycleHandler } from '.';
-import { ReadOnlyVec2, Vec2Like } from '../math';
 import { RenderDiagnostics } from './diagnostics';
+import { Projections } from './projection/projections';
+import { RenderContext } from './render-context';
 import { DriverTextures } from './textures';
 
 /**
@@ -13,9 +14,11 @@ export interface RenderDriver {
     /** Driver-specific texture manager. */
     readonly textures: DriverTextures;
 
-    /** Render dimensions. */
-    get dimensions(): ReadOnlyVec2;
-    set dimensions(v: Vec2Like);
+    /** Projections/ */
+    readonly projections: Projections;
+
+    /** Context. */
+    readonly context: RenderContext;
 
     /**
      * Call to prepare rendering a frame.

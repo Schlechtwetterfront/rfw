@@ -1,3 +1,4 @@
+import { Mat2D } from '../../math';
 import { roundUpPowerOfTwo } from '../../math/util';
 import { BYTES_PER_GLYPH_VERTEX } from '../../renderers/text';
 import { WGLBatchedRenderer } from '../../rendering-webgl/batched-renderer';
@@ -11,7 +12,6 @@ import { setSamplerParameters } from '../../rendering-webgl/textures';
 import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
-import { getUseOnceClipProjectionArray } from '../../rendering/projection';
 import { TextureHandle, getMaxTextures } from '../../rendering/textures';
 import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './text.template.frag?raw';
@@ -30,6 +30,9 @@ interface ProgramData {
     samplerLocation: WebGLUniformLocation;
     samplerUnits: Int32Array;
 }
+
+const PROJECTION_MAT = Mat2D.identity();
+const PROJECTION_ARRAY = new Float32Array(6);
 
 export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
     protected programs: ProgramData[] = [];
@@ -137,11 +140,11 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
         gl.useProgram(program);
         gl.uniform1iv(samplerLocation, samplerUnits);
 
-        gl.uniformMatrix3x2fv(
-            projectionLocation,
-            false,
-            getUseOnceClipProjectionArray(this.driver.dimensions, camera),
-        );
+        this.driver.projections
+            .getClipProjection(camera, PROJECTION_MAT)
+            .copyTo3x2(PROJECTION_ARRAY);
+
+        gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
     }
 
     protected override initializeAttributes(buffers: WebGLBuffer[]): void {

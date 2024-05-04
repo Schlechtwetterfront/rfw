@@ -3,7 +3,6 @@ import '../assets/styles.css';
 import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
-import { projectRectToScene } from '../../src';
 import { Color } from '../../src/colors';
 import { Vec2, Vec2Like } from '../../src/math';
 import { Rect, RectLike } from '../../src/math/shapes';
@@ -29,9 +28,9 @@ const RECT_COLOR_INTERSECTED = new Color(0, 1, 0, 0.5);
 
 const MESH = buildTriangulatedMesh([
     Vertex.fromCoordinates(0, 0),
-    Vertex.fromCoordinates(1, 0),
-    Vertex.fromCoordinates(1, 1),
     Vertex.fromCoordinates(0, 1),
+    Vertex.fromCoordinates(1, 1),
+    Vertex.fromCoordinates(1, 0),
 ]);
 
 class RenderModeObject extends MeshObject implements QuadTreeEntry {
@@ -68,11 +67,6 @@ class RenderModeApp extends SampleApp {
         changeTracker: this.changeTracker,
     });
 
-    private readonly globalTextBatches = new TextBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-    });
-
     private readonly lineBatches = new LineBatcher({
         changeTracker: this.changeTracker,
     });
@@ -82,11 +76,12 @@ class RenderModeApp extends SampleApp {
         changeTracker: this.changeTracker,
     });
 
-    private quadTree = new QuadTree<RenderModeObject>(
-        { x: -600, y: -400, width: 1200, height: 800 },
-        4,
-        4,
-    );
+    private quadTree = new QuadTree<RenderModeObject>({
+        x: -600,
+        y: -400,
+        width: 1200,
+        height: 800,
+    });
 
     private entries: RenderModeObject[] = [];
 
@@ -111,9 +106,8 @@ class RenderModeApp extends SampleApp {
 
         this.sceneMouse.copyFrom(this.mouse);
 
-        projectRectToScene(
+        this.driver.projections.projectRectToScene(
             this.sceneMouse,
-            this.driver.dimensions,
             this.camera,
         );
     }
@@ -130,7 +124,7 @@ class RenderModeApp extends SampleApp {
                 font: this.font,
                 style: { size: 32 },
                 text: 'Render Mode Sample',
-                position: new Vec2(-600, -400),
+                position: new Vec2(-600, 400),
                 anchor: new Vec2(0, 1),
                 z: 10,
             });
@@ -142,7 +136,7 @@ class RenderModeApp extends SampleApp {
                 font: this.font,
                 style: { size: 16 },
                 text: 'Hover over rects to recolor them and trigger a render',
-                position: new Vec2(-600 + title.layout.width + 24, -400),
+                position: new Vec2(-600 + title.layout.width + 24, 400),
                 anchor: new Vec2(0, 1),
                 z: 10,
             });
@@ -181,13 +175,8 @@ class RenderModeApp extends SampleApp {
         super.render();
 
         this.renderers.line.render(this.lineBatches.finalize(), this.camera);
-        this.renderers.mesh.render(
-            this.meshBatches.finalize(),
-
-            this.camera,
-        );
+        this.renderers.mesh.render(this.meshBatches.finalize(), this.camera);
         this.renderers.text.render(this.textBatches.finalize(), this.camera);
-        this.renderers.text.render(this.globalTextBatches.finalize());
     }
 
     addMultiple(count: number): void {

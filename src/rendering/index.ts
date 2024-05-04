@@ -1,5 +1,5 @@
 export * from './diagnostics';
-export * from './projection';
+export * from './render-context';
 export * from './render-driver';
 
 export const MAX_Z = 1000;

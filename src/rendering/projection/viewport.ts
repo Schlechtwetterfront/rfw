@@ -4,22 +4,22 @@ import { makeCameraProjection } from './camera';
 import { CAMERA_MAT } from './constants';
 import { PositiveXAxis, PositiveYAxis } from './types';
 
-export function makeClipProjection(
+export function makeViewportProjection(
     mat: Mat2D,
     dimensions: Vec2Like,
     centered: boolean = true,
     x: PositiveXAxis = 'right',
     y: PositiveYAxis = 'up',
 ): void {
-    mat.a = (x === 'right' ? 2 : -2) / dimensions.x;
+    mat.a = x === 'right' ? 1 : -1;
     mat.b = 0;
     mat.c = 0;
-    mat.d = (y === 'up' ? 2 : -2) / dimensions.y;
-    mat.tx = centered ? 0 : -1;
-    mat.ty = centered ? 0 : 1;
+    mat.d = y === 'up' ? -1 : 1;
+    mat.tx = dimensions.x * (centered ? 0.5 : x === 'left' ? 1 : 0);
+    mat.ty = dimensions.y * (centered ? 0.5 : y === 'up' ? 1 : 0);
 }
 
-export function makeCameraClipProjection(
+export function makeCameraViewportProjection(
     mat: Mat2D,
     dimensions: Vec2Like,
     centered: boolean = true,
@@ -27,7 +27,7 @@ export function makeCameraClipProjection(
     y: PositiveYAxis = 'up',
     camera?: Camera2D,
 ): void {
-    makeClipProjection(mat, dimensions, centered, x, y);
+    makeViewportProjection(mat, dimensions, centered, x, y);
 
     if (camera) {
         makeCameraProjection(CAMERA_MAT, camera, x, y);

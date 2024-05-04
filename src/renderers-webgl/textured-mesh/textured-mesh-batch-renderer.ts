@@ -1,3 +1,4 @@
+import { Mat2D } from '../../math';
 import { roundUpPowerOfTwo } from '../../math/util';
 import { BYTES_PER_VERTEX } from '../../renderers/textured-mesh';
 import { WGLBatchedRenderer } from '../../rendering-webgl/batched-renderer';
@@ -10,7 +11,6 @@ import {
 import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
-import { getUseOnceClipProjectionArray } from '../../rendering/projection';
 import { TextureHandle, getMaxTextures } from '../../rendering/textures';
 import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './textured-mesh-batch.template.frag?raw';
@@ -29,6 +29,9 @@ interface ProgramData {
     samplerLocation: WebGLUniformLocation;
     samplerUnits: Int32Array;
 }
+
+const PROJECTION_MAT = Mat2D.identity();
+const PROJECTION_ARRAY = new Float32Array(6);
 
 export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMeshRenderBatch> {
     protected programs: ProgramData[] = [];
@@ -117,11 +120,11 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
         gl.useProgram(program);
         gl.uniform1iv(samplerLocation, samplerUnits);
 
-        gl.uniformMatrix3x2fv(
-            projectionLocation,
-            false,
-            getUseOnceClipProjectionArray(this.driver.dimensions, camera),
-        );
+        this.driver.projections
+            .getClipProjection(camera, PROJECTION_MAT)
+            .copyTo3x2(PROJECTION_ARRAY);
+
+        gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
     }
 
     protected override initializeAttributes(buffers: WebGLBuffer[]) {

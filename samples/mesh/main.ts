@@ -43,7 +43,7 @@ export class MeshApp extends SampleApp {
                         Color.fromHSV(hue),
                     ),
                     x: x - 600,
-                    y: y - 400,
+                    y: 800 - y - 400,
                 });
 
                 meshEntities.push(ms);

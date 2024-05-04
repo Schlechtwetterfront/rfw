@@ -17,6 +17,7 @@ export * from './rendering/batching';
 export * from './rendering/buffers';
 export * from './rendering/camera2d';
 export * from './rendering/mesh';
+export * from './rendering/projection';
 export * from './rendering/shaders';
 export * from './rendering/textures';
 export * from './scene';

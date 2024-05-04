@@ -4,7 +4,6 @@ import '../assets/styles.css';
 import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
-import { projectPointToScene, projectRectToScene } from '../../src';
 import { Color } from '../../src/colors';
 import { Vec2 } from '../../src/math';
 import { Rect } from '../../src/math/shapes';
@@ -77,8 +76,10 @@ class QuadTreeApp extends SampleApp {
 
         canvas.addEventListener('click', e => {
             if (e.ctrlKey) {
-                const pos = new Vec2(e.clientX, e.clientY);
-                projectPointToScene(pos, this.driver.dimensions, this.camera);
+                const pos = this.driver.projections.projectPointToScene(
+                    new Vec2(e.clientX, e.clientY),
+                    this.camera,
+                );
 
                 this.addRect(pos.x, pos.y);
             }
@@ -116,9 +117,8 @@ class QuadTreeApp extends SampleApp {
 
         this.sceneMouse.copyFrom(this.mouse);
 
-        projectRectToScene(
+        this.driver.projections.projectRectToScene(
             this.sceneMouse,
-            this.driver.dimensions,
             this.camera,
         );
     }
@@ -142,7 +142,7 @@ class QuadTreeApp extends SampleApp {
                 font: this.font,
                 style: { size: 32 },
                 text: 'Quad tree sample',
-                position: new Vec2(-600, -400),
+                position: new Vec2(-600, 400),
                 anchor: new Vec2(0, 1),
             });
 
@@ -153,7 +153,7 @@ class QuadTreeApp extends SampleApp {
                 font: this.font,
                 style: { size: 16 },
                 text: 'Use CTRL+Click to add, ALT+Click to remove',
-                position: new Vec2(-600 + title.layout.width + 24, -400),
+                position: new Vec2(-600 + title.layout.width + 24, 400),
                 anchor: new Vec2(0, 1),
             });
 

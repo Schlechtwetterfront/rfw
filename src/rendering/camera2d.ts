@@ -1,8 +1,7 @@
 import { ChangeTracker } from '../app/change-tracking';
-import { Mat2D, Transform2D, Vec2Like } from '../math';
+import { Transform2D, Vec2Like } from '../math';
 
 export interface CameraOptions {
-    centered?: boolean;
     changeTracker?: ChangeTracker;
 }
 
@@ -11,23 +10,10 @@ export interface CameraOptions {
  */
 export class Camera2D {
     private readonly changeTracker?: ChangeTracker;
-    private _centered = true;
 
     readonly transform = new Transform2D();
 
-    get centered() {
-        return this._centered;
-    }
-    set centered(centered: boolean) {
-        if (centered !== this._centered) {
-            this.changeTracker?.registerChange();
-        }
-
-        this._centered = centered;
-    }
-
     constructor(options?: CameraOptions) {
-        this.centered = options?.centered ?? false;
         this.changeTracker = options?.changeTracker;
     }
 
@@ -189,21 +175,5 @@ export class Camera2D {
         this.changeTracker?.registerChange();
 
         return this;
-    }
-
-    /**
-     * Compose this camera's pan, zoom, and tilt to `mat` or this camera's transform matrix.
-     * @param mat - Optional, target matrix to compose to
-     * @returns Composed matrix (`mat`, if passed)
-     */
-    compose(mat?: Mat2D): Mat2D {
-        mat ??= this.transform.matrix;
-
-        mat.makeIdentity()
-            .rotateDegrees(-this.transform.degrees)
-            .translate(-this.transform.position.x, -this.transform.position.y)
-            .scale(this.transform.scale.x, this.transform.scale.y);
-
-        return mat;
     }
 }

@@ -1,11 +1,19 @@
 import { ColorLike } from '../colors';
-import { ReadOnlyVec2, Vec2, Vec2Like } from '../math';
+import { Vec2Like } from '../math';
 import {
     CanvasLike,
     RenderContextLifeCycleHandler,
     RenderDiagnostics,
     RenderDriver,
 } from '../rendering';
+import {
+    DefaultProjections,
+    Projections,
+} from '../rendering/projection/projections';
+import {
+    DefaultRenderContext,
+    RenderContext,
+} from '../rendering/render-context';
 import { WGLShaders } from './shaders';
 import { WGLTextures } from './textures/textures';
 
@@ -22,17 +30,11 @@ export class WGLDriver implements RenderDriver {
     readonly textures: WGLTextures;
     readonly shaders: WGLShaders;
 
-    get dimensions(): ReadOnlyVec2 {
-        return this._dimensions;
-    }
-    set dimensions(dimensions: Vec2Like) {
-        this._dimensions.copyFrom(dimensions);
-    }
-
     constructor(
         canvas: CanvasLike,
         public readonly gl: WebGL2RenderingContext,
-        private readonly _dimensions: Vec2,
+        public readonly context: RenderContext,
+        public readonly projections: Projections,
         public readonly diagnostics = new RenderDiagnostics(),
     ) {
         this.textures = new WGLTextures(this);
@@ -99,7 +101,7 @@ export class WGLDriver implements RenderDriver {
     }
 
     clearViewport(color: ColorLike, dimensions?: Vec2Like): void {
-        dimensions ??= this.dimensions;
+        dimensions ??= this.context.dimensions;
 
         const { gl } = this;
 
@@ -140,11 +142,14 @@ export class WGLDriver implements RenderDriver {
 
     static fromCanvas(
         canvas: CanvasLike,
-        contextAttrs?: WebGLContextAttributes,
+        options?: {
+            projectionsFactory?: (context: RenderContext) => Projections;
+            contextAttrs?: WebGLContextAttributes;
+        },
     ): Promise<WGLDriver> {
         const gl = canvas.getContext('webgl2', {
             ...DEFAULT_CONTEXT_ATTRS,
-            ...contextAttrs,
+            ...options?.contextAttrs,
         });
 
         if (!gl) {
@@ -162,11 +167,16 @@ export class WGLDriver implements RenderDriver {
             initialHeight = clientRect.height * dpr;
         }
 
-        const manager = new this(
-            canvas,
-            gl,
-            new Vec2(initialWidth, initialHeight),
-        );
+        const context = new DefaultRenderContext({
+            x: initialWidth,
+            y: initialHeight,
+        });
+
+        const projections =
+            options?.projectionsFactory?.(context) ??
+            new DefaultProjections(context);
+
+        const manager = new this(canvas, gl, context, projections);
 
         return Promise.resolve(manager);
     }

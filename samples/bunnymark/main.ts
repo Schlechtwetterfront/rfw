@@ -78,10 +78,10 @@ class BunnyMarkApp extends SampleApp {
             { label: 'bunny white' },
         );
         this.bunnyMesh = buildTriangulatedMesh([
-            new Vertex(new Vec2(-12.5, -16), new Vec2(0, 0)),
-            new Vertex(new Vec2(12.5, -16), new Vec2(1, 0)),
-            new Vertex(new Vec2(12.5, 16), new Vec2(1, 1)),
-            new Vertex(new Vec2(-12.5, 16), new Vec2(0, 1)),
+            new Vertex(new Vec2(12.5, 16), new Vec2(0, 0)),
+            new Vertex(new Vec2(-12.5, 16), new Vec2(1, 0)),
+            new Vertex(new Vec2(-12.5, -16), new Vec2(1, 1)),
+            new Vertex(new Vec2(12.5, -16), new Vec2(0, 1)),
         ]);
         this.bunnyMaterial = new TexturedMaterial(this.bunnyTex);
         this.bunnyMaterialWhite = new TexturedMaterial(this.bunnyTexWhite);
@@ -112,8 +112,8 @@ class BunnyMarkApp extends SampleApp {
                 const { movementPerSecond, remainingSquishDuration } = bunny;
                 const { position, scale } = bunny.transform;
 
-                position.x += movementPerSecond.x * seconds;
-                position.y += movementPerSecond.y * seconds;
+                position.x -= movementPerSecond.x * seconds;
+                position.y -= movementPerSecond.y * seconds;
                 movementPerSecond.y += GRAVITY * seconds;
 
                 remainingSquishDuration
@@ -147,15 +147,15 @@ class BunnyMarkApp extends SampleApp {
                     scale.x = SQUISH_SCALE;
                 }
 
-                if (position.y < BOUNDS.top) {
+                if (position.y > BOUNDS.bottom) {
                     movementPerSecond.y = 0;
-                    position.y = BOUNDS.top;
+                    position.y = BOUNDS.bottom;
 
                     remainingSquishDuration.y = SQUISH_DURATION;
                     scale.y = SQUISH_SCALE;
-                } else if (position.y > BOUNDS.bottom) {
+                } else if (position.y < BOUNDS.top) {
                     movementPerSecond.y *= -0.85;
-                    position.y = BOUNDS.bottom;
+                    position.y = BOUNDS.top;
 
                     if (Math.random() > 0.5) {
                         movementPerSecond.y -= Math.random() * 80;
