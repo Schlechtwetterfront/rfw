@@ -51,11 +51,18 @@ export interface Projections {
 
     /**
      * Get clip projection.
-     * @param camera - Optional camera projection to apply. If no camera is given assumes viewport space
+     * @param camera - Optional camera projection to apply
      * @param target - Optional matrix to store the projection in. Will allocate a new instance otherwise
      * @returns `target` or newly allocated matrix
      */
     getClipProjection(camera?: Camera2D, target?: Mat2D): Mat2D;
+
+    /**
+     * Get clip projection in viewport space.
+     * @param target - Optional matrix to store the projection in. Will allocate a new instance otherwise
+     * @return `target` or newly allocated matrix
+     */
+    getViewportClipProjection(target?: Mat2D): Mat2D;
 }
 
 export interface ProjectionOptions {
@@ -151,24 +158,29 @@ export class DefaultProjections implements Projections {
     getClipProjection(camera?: Camera2D, target?: Mat2D): Mat2D {
         target ??= Mat2D.identity();
 
-        if (camera) {
-            makeCameraClipProjection(
-                target,
-                this.context.dimensions,
-                this.options.centered,
-                this.options.x,
-                this.options.y,
-                camera,
-            );
-        } else {
-            makeClipProjection(
-                target,
-                this.context.dimensions,
-                false,
-                'right',
-                'down',
-            );
-        }
+        makeCameraClipProjection(
+            target,
+            this.context.dimensions,
+            this.options.centered,
+            this.options.x,
+            this.options.y,
+            camera,
+        );
+
+        return target;
+    }
+
+    /** @inheritdoc */
+    getViewportClipProjection(target?: Mat2D | undefined): Mat2D {
+        target ??= Mat2D.identity();
+
+        makeClipProjection(
+            target,
+            this.context.dimensions,
+            false,
+            'right',
+            'down',
+        );
 
         return target;
     }

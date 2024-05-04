@@ -120,9 +120,13 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
         gl.useProgram(program);
         gl.uniform1iv(samplerLocation, samplerUnits);
 
-        this.driver.projections
-            .getClipProjection(camera, PROJECTION_MAT)
-            .copyTo3x2(PROJECTION_ARRAY);
+        if (camera) {
+            this.driver.projections.getClipProjection(camera, PROJECTION_MAT);
+        } else {
+            this.driver.projections.getViewportClipProjection(PROJECTION_MAT);
+        }
+
+        PROJECTION_MAT.copyTo3x2(PROJECTION_ARRAY);
 
         gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
     }
