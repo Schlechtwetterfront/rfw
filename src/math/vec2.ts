@@ -10,7 +10,7 @@ export interface Vec2Like {
     readonly y: number;
 }
 
-export interface ReadOnlyVec2 extends Vec2Like {
+export interface ReadonlyVec2 extends Vec2Like {
     get length(): number;
     get radians(): number;
     get degrees(): number;
@@ -35,7 +35,7 @@ export interface ReadOnlyVec2 extends Vec2Like {
  * Methods (like {@link Vec2.multiple}, {@link Vec2.add}) generally _mutate_ the instance. Create
  * new instances with {@link Vec2.clone}.
  */
-export class Vec2 implements ReadOnlyVec2 {
+export class Vec2 implements ReadonlyVec2 {
     get length(): number {
         return Math.sqrt(this.x ** 2 + this.y ** 2);
     }
@@ -316,7 +316,7 @@ export class Vec2 implements ReadOnlyVec2 {
         array[1 + offset] = this.y;
     }
 
-    asReadOnly(): ReadOnlyVec2 {
+    asReadonly(): ReadonlyVec2 {
         return this;
     }
 

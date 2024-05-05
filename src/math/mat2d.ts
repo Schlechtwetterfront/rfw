@@ -25,7 +25,7 @@ export interface Mat2DLike {
 /**
  * Read-only version of {@link Mat2D}.
  */
-export interface ReadOnlyMat2D extends Mat2DLike {
+export interface ReadonlyMat2D extends Mat2DLike {
     equals(other: Mat2DLike, epsilon?: number): boolean;
 
     clone(): Mat2D;
@@ -47,7 +47,7 @@ export interface ReadOnlyMat2D extends Mat2DLike {
  * Methods (like {@link Mat2D.translate}, {@link Mat2D.multiplyMat}) generally _mutate_ the instance.
  * Create new instances with {@link Mat2D.clone}.
  */
-export class Mat2D implements ReadOnlyMat2D {
+export class Mat2D implements ReadonlyMat2D {
     get determinant() {
         return this.a * this.d - this.b * this.c;
     }
@@ -298,7 +298,7 @@ export class Mat2D implements ReadOnlyMat2D {
         }
     }
 
-    asReadOnly(): ReadOnlyMat2D {
+    asReadonly(): ReadonlyMat2D {
         return this;
     }
 

@@ -1,4 +1,4 @@
-import { ReadOnlyRect, Rect, RectLike } from '../math/shapes';
+import { ReadonlyRect, Rect, RectLike } from '../math/shapes';
 import { ArraySet } from './array-set';
 import { Pool } from './pool';
 
@@ -39,7 +39,7 @@ export class QuadTree<E extends QuadTreeEntry> {
     }
 
     /** Quad tree bounds. */
-    readonly bounds: ReadOnlyRect;
+    readonly bounds: ReadonlyRect;
 
     /**
      * Construct a new quad tree.
@@ -262,7 +262,7 @@ export class QuadTree<E extends QuadTreeEntry> {
      */
     filter(
         entryPredicate: (entry: E) => boolean,
-        quadPredicate: (rect: ReadOnlyRect) => boolean,
+        quadPredicate: (rect: ReadonlyRect) => boolean,
         results?: ArraySet<E>,
     ): ArraySet<E> {
         results ??= new ArraySet();
@@ -275,7 +275,7 @@ export class QuadTree<E extends QuadTreeEntry> {
     private _filter(
         quad: _Quad<E>,
         predicate: (entry: E) => boolean,
-        intersects: (rect: ReadOnlyRect) => boolean,
+        intersects: (rect: ReadonlyRect) => boolean,
         results: ArraySet<E>,
     ) {
         if (intersects(quad.bounds) === false) {
@@ -384,7 +384,7 @@ export interface Quad {
     readonly bottomLeft?: Quad;
     readonly bottomRight?: Quad;
 
-    readonly bounds: ReadOnlyRect;
+    readonly bounds: ReadonlyRect;
     readonly depth: number;
 
     readonly entryCount: number;
@@ -401,7 +401,7 @@ export interface SubdividedQuad {
     readonly bottomLeft: Quad;
     readonly bottomRight: Quad;
 
-    readonly bounds: ReadOnlyRect;
+    readonly bounds: ReadonlyRect;
     readonly depth: number;
 
     readonly entryCount: number;

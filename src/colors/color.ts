@@ -21,7 +21,7 @@ export interface ColorLike {
  * @remarks
  * In [0,1] range.
  */
-export interface ReadOnlyColor extends ColorLike {
+export interface ReadonlyColor extends ColorLike {
     /**
      * Check if the given components match this color's components.
      * @param epsilon - Optional, epsilon for comparison
@@ -107,7 +107,7 @@ const TEMP_COLOR: number[] = [];
  *
  * Methods generally _mutate_ the instance. Create new instances with {@link Color.clone}.
  */
-export class Color implements ReadOnlyColor, RGBA {
+export class Color implements ReadonlyColor, RGBA {
     /** Set all components. */
     set rgba(v: number) {
         this.r = this.g = this.b = this.a = v;
@@ -362,12 +362,12 @@ export class Color implements ReadOnlyColor, RGBA {
 
     /**
      * Returns a read-only version of this.
-     * @returns Same instance as {@link ReadOnlyColor}
+     * @returns Same instance as {@link ReadonlyColor}
      *
      * @remarks
      * Does not actually make this instance read-only if typing is ignored.
      */
-    asReadOnly(): ReadOnlyColor {
+    asReadonly(): ReadonlyColor {
         return this;
     }
 

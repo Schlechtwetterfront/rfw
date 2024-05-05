@@ -21,7 +21,7 @@ export interface RectLike {
  * @remarks
  * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
  */
-export interface ReadOnlyRect extends RectLike, Shape {
+export interface ReadonlyRect extends RectLike, Shape {
     /** Rect `x` plus `width`. */
     readonly xExtent: number;
 
@@ -45,7 +45,7 @@ export interface ReadOnlyRect extends RectLike, Shape {
  * @remarks
  * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
  */
-export class Rect implements ReadOnlyRect, Vec2Like {
+export class Rect implements ReadonlyRect, Vec2Like {
     /** @inheritdoc */
     get xExtent() {
         return this.x + this.width;
@@ -320,7 +320,7 @@ export class Rect implements ReadOnlyRect, Vec2Like {
         return new Rect(this.x, this.y, this.width, this.height);
     }
 
-    asReadOnly(): ReadOnlyRect {
+    asReadonly(): ReadonlyRect {
         return this;
     }
 

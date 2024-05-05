@@ -1,4 +1,4 @@
-import { ReadOnlyVec2, Vec2 } from '../math';
+import { ReadonlyVec2, Vec2 } from '../math';
 import { TextLike } from '../renderers/text';
 import {
     Font,
@@ -77,7 +77,7 @@ export class TextObject extends SceneObject implements TextLike {
         this.relayout();
     }
 
-    get anchor(): ReadOnlyVec2 {
+    get anchor(): ReadonlyVec2 {
         return this._anchor;
     }
     set anchor(anchor: Vec2) {

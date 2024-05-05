@@ -1,6 +1,6 @@
-import { Mat2D, Mat2DLike, ReadOnlyMat2D } from './mat2d';
+import { Mat2D, Mat2DLike, ReadonlyMat2D } from './mat2d';
 import {
-    ReadOnlyTransform2D,
+    ReadonlyTransform2D,
     Transform2D,
     Transform2DLike,
 } from './transform2d';
@@ -13,8 +13,8 @@ export interface LocalTransform2DLike extends Transform2DLike {
     readonly worldMatrix: Mat2DLike;
 }
 
-export interface ReadOnlyLocalTransform2D extends ReadOnlyTransform2D {
-    readonly worldMatrix: ReadOnlyMat2D;
+export interface ReadonlyLocalTransform2D extends ReadonlyTransform2D {
+    readonly worldMatrix: ReadonlyMat2D;
 
     composeWorld(parent?: LocalTransform2DLike): void;
 }
@@ -27,7 +27,7 @@ export interface ReadOnlyLocalTransform2D extends ReadOnlyTransform2D {
  */
 export class LocalTransform2D
     extends Transform2D
-    implements ReadOnlyLocalTransform2D
+    implements ReadonlyLocalTransform2D
 {
     readonly worldMatrix = Mat2D.identity();
 
@@ -41,7 +41,7 @@ export class LocalTransform2D
         }
     }
 
-    override asReadOnly(): ReadOnlyLocalTransform2D {
+    override asReadonly(): ReadonlyLocalTransform2D {
         return this;
     }
 }

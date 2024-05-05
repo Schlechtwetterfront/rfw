@@ -1,4 +1,4 @@
-import { ReadOnlyVec2, Vec2 } from '../math';
+import { ReadonlyVec2, Vec2 } from '../math';
 
 /**
  * Applies a {@link HTMLCanvasElement | canvas element's} actual size to its `width` and `height`
@@ -10,7 +10,7 @@ export class CanvasResizer {
     private _resize = true;
 
     /** Current dimensions. */
-    get dimensions(): ReadOnlyVec2 {
+    get dimensions(): ReadonlyVec2 {
         return this._dimensions;
     }
 

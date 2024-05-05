@@ -7,7 +7,7 @@ describe('circle', () => {
     test('new instances', () => {
         const c = new Circle(0, 0, 1);
         expect(c).not.toBe(c.clone());
-        expect(c.asReadOnly()).toBe(c);
+        expect(c.asReadonly()).toBe(c);
         expect(Circle.zero()).not.toBe(Circle.zero());
         expect(Circle.one()).not.toBe(Circle.one());
     });

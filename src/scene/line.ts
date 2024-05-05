@@ -1,6 +1,6 @@
 import { SizedObject } from '.';
 import { Color } from '../colors';
-import { ReadOnlyVec2, Vec2 } from '../math';
+import { ReadonlyVec2, Vec2 } from '../math';
 import { ObjectOptions, SceneObject } from './graph';
 
 export class LineSegment {
@@ -51,7 +51,7 @@ export class LineObject extends SceneObject implements SizedObject {
         this._style = { ...this._style, ...style };
     }
 
-    get points(): readonly ReadOnlyVec2[] {
+    get points(): readonly ReadonlyVec2[] {
         return this._points;
     }
     set points(points: Vec2[]) {

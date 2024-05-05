@@ -1,5 +1,5 @@
 import { linesIntersect } from '../util';
-import { ReadOnlyVec2, Vec2, Vec2Like } from '../vec2';
+import { ReadonlyVec2, Vec2, Vec2Like } from '../vec2';
 import { Rect, RectLike } from './rect';
 import { Shape } from './shape';
 
@@ -7,8 +7,8 @@ export interface PolyLike {
     readonly points: readonly Vec2Like[];
 }
 
-export interface ReadOnlyPoly extends PolyLike, Shape {
-    readonly points: readonly ReadOnlyVec2[];
+export interface ReadonlyPoly extends PolyLike, Shape {
+    readonly points: readonly ReadonlyVec2[];
 
     /** @inheritdoc */
     intersectsRect(other: RectLike): boolean;
@@ -25,7 +25,7 @@ const TEMP_RECT = Rect.zero();
 const TEMP_VEC0 = Vec2.zero();
 const TEMP_VEC1 = Vec2.zero();
 
-export class Poly implements ReadOnlyPoly {
+export class Poly implements ReadonlyPoly {
     points: Vec2[];
 
     constructor(...points: Vec2[]) {
@@ -161,7 +161,7 @@ export class Poly implements ReadOnlyPoly {
         return true;
     }
 
-    asReadOnly(): ReadOnlyPoly {
+    asReadonly(): ReadonlyPoly {
         return this;
     }
 

@@ -8,7 +8,7 @@ describe('poly', () => {
     test('new instances', () => {
         const p = new Poly(new Vec2(0, 0), new Vec2(1, 0), new Vec2(0, 1));
         expect(p.clone()).not.toBe(p);
-        expect(p.asReadOnly()).toBe(p);
+        expect(p.asReadonly()).toBe(p);
         expect(new Poly()).toBeTruthy();
     });
 

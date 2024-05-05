@@ -1,28 +1,28 @@
 import { PI_2, TO_DEGREES, TO_RADIANS } from './constants';
-import { Mat2D, Mat2DLike, ReadOnlyMat2D } from './mat2d';
-import { ReadOnlyVec2, Vec2 } from './vec2';
+import { Mat2D, Mat2DLike, ReadonlyMat2D } from './mat2d';
+import { ReadonlyVec2, Vec2 } from './vec2';
 
 /**
  * Two-dimensional transform (position, rotation, scale).
  */
 export interface Transform2DLike {
-    readonly matrix: ReadOnlyMat2D;
+    readonly matrix: ReadonlyMat2D;
 
-    readonly position: ReadOnlyVec2;
+    readonly position: ReadonlyVec2;
     readonly z: number;
-    readonly scale: ReadOnlyVec2;
+    readonly scale: ReadonlyVec2;
 
     readonly radians: number;
 
     readonly degrees: number;
 }
 
-export interface ReadOnlyTransform2D extends Transform2DLike {}
+export interface ReadonlyTransform2D extends Transform2DLike {}
 
 /**
  * Two-dimensional transform (position, rotation, scale).
  */
-export class Transform2D implements ReadOnlyTransform2D {
+export class Transform2D implements ReadonlyTransform2D {
     /**
      * Matrix composed of the transform's position, rotation, and translation.
      *
@@ -100,7 +100,7 @@ export class Transform2D implements ReadOnlyTransform2D {
         this.position.y = ty;
     }
 
-    asReadOnly(): ReadOnlyTransform2D {
+    asReadonly(): ReadonlyTransform2D {
         return this;
     }
 }

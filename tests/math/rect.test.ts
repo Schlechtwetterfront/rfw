@@ -7,7 +7,7 @@ describe('rect', () => {
     test('instances', () => {
         const r = new Rect(0, 0, 1, 1);
         expect(r).not.toBe(r.clone());
-        expect(r.asReadOnly()).toBe(r);
+        expect(r.asReadonly()).toBe(r);
         expect(Rect.zero()).not.toBe(Rect.zero());
         expect(Rect.one()).not.toBe(Rect.one());
     });

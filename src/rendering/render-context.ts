@@ -1,7 +1,7 @@
-import { ReadOnlyVec2, Vec2, Vec2Like } from '../math';
+import { ReadonlyVec2, Vec2, Vec2Like } from '../math';
 
 export interface RenderContext {
-    readonly dimensions: ReadOnlyVec2;
+    readonly dimensions: ReadonlyVec2;
 
     setDimensions(dimensions: Vec2Like): void;
 }
@@ -9,7 +9,7 @@ export interface RenderContext {
 export class DefaultRenderContext implements RenderContext {
     private readonly _dimensions: Vec2;
 
-    readonly dimensions: ReadOnlyVec2;
+    readonly dimensions: ReadonlyVec2;
 
     constructor(dimensions: Vec2Like) {
         this._dimensions = Vec2.from(dimensions);

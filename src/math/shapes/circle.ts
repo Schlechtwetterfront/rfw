@@ -20,7 +20,7 @@ export interface CircleLike {
  * @remarks
  * `x` and `y` refer to the circle's center.
  */
-export interface ReadOnlyCircle extends CircleLike, Shape {
+export interface ReadonlyCircle extends CircleLike, Shape {
     readonly x: number;
     readonly y: number;
     readonly radius: number;
@@ -46,7 +46,7 @@ const TEMP_VEC = Vec2.zero();
  * @remarks
  * `x` and `y` refer to the circle's center.
  */
-export class Circle implements ReadOnlyCircle, Vec2Like {
+export class Circle implements ReadonlyCircle, Vec2Like {
     constructor(
         public x: number,
         public y: number,
@@ -147,7 +147,7 @@ export class Circle implements ReadOnlyCircle, Vec2Like {
         return new Circle(this.x, this.y, this.radius);
     }
 
-    asReadOnly(): ReadOnlyCircle {
+    asReadonly(): ReadonlyCircle {
         return this;
     }
 
