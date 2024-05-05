@@ -34,7 +34,7 @@ export class Batch<
     protected initialized = false;
 
     /**
-     * Size of the batch. The unit depends on how the batch is used in it's batcher.
+     * Size of the batch. The unit depends on how the batch is used in its batcher.
      */
     get size() {
         return this._size;
@@ -136,9 +136,19 @@ export class Batch<
         if (!this.initialized) {
             this.rebuild();
             this.initialized = true;
-        } else {
-            this.applyChanges();
+            return;
         }
+
+        // Everything has to be updated anyways
+        if (
+            this.firstChangedEntryIndex === 0 &&
+            this.lastChangedEntryIndex === this._entries.length - 1
+        ) {
+            this.rebuild();
+            return;
+        }
+
+        this.applyChanges();
     }
 
     /**
@@ -204,8 +214,8 @@ export class Batch<
             size: initialTotalSize,
             _entries: entries,
             entryChanges,
-            firstChangedEntryIndex: firstChange,
-            lastChangedEntryIndex: lastChange,
+            firstChangedEntryIndex,
+            lastChangedEntryIndex,
             storage,
         } = this;
 
@@ -219,8 +229,8 @@ export class Batch<
 
         if (
             entryCount === 0 ||
-            firstChange === undefined ||
-            lastChange === undefined
+            firstChangedEntryIndex === undefined ||
+            lastChangedEntryIndex === undefined
         ) {
             this.firstChangedEntryIndex = this.lastChangedEntryIndex =
                 undefined;
@@ -228,20 +238,23 @@ export class Batch<
             return;
         }
 
-        const changedFrom = entries[firstChange]!.offset;
+        const changedFrom = entries[firstChangedEntryIndex]!.offset;
 
         let totalSize = initialTotalSize;
         let offset = changedFrom;
 
         // Keep track of removed entries (indices must be adjusted)
-        let lastChangeAdjustedForRemoved = lastChange;
+        let lastChangeAdjustedForRemoved = lastChangedEntryIndex;
         let hasRemovedElements = false;
+
+        // Only compact if all entries are not updated anyways
+        const compact = lastChangedEntryIndex < entries.length - 1;
 
         let change: BatchEntryChange = BatchEntryChange.NONE;
         let entry: E;
 
         // Note: i, entryCount are changed within the loop!
-        for (let i = firstChange; i < entryCount; i++) {
+        for (let i = firstChangedEntryIndex; i < entryCount; i++) {
             entry = entries[i]!;
             change = entryChanges[i]!;
 
@@ -251,7 +264,7 @@ export class Batch<
             if (change & BatchEntryChange.NONE) {
                 offset += entry.size;
 
-                // No entries/elements were removed => indices and offsets do not have to updated
+                // No entries/elements were removed => indices and offsets do not have to be updated
                 if (i > lastChangeAdjustedForRemoved && !hasRemovedElements) {
                     break;
                 }
@@ -268,15 +281,17 @@ export class Batch<
             } else if (change & BatchEntryChange.SIZE_DECREASE) {
                 const diff = entry.size - entry.newSize;
 
-                // First copy everything to the left by our decreased size...
-                storage.copyWithin(
-                    // To: current right end of this entry's section
-                    offset + entry.newSize,
-                    // Start: _previous_ right end of this entry's section in the buffer
-                    offset + entry.size,
-                    // End: everything to the right of the entry's section
-                    totalSize,
-                );
+                if (compact) {
+                    // First copy everything to the left by our decreased size...
+                    storage.copyWithin(
+                        // To: current right end of this entry's section
+                        offset + entry.newSize,
+                        // Start: _previous_ right end of this entry's section in the buffer
+                        offset + entry.size,
+                        // End: everything to the right of the entry's section
+                        totalSize,
+                    );
+                }
 
                 totalSize -= diff;
 
@@ -289,8 +304,10 @@ export class Batch<
 
                 hasRemovedElements = true;
             } else if (change & BatchEntryChange.DELETE) {
-                // Copy everything to the right over the now-free space
-                storage.copyWithin(offset, offset + entry.size, totalSize);
+                if (compact) {
+                    // Copy everything to the right over the now-free space
+                    storage.copyWithin(offset, offset + entry.size, totalSize);
+                }
 
                 totalSize -= entry.size;
 
