@@ -135,29 +135,29 @@ class BunnyMarkApp extends SampleApp {
                         SQUISH_DURATION,
                 );
 
-                if (position.x < BOUNDS.left) {
+                if (position.x < BOUNDS.x) {
                     movementPerSecond.x *= -1;
-                    position.x = BOUNDS.left;
+                    position.x = BOUNDS.x;
 
                     remainingSquishDuration.x = SQUISH_DURATION;
                     scale.x = SQUISH_SCALE;
-                } else if (position.x > BOUNDS.right) {
+                } else if (position.x > BOUNDS.xExtent) {
                     movementPerSecond.x *= -1;
-                    position.x = BOUNDS.right;
+                    position.x = BOUNDS.xExtent;
 
                     remainingSquishDuration.x = SQUISH_DURATION;
                     scale.x = SQUISH_SCALE;
                 }
 
-                if (position.y > BOUNDS.bottom) {
+                if (position.y > BOUNDS.yExtent) {
                     movementPerSecond.y = 0;
-                    position.y = BOUNDS.bottom;
+                    position.y = BOUNDS.yExtent;
 
                     remainingSquishDuration.y = SQUISH_DURATION;
                     scale.y = SQUISH_SCALE;
-                } else if (position.y < BOUNDS.top) {
+                } else if (position.y < BOUNDS.y) {
                     movementPerSecond.y *= -0.85;
-                    position.y = BOUNDS.top;
+                    position.y = BOUNDS.y;
 
                     if (Math.random() > 0.5) {
                         movementPerSecond.y -= Math.random() * 80;

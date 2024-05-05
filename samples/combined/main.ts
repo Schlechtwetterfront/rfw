@@ -270,7 +270,7 @@ class App extends SampleApp {
                 this.numbers = new TextObject({
                     font,
                     text: '',
-                    position: new Vec2(BOUNDS.right - 8, BOUNDS.bottom - 8),
+                    position: new Vec2(BOUNDS.xExtent - 8, BOUNDS.y - 8),
                     width: FIGURE_WIDTH,
                     style: {
                         size: 32,
