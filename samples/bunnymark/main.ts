@@ -46,6 +46,8 @@ class BunnyMarkApp extends SampleApp {
     private readonly globalTextBatches = new TextBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
+        x: 'right',
+        y: 'up',
     });
 
     private meshBatches = new MeshBatcher({

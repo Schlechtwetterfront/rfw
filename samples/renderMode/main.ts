@@ -65,6 +65,8 @@ class RenderModeApp extends SampleApp {
     private readonly textBatches = new TextBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
+        x: 'right',
+        y: 'up',
     });
 
     private readonly lineBatches = new LineBatcher({

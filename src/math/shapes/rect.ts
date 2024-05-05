@@ -22,10 +22,8 @@ export interface RectLike {
  * `x` and `y` refer to the rectangle's top-left coordinates.
  */
 export interface ReadOnlyRect extends RectLike, Shape {
-    readonly left: number;
-    readonly right: number;
-    readonly top: number;
-    readonly bottom: number;
+    readonly xExtent: number;
+    readonly yExtent: number;
 
     /** @inheritdoc */
     intersectsRect(other: RectLike): boolean;
@@ -45,19 +43,11 @@ export interface ReadOnlyRect extends RectLike, Shape {
  * `x` and `y` refer to the rectangle's top-left coordinates.
  */
 export class Rect implements ReadOnlyRect, Vec2Like {
-    get left() {
-        return this.x;
-    }
-
-    get right() {
+    get xExtent() {
         return this.x + this.width;
     }
 
-    get top() {
-        return this.y;
-    }
-
-    get bottom() {
+    get yExtent() {
         return this.y + this.height;
     }
 

@@ -22,6 +22,8 @@ export class TextApp extends SampleApp {
     private readonly batches = new TextBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
+        x: 'right',
+        y: 'up',
     });
 
     override async initialize(): Promise<void> {

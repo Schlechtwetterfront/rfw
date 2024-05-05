@@ -11,11 +11,12 @@ import {
     resetBatchEntry,
 } from '../../rendering/batching';
 import { ByteBuffers } from '../../rendering/buffers';
+import { PositiveXAxis, PositiveYAxis } from '../../rendering/projection';
 import { TextureHandle } from '../../rendering/textures';
 import { Font } from '../../text';
 import { Pool } from '../../util/pool';
 import { RefCounts } from '../../util/ref-counts';
-import { buildTextBatchStorage } from './text-buffer-manager';
+import { getTextBatchStorageFactory } from './text-buffer-manager';
 
 export interface TextBatchEntry extends BatchEntry<TextLike> {
     font?: Font;
@@ -127,12 +128,24 @@ export type TextBatchStorageFactory = BatchStorageFactory<
     TextBatchStorage
 >;
 
-export interface TextBatcherOptions {
+export interface TextBatcherOptionsWithFactory {
     maxTextureCount: number;
     maxGlyphCount?: number;
-    batchStorageFactory?: TextBatchStorageFactory;
+    batchStorageFactory: TextBatchStorageFactory;
     changeTracker: ChangeTracker;
 }
+
+export interface TextBatcherOptionsWithAxes {
+    maxTextureCount: number;
+    maxGlyphCount?: number;
+    x: PositiveXAxis;
+    y: PositiveYAxis;
+    changeTracker: ChangeTracker;
+}
+
+export type TextBatcherOptions =
+    | TextBatcherOptionsWithFactory
+    | TextBatcherOptionsWithAxes;
 
 const DEFAULT_MAX_GLYPH_COUNT = 16_000;
 
@@ -175,7 +188,10 @@ export class TextBatcher extends Batcher<TextLike, TextBatchEntry, TextBatch> {
         super(maxSize, entryPool, batchPool, options.changeTracker);
 
         this.storageFactory =
-            options.batchStorageFactory ?? buildTextBatchStorage;
+            ('batchStorageFactory' satisfies keyof TextBatcherOptionsWithFactory) in
+            options
+                ? options.batchStorageFactory
+                : getTextBatchStorageFactory(options.x, options.y);
 
         this.maxTextureCount = options.maxTextureCount;
         this.maxGlyphCount = maxSize;
