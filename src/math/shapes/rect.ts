@@ -6,7 +6,7 @@ import { Shape } from './shape';
  * Rectangle shape interface.
  *
  * @remarks
- * `x` and `y` refer to the rectangle's top-left coordinates.
+ * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
  */
 export interface RectLike {
     readonly x: number;
@@ -19,10 +19,13 @@ export interface RectLike {
  * Read-only rectangle shape.
  *
  * @remarks
- * `x` and `y` refer to the rectangle's top-left coordinates.
+ * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
  */
 export interface ReadOnlyRect extends RectLike, Shape {
+    /** Rect `x` plus `width`. */
     readonly xExtent: number;
+
+    /** Rect `y` plus `height`. */
     readonly yExtent: number;
 
     /** @inheritdoc */
@@ -40,21 +43,27 @@ export interface ReadOnlyRect extends RectLike, Shape {
  * Rectangle shape.
  *
  * @remarks
- * `x` and `y` refer to the rectangle's top-left coordinates.
+ * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
  */
 export class Rect implements ReadOnlyRect, Vec2Like {
+    /** @inheritdoc */
     get xExtent() {
         return this.x + this.width;
     }
 
+    /** @inheritdoc */
     get yExtent() {
         return this.y + this.height;
     }
 
     constructor(
+        /** X origin. */
         public x: number,
+        /** Y origin. */
         public y: number,
+        /** Extent along positive X axis. */
         public width: number,
+        /** Extent along positive Y axis. */
         public height: number,
     ) {}
 
@@ -74,6 +83,11 @@ export class Rect implements ReadOnlyRect, Vec2Like {
         return this;
     }
 
+    /**
+     * Set this rect's dimensions to a bounding box of `points`.
+     * @param points - Points to encompass
+     * @returns Self
+     */
     setFromPoints(points: readonly Vec2Like[]): this {
         let minx = Number.MAX_VALUE;
         let miny = Number.MAX_VALUE;
@@ -331,6 +345,12 @@ export class Rect implements ReadOnlyRect, Vec2Like {
         return new Rect(x, y, width, height);
     }
 
+    /**
+     * Create a bounding box rect from `points`.
+     * @param points - Points to encompass
+     * @returns Bounding box rect
+     * @see {@link Rect.setFromPoints}
+     */
     static fromPoints(points: readonly Vec2Like[]): Rect {
         return this.zero().setFromPoints(points);
     }
