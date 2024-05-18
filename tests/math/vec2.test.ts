@@ -9,11 +9,6 @@ describe('vec2', () => {
     test('vec2', () => {
         expect(Vec2.zero()).toEqual({ x: 0, y: 0 });
 
-        expect(Vec2.zero().equalsVec(Vec2.zero())).toEqual(true);
-        expect(Vec2.one().equalsVec(Vec2.zero())).toEqual(false);
-        expect(Vec2.one().equals(1, 1)).toEqual(true);
-        expect(Vec2.one().equals(1.5, 0.5, 0.6)).toEqual(true);
-
         expect(Vec2.one().clone()).toEqual(Vec2.one());
 
         const v = Vec2.one();
@@ -23,6 +18,18 @@ describe('vec2', () => {
         expect(new Vec2(0, 1).normalize()).toEqual(new Vec2(0, 1));
 
         expect(new Vec2(0, 0).copyFrom(new Vec2(2, 4))).toEqual(new Vec2(2, 4));
+    });
+
+    test('equality', () => {
+        expect(Vec2.zero().equalsVec(Vec2.zero())).toEqual(true);
+        expect(Vec2.one().equalsVec(Vec2.zero())).toEqual(false);
+        expect(Vec2.one().equals(1, 1)).toEqual(true);
+        expect(Vec2.one().equals(1.5, 0.5, 0.6)).toEqual(true);
+
+        expect(Vec2.one().componentsEqual()).toBe(true);
+        expect(Vec2.zero().componentsEqual()).toBe(true);
+        expect(new Vec2(10, 10).componentsEqual()).toBe(true);
+        expect(new Vec2(10, 9).componentsEqual()).toBe(false);
     });
 
     test('set', () => {
@@ -39,8 +46,12 @@ describe('vec2', () => {
     });
 
     test('dot', () => {
-        expect(new Vec2(1, 1).dot(new Vec2(1, 1))).toEqual(2);
-        expect(new Vec2(4, -2).dot(new Vec2(3, 6))).toEqual(0);
+        expect(new Vec2(1, 1).dotVec(new Vec2(1, 1))).toEqual(2);
+        expect(new Vec2(4, -2).dotVec(new Vec2(3, 6))).toEqual(0);
+    });
+
+    test('dir', () => {
+        expect(new Vec2(1, 1).makeDirTo(2, 1)).toEqual({ x: 1, y: 0 });
     });
 
     test('angle', () => {
@@ -51,32 +62,46 @@ describe('vec2', () => {
         expect(new Vec2(-1, 0).radians).toBeCloseTo(Math.PI);
         expect(new Vec2(0, -1).radians).toBeCloseTo(Math.PI * 1.5);
 
-        expect(new Vec2(1, 1).radiansToVec(new Vec2(-1, 1))).toBeCloseTo(
+        expect(new Vec2(1, 1).radiansBetweenVec(new Vec2(-1, 1))).toBeCloseTo(
             Math.PI / 2,
         );
-        expect(new Vec2(1, 0).radiansToVec(new Vec2(-1, 0))).toBeCloseTo(
+        expect(new Vec2(1, 0).radiansBetweenVec(new Vec2(-1, 0))).toBeCloseTo(
             Math.PI,
         );
-        expect(new Vec2(0, 1).radiansToVec(new Vec2(0, -1))).toBeCloseTo(
+        expect(new Vec2(0, 1).radiansBetweenVec(new Vec2(0, -1))).toBeCloseTo(
             Math.PI,
         );
-        expect(new Vec2(1, 1).radiansToVec(new Vec2(-1, -1))).toBeCloseTo(
+        expect(new Vec2(1, 1).radiansBetweenVec(new Vec2(-1, -1))).toBeCloseTo(
             Math.PI,
         );
 
-        expect(new Vec2(1, 1).radiansTo(-1, -1)).toBeCloseTo(Math.PI);
+        expect(new Vec2(1, 1).radiansBetween(-1, -1)).toBeCloseTo(Math.PI);
 
         expect(new Vec2(1, 0).degrees).toBeCloseTo(0);
         expect(new Vec2(0, 1).degrees).toBeCloseTo(90);
         expect(new Vec2(-1, 0).degrees).toBeCloseTo(180);
         expect(new Vec2(0, -1).degrees).toBeCloseTo(270);
 
-        expect(new Vec2(1, 1).degreesToVec(new Vec2(-1, 1))).toBeCloseTo(90);
-        expect(new Vec2(1, 0).degreesToVec(new Vec2(-1, 0))).toBeCloseTo(180);
-        expect(new Vec2(0, 1).degreesToVec(new Vec2(0, -1))).toBeCloseTo(180);
-        expect(new Vec2(1, 1).degreesToVec(new Vec2(-1, -1))).toBeCloseTo(180);
+        expect(new Vec2(1, 1).degreesBetweenVec(new Vec2(-1, 1))).toBeCloseTo(
+            90,
+        );
+        expect(new Vec2(1, 0).degreesBetweenVec(new Vec2(-1, 0))).toBeCloseTo(
+            180,
+        );
+        expect(new Vec2(0, 1).degreesBetweenVec(new Vec2(0, -1))).toBeCloseTo(
+            180,
+        );
+        expect(new Vec2(1, 1).degreesBetweenVec(new Vec2(-1, -1))).toBeCloseTo(
+            180,
+        );
 
-        expect(new Vec2(1, 1).degreesTo(-1, -1)).toBeCloseTo(180);
+        expect(new Vec2(1, 1).degreesBetween(-1, -1)).toBeCloseTo(180);
+
+        expect(new Vec2(1, 1).degreesTo(2, 1)).toBe(0);
+        expect(new Vec2(1, 1).degreesTo(1, 2)).toBe(90);
+        expect(new Vec2(-1, -1).degreesTo(-2, -1)).toBe(180);
+        expect(new Vec2(0, 0).degreesTo(0, -1)).toBe(270);
+        expect(new Vec2(1, 1).degreesTo(2, 2)).toBe(45);
     });
 
     test('rotate degrees', () => {

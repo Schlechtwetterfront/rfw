@@ -6,26 +6,142 @@ import { Mat2DLike } from './mat2d';
  * Two-dimensional vector (point).
  */
 export interface Vec2Like {
+    /** X component. */
     readonly x: number;
+
+    /** Y component. */
     readonly y: number;
 }
 
 export interface ReadonlyVec2 extends Vec2Like {
+    /** Length. */
     get length(): number;
+
+    /** Squared length. */
+    get lengthSquared(): number;
+
+    /** Radians relativ to X axis. */
     get radians(): number;
+
+    /** Degrees relativ to X axis. */
     get degrees(): number;
 
-    dot(other: Vec2Like): number;
+    /** Get lesser of `x` or `y`. */
+    get min(): number;
 
+    /** Get greater of `x` or `y`. */
+    get max(): number;
+
+    /**
+     * Dot product.
+     * @param x
+     * @param y
+     * @returns Dot product.
+     */
+    dot(x: number, y?: number): number;
+
+    /**
+     * Dot product.
+     * @param vec
+     * @returns Dot product
+     */
+    dotVec(vec: Vec2Like): number;
+
+    /**
+     * Cross product.
+     * @param x
+     * @param y
+     * @returns Cross product
+     */
+    cross(x: number, y?: number): number;
+
+    /**
+     * Cross product.
+     * @param vec
+     * @returns Cross product
+     */
+    crossVec(vec: Vec2Like): number;
+
+    /**
+     * Get angle of the vector between this and (`x`, `y`).
+     * @param x
+     * @param y
+     * @returns Angle in radians
+     */
     radiansTo(x: number, y?: number): number;
+
+    /**
+     * Get angle of the vector between this and `vec`.
+     * @param vec
+     * @returns Angle in radians
+     */
     radiansToVec(vec: Vec2Like): number;
 
+    /**
+     * Get angle of the vector between this and (`x`, `y`).
+     * @param x
+     * @param y
+     * @returns Angle in degrees
+     */
     degreesTo(x: number, y?: number): number;
+
+    /**
+     * Get angle of the vector between this and `vec`.
+     * @param vec
+     * @returns Angle in degrees
+     */
     degreesToVec(vec: Vec2Like): number;
 
+    /**
+     * Get angle between this and (`x`, `y`) from origin.
+     * @param x
+     * @param y
+     * @returns Angle in radians
+     */
+    radiansBetween(x: number, y?: number): number;
+    /**
+     * Get angle between this and `vec` from origin.
+     * @param vec
+     * @returns Angle in radians
+     */
+    radiansBetweenVec(vec: Vec2Like): number;
+
+    /**
+     * Get angle between this and (`x`, `y`) from origin.
+     * @param x
+     * @param y
+     * @returns Angle in degrees
+     */
+    degreesBetween(x: number, y?: number): number;
+
+    /**
+     * Get angle between this and `vec` from origin.
+     * @param vec
+     * @returns Angle in radians
+     */
+    degreesBetweenVec(vec: Vec2Like): number;
+
+    /**
+     * Check equality of components.
+     * @param x
+     * @param y
+     * @param epsilon - Tolerance
+     * @returns `true` if equal within tolerance
+     */
     equals(x: number, y: number, epsilon?: number): boolean;
+
+    /**
+     * Check equality of vectors.
+     * @param other
+     * @param epsilon - Tolerance
+     * @returns `true` if equal within tolerance
+     */
     equalsVec(other: Vec2Like, epsilon?: number): boolean;
 
+    /**
+     * Create a new instance with equal components.
+     * @returns New instance
+     */
     clone(): Vec2;
 }
 
@@ -36,10 +152,17 @@ export interface ReadonlyVec2 extends Vec2Like {
  * new instances with {@link Vec2.clone}.
  */
 export class Vec2 implements ReadonlyVec2 {
+    /** @inheritdoc */
     get length(): number {
         return Math.sqrt(this.x ** 2 + this.y ** 2);
     }
 
+    /** @inheritdoc */
+    get lengthSquared(): number {
+        return this.x ** 2 + this.y ** 2;
+    }
+
+    /** @inheritdoc */
     get radians(): number {
         const length = this.length;
 
@@ -52,12 +175,24 @@ export class Vec2 implements ReadonlyVec2 {
         return radians < 0 ? radians + PI_2 : radians;
     }
 
+    /** @inheritdoc */
     get degrees(): number {
         return this.radians * TO_DEGREES;
     }
 
+    /** Set both `x` and `y`. */
     set xy(xy: number) {
         this.x = this.y = xy;
+    }
+
+    /** @inheritdoc */
+    get min(): number {
+        return Math.min(this.x, this.y);
+    }
+
+    /** @inheritdoc */
+    get max(): number {
+        return Math.max(this.x, this.y);
     }
 
     constructor(
@@ -65,6 +200,12 @@ export class Vec2 implements ReadonlyVec2 {
         public y = 0,
     ) {}
 
+    /**
+     * Set components.
+     * @param x - X value
+     * @param y - Y value, uses `x` if omitted
+     * @returns Self
+     */
     set(x: number, y?: number): this {
         this.x = x;
         this.y = y ?? x;
@@ -72,6 +213,12 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Add components.
+     * @param x
+     * @param y
+     * @returns Self
+     */
     add(x: number, y?: number): this {
         this.x += x;
         this.y += y ?? x;
@@ -79,6 +226,11 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Add a vector.
+     * @param vec
+     * @returns Self
+     */
     addVec(vec: Vec2Like): this {
         this.x += vec.x;
         this.y += vec.y;
@@ -86,6 +238,12 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Subtract components.
+     * @param x
+     * @param y
+     * @returns Self
+     */
     subtract(x: number, y?: number): this {
         this.x -= x;
         this.y -= y ?? x;
@@ -93,6 +251,12 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Make this vector the result of (`x`, `y`) - this vector.
+     * @param x
+     * @param y
+     * @returns Self
+     */
     subtractFrom(x: number, y?: number): this {
         this.x = x - this.x;
         this.y = (y ?? x) - this.y;
@@ -100,6 +264,11 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Subtract a vector.
+     * @param vec
+     * @returns Self
+     */
     subtractVec(vec: Vec2Like): this {
         this.x -= vec.x;
         this.y -= vec.y;
@@ -107,6 +276,11 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Make this vector the result of `vec` - this vector.
+     * @param vec
+     * @returns Self
+     */
     subtractFromVec(vec: Vec2Like): this {
         this.x = vec.x - this.x;
         this.y = vec.y - this.y;
@@ -114,6 +288,12 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Multiply components.
+     * @param x
+     * @param y
+     * @returns Self
+     */
     multiply(x: number, y?: number): this {
         this.x *= x;
         this.y *= y ?? x;
@@ -121,6 +301,11 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Multiply with a vec.
+     * @param vec
+     * @returns Self
+     */
     multiplyVec(vec: Vec2Like): this {
         this.x *= vec.x;
         this.y *= vec.y;
@@ -128,6 +313,11 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Multiply with matrix.
+     * @param mat
+     * @returns Self
+     */
     multiplyMat(mat: Mat2DLike): this {
         const { x, y } = this;
 
@@ -138,6 +328,11 @@ export class Vec2 implements ReadonlyVec2 {
     }
 
     // Sync: Mat2D.invert
+    /**
+     * Inverse multiply with matrix.
+     * @param mat
+     * @returns Self
+     */
     multiplyMatInverse(mat: Mat2DLike): this {
         const determinant = mat.a * mat.d - mat.b * mat.c;
 
@@ -156,6 +351,12 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Divide by components.
+     * @param x
+     * @param y
+     * @returns
+     */
     divide(x: number, y?: number): this {
         this.x /= x;
         this.y /= y ?? x;
@@ -163,6 +364,12 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Make this vector the result of (`x`, `y`) / this vector.
+     * @param x
+     * @param y
+     * @returns Self
+     */
     divideFrom(x: number, y?: number): this {
         this.x = x / this.x;
         this.y = (y ?? x) / this.y;
@@ -170,6 +377,11 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Divide by a vec.
+     * @param vec
+     * @returns Self
+     */
     divideVec(vec: Vec2Like): this {
         this.x /= vec.x;
         this.y /= vec.y;
@@ -177,6 +389,11 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Make this vector the result of `vec` / this vector.
+     * @param vec
+     * @returns Self
+     */
     divideFromVec(vec: Vec2Like): this {
         this.x = vec.x / this.x;
         this.y = vec.y / this.y;
@@ -184,32 +401,77 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
-    dot(vec: Vec2Like): number {
+    /** @inheritdoc */
+    dot(x: number, y?: number): number {
+        return this.x * x + this.y * (y ?? x);
+    }
+
+    /** @inheritdoc */
+    dotVec(vec: Vec2Like): number {
         return this.x * vec.x + this.y * vec.y;
     }
 
-    cross(vec: Vec2Like): number {
+    /** @inheritdoc */
+    cross(x: number, y?: number): number {
+        return this.x * (y ?? x) - this.y * x;
+    }
+
+    /** @inheritdoc */
+    crossVec(vec: Vec2Like): number {
         return this.x * vec.y - this.y * vec.x;
     }
 
+    /** @inheritdoc */
     radiansTo(x: number, y?: number): number {
+        const radians = Math.atan2((y ?? x) - this.y, x - this.x);
+
+        return radians < 0 ? radians + PI_2 : radians;
+    }
+
+    /** @inheritdoc */
+    radiansToVec(vec: Vec2Like): number {
+        return this.radiansTo(vec.x, vec.y);
+    }
+
+    /** @inheritdoc */
+    degreesTo(x: number, y?: number): number {
+        return this.radiansTo(x, y) * TO_DEGREES;
+    }
+
+    /** @inheritdoc */
+    degreesToVec(vec: Vec2Like): number {
+        return this.radiansTo(vec.x, vec.y) * TO_DEGREES;
+    }
+
+    /** @inheritdoc */
+    radiansBetween(x: number, y?: number): number {
         const radians = Math.atan2(y ?? x, x) - Math.atan2(this.y, this.x);
 
         return radians < 0 ? radians + PI_2 : radians;
     }
 
-    radiansToVec(vec: Vec2Like): number {
-        return this.radiansTo(vec.x, vec.y);
+    /** @inheritdoc */
+    radiansBetweenVec(vec: Vec2Like): number {
+        return this.radiansBetween(vec.x, vec.y);
     }
 
-    degreesTo(x: number, y?: number): number {
-        return this.radiansTo(x, y ?? x) * TO_DEGREES;
+    /** @inheritdoc */
+    degreesBetween(x: number, y?: number): number {
+        return this.radiansBetween(x, y ?? x) * TO_DEGREES;
     }
 
-    degreesToVec(vec: Vec2Like): number {
-        return this.radiansToVec(vec) * TO_DEGREES;
+    /** @inheritdoc */
+    degreesBetweenVec(vec: Vec2Like): number {
+        return this.radiansBetweenVec(vec) * TO_DEGREES;
     }
 
+    /**
+     * Rotate this vector around a point.
+     * @param radians - Amount to rotate in radians
+     * @param cx - Center x
+     * @param cy - Center y
+     * @returns Self
+     */
     rotateRadians(radians: number, cx?: number, cy?: number): this {
         cx ??= 0;
         cy ??= 0;
@@ -225,10 +487,23 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Rotate this vector around a point.
+     * @param radians - Amount to rotate in radians
+     * @param center - Center
+     * @returns Self
+     */
     rotateRadiansVec(radians: number, center: Vec2Like): this {
         return this.rotateRadians(radians, center.x, center.y);
     }
 
+    /**
+     * Rotate this vector around a point.
+     * @param degrees - Amount to rotate in degrees
+     * @param cx - Center x
+     * @param cy - Center y
+     * @returns Self
+     */
     rotateDegrees(degrees: number, cx?: number, cy?: number): this {
         cx ??= 0;
         cy ??= 0;
@@ -244,10 +519,50 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Rotate this vector around a point.
+     * @param degrees - Amount to rotate in radians
+     * @param center - Center
+     * @returns Self
+     */
     rotateDegreesVec(degrees: number, center: Vec2Like): this {
         return this.rotateDegrees(degrees, center.x, center.y);
     }
 
+    /**
+     * Make this vector the direction vector between this and (`x`, `y`).
+     * @param x
+     * @param y
+     * @returns Self
+     */
+    makeDirTo(x: number, y?: number): this {
+        return this.subtractFrom(x, y ?? x).normalize();
+    }
+
+    /**
+     * Make this vector the direction vector between this and vec.
+     * @param vec
+     * @returns Self
+     */
+    makeDirToVec(vec: Vec2Like): this {
+        return this.subtractFromVec(vec).normalize();
+    }
+
+    /**
+     * Make all components absolute.
+     * @returns Self
+     */
+    makeAbsolute(): this {
+        this.x = Math.abs(this.x);
+        this.y = Math.abs(this.y);
+
+        return this;
+    }
+
+    /**
+     * Normalize.
+     * @returns Self
+     */
     normalize(): this {
         const length = this.length;
 
@@ -257,6 +572,10 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Floor all components.
+     * @returns Self
+     */
     floor(): this {
         this.x = Math.floor(this.x);
         this.y = Math.floor(this.y);
@@ -264,6 +583,10 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Ceil all components.
+     * @returns Self
+     */
     ceil(): this {
         this.x = Math.ceil(this.x);
         this.y = Math.ceil(this.y);
@@ -271,6 +594,10 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Round all components.
+     * @returns Self
+     */
     round(): this {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);
@@ -278,6 +605,12 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Clamp all components.
+     * @param min - Min
+     * @param max - Max
+     * @returns Self
+     */
     clamp(min = 0, max = 1): this {
         this.x = Math.min(max, Math.max(min, this.x));
         this.y = Math.min(max, Math.max(min, this.y));
@@ -285,6 +618,14 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Clamp x and y separately.
+     * @param minX - Min X
+     * @param minY - Min Y
+     * @param maxX - Max X
+     * @param maxY - Max Y
+     * @returns Self
+     */
     clampSeparate(minX = 0, minY = 0, maxX = 0, maxY = 0): this {
         this.x = Math.min(maxX, Math.max(minX, this.x));
         this.y = Math.min(maxY, Math.max(minY, this.y));
@@ -292,18 +633,31 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /** @inheritdoc */
     equals(x: number, y: number, epsilon: number = Number.EPSILON): boolean {
         return Math.abs(this.x - x) < epsilon && Math.abs(this.y - y) < epsilon;
     }
 
+    /** @inheritdoc */
     equalsVec(other: Vec2Like, epsilon?: number): boolean {
         return this.equals(other.x, other.y, epsilon);
     }
 
+    /** @inheritdoc */
+    componentsEqual(epsilon: number = Number.EPSILON): boolean {
+        return Math.abs(this.x - this.y) < epsilon;
+    }
+
+    /** @inheritdoc */
     clone(): Vec2 {
         return new Vec2(this.x, this.y);
     }
 
+    /**
+     * Copy components from `other`.
+     * @param other
+     * @returns Self
+     */
     copyFrom(other: Vec2Like): this {
         this.x = other.x;
         this.y = other.y;
@@ -311,11 +665,20 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
+    /**
+     * Copy components into a typed array.
+     * @param array - Typed array
+     * @param offset - Element offset
+     */
     copyTo(array: TypedArray, offset = 0): void {
         array[0 + offset] = this.x;
         array[1 + offset] = this.y;
     }
 
+    /**
+     * Get a read-only version of this vector. Does not clone.
+     * @returns Read-only vector
+     */
     asReadonly(): ReadonlyVec2 {
         return this;
     }
@@ -326,6 +689,10 @@ export class Vec2 implements ReadonlyVec2 {
 
     static distance(from: Vec2Like, to: Vec2Like): number {
         return TEMP_VEC.copyFrom(from).subtractVec(to).length;
+    }
+
+    static distanceSquared(from: Vec2Like, to: Vec2Like): number {
+        return TEMP_VEC.copyFrom(from).subtractVec(to).lengthSquared;
     }
 
     static from(v: Vec2Like): Vec2 {
