@@ -123,7 +123,7 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.LESS);
+        gl.depthFunc(gl.GEQUAL);
         gl.depthMask(false);
     }
 
