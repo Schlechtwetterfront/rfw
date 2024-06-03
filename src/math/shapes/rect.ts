@@ -89,10 +89,10 @@ export class Rect implements ReadonlyRect, Vec2Like {
      * @returns Self
      */
     setFromPoints(points: readonly Vec2Like[]): this {
-        let minx = Number.MAX_VALUE;
-        let miny = Number.MAX_VALUE;
-        let maxx = Number.MIN_VALUE;
-        let maxy = Number.MIN_VALUE;
+        let minx = Infinity;
+        let miny = Infinity;
+        let maxx = -Infinity;
+        let maxy = -Infinity;
 
         for (let i = 0; i < points.length; i++) {
             const { x, y } = points[i]!;
