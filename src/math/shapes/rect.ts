@@ -31,6 +31,13 @@ export interface ReadonlyRect extends RectLike, Shape {
     /** @inheritdoc */
     intersectsRect(other: RectLike): boolean;
 
+    /**
+     * Check if this rect contains `other`.
+     * @param other - Rect
+     * @returns `true` if contained
+     */
+    containsRect(other: RectLike): boolean;
+
     /** @inheritdoc */
     containsPoint(point: Vec2Like): boolean;
 
@@ -238,6 +245,19 @@ export class Rect implements ReadonlyRect, Vec2Like {
             other.y < this.y + this.height
         ) {
             return this.y < other.y + other.height;
+        }
+
+        return false;
+    }
+
+    /** @inheritdoc */
+    containsRect(other: RectLike): boolean {
+        if (
+            this.x <= other.x &&
+            this.y <= other.y &&
+            this.x + this.width >= other.x + other.width
+        ) {
+            return this.y + this.height >= other.y + other.height;
         }
 
         return false;
