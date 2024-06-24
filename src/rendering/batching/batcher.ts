@@ -29,7 +29,7 @@ import { BatchEntry, BatchEntryChange } from './entry';
  * versions of {@link Batch} and {@link BatchEntry} may be necessary.
  */
 export abstract class Batcher<
-    O extends WeakKey,
+    O,
     E extends BatchEntry<O> = BatchEntry<O>,
     B extends Batch<O, E> = Batch<O, E>,
 > implements ObjectSet<O>
@@ -40,7 +40,7 @@ export abstract class Batcher<
     protected readonly queuedAdds: E[] = [];
 
     /** For faster lookup of object -> batch. */
-    protected objectBatches = new WeakMap<O, B>();
+    protected readonly objectBatches = new Map<O, B>();
 
     /**
      * Batches. All batches in this collection are at least partially occupied.
@@ -83,14 +83,14 @@ export abstract class Batcher<
      * @returns `true` if batcher contains the object
      */
     has(object: O): boolean {
-        const { queuedAdds } = this;
-
         const batch = this.objectBatches.get(object);
         const entry = batch?.getEntry(object);
 
         if (entry) {
             return true;
         }
+
+        const { queuedAdds } = this;
 
         for (let i = 0; i < queuedAdds.length; i++) {
             const entry = queuedAdds[i]!;
@@ -108,8 +108,6 @@ export abstract class Batcher<
      * @param object - Changed object
      */
     change(object: O): void {
-        const { queuedAdds } = this;
-
         const batch = this.objectBatches.get(object);
 
         const entry = batch?.getEntry(object);
@@ -121,6 +119,8 @@ export abstract class Batcher<
 
             return;
         }
+
+        const { queuedAdds } = this;
 
         for (let i = 0; i < queuedAdds.length; i++) {
             const entry = queuedAdds[i]!;
@@ -141,8 +141,6 @@ export abstract class Batcher<
      * @returns `true` if an entry was deleted
      */
     delete(object: O): boolean {
-        const { queuedAdds } = this;
-
         const batch = this.objectBatches.get(object);
 
         this.objectBatches.delete(object);
@@ -156,6 +154,8 @@ export abstract class Batcher<
 
             return true;
         }
+
+        const { queuedAdds } = this;
 
         for (let i = 0; i < queuedAdds.length; i++) {
             const entry = queuedAdds[i]!;
