@@ -5,11 +5,11 @@ import { ObjectOptions, SceneObject } from './graph';
 
 export class LineSegment {
     constructor(
-        public readonly before: Vec2,
-        public readonly start: Vec2,
-        public readonly end: Vec2,
-        public readonly after: Vec2,
-        public readonly length: number,
+        public before: Vec2,
+        public start: Vec2,
+        public end: Vec2,
+        public after: Vec2,
+        public length: number,
     ) {}
 }
 
@@ -61,7 +61,7 @@ export class LineObject extends SceneObject implements SizedObject {
 
         this._points = points;
 
-        this._segments = Array.from(this.getLineSegments());
+        this._segments = this.buildLineSegments(this._segments);
     }
 
     get closed(): boolean {
@@ -70,7 +70,7 @@ export class LineObject extends SceneObject implements SizedObject {
     set closed(closed: boolean) {
         this._closed = closed;
 
-        this._segments = Array.from(this.getLineSegments());
+        this._segments = this.buildLineSegments(this._segments);
     }
 
     get segmentCount() {
@@ -103,12 +103,19 @@ export class LineObject extends SceneObject implements SizedObject {
         this._style = lineStyleOrDefaults(options?.style);
         this._points = options?.points ?? [];
         this._closed = options?.closed ?? false;
-        this._segments = Array.from(this.getLineSegments());
+        this._segments = Array.from(this.buildLineSegments());
     }
 
-    *getLineSegments() {
+    buildLineSegments(segments?: LineSegment[]): LineSegment[] {
         const { _points: points } = this;
         const pointCount = points.length;
+        const segmentCount = this._closed ? pointCount : pointCount - 1;
+
+        segments ??= [];
+
+        if (segments.length > segmentCount) {
+            segments.length = segmentCount;
+        }
 
         if (this._closed) {
             for (let i = 0; i < pointCount - 1; i++) {
@@ -122,7 +129,23 @@ export class LineObject extends SceneObject implements SizedObject {
 
                 const length = Math.sqrt(diffX ** 2 + diffY ** 2);
 
-                yield new LineSegment(before, start, end, after, length);
+                const segment = segments[i];
+
+                if (!segment) {
+                    segments[i] = new LineSegment(
+                        before,
+                        start,
+                        end,
+                        after,
+                        length,
+                    );
+                } else {
+                    segment.before = before;
+                    segment.start = start;
+                    segment.end = end;
+                    segment.after = after;
+                    segment.length = length;
+                }
             }
 
             const before = points[pointCount - 2]!;
@@ -135,7 +158,23 @@ export class LineObject extends SceneObject implements SizedObject {
 
             const length = Math.sqrt(diffX ** 2 + diffY ** 2);
 
-            yield new LineSegment(before, start, end, after, length);
+            const segment = segments[pointCount - 1];
+
+            if (!segment) {
+                segments[pointCount - 1] = new LineSegment(
+                    before,
+                    start,
+                    end,
+                    after,
+                    length,
+                );
+            } else {
+                segment.before = before;
+                segment.start = start;
+                segment.end = end;
+                segment.after = after;
+                segment.length = length;
+            }
         } else {
             for (let i = 0; i < pointCount - 1; i++) {
                 let before = points[i - 1];
@@ -164,8 +203,26 @@ export class LineObject extends SceneObject implements SizedObject {
                     }
                 }
 
-                yield new LineSegment(before, start, end, after, length);
+                const segment = segments[i];
+
+                if (!segment) {
+                    segments[i] = new LineSegment(
+                        before,
+                        start,
+                        end,
+                        after,
+                        length,
+                    );
+                } else {
+                    segment.before = before;
+                    segment.start = start;
+                    segment.end = end;
+                    segment.after = after;
+                    segment.length = length;
+                }
             }
         }
+
+        return segments;
     }
 }
