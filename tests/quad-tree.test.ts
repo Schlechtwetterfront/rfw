@@ -108,6 +108,37 @@ describe('quad tree', () => {
         expect([...t.quads()]).toHaveLength(1);
     });
 
+    test('deletes entries (spatial)', () => {
+        const t = new QuadTree({ x: 0, y: 0, width: 40, height: 20 }, 1);
+
+        const e1 = new RectEntry(5, 1);
+
+        expect(t.add(e1)).toBe(true);
+        expect(t.size).toEqual(1);
+        expect([...t.quads()]).toHaveLength(1);
+
+        expect(t.deleteSpatial(e1)).toBe(true);
+        expect(t.size).toEqual(0);
+        expect([...t.quads()]).toHaveLength(1);
+    });
+
+    test('does not delete entries if moved (spatial)', () => {
+        const t = new QuadTree({ x: 0, y: 0, width: 40, height: 40 }, 1, 1);
+
+        const e1 = new RectEntry(5, 1);
+        const e2 = new RectEntry(5, 1);
+
+        expect(t.add(e1)).toBe(true);
+        expect(t.add(e2)).toBe(true);
+        expect(t.size).toEqual(2);
+        expect([...t.quads()]).toHaveLength(5);
+
+        e1.rect.x += 20;
+
+        expect(t.deleteSpatial(e1)).toBe(false);
+        expect(t.size).toEqual(2);
+    });
+
     test('clears', () => {
         const t = new QuadTree({ x: 0, y: 0, width: 40, height: 20 }, 1);
 

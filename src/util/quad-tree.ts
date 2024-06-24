@@ -113,10 +113,15 @@ export class QuadTree<E extends QuadTreeEntry> {
     }
 
     /**
-     * Delete an entry from the quad tree
+     * Delete an entry from the quad tree.
      * @param entry - Entry to delete (via reference comparison)
      * @param merge - If `true`, try to merge quads after the deletion
      * @returns `true` if `entry` was deleted
+     *
+     * @remarks
+     * Traverses the whole tree to ensure the entry is deleted. If the entry's position and size has
+     * not changed, use {@link QuadTree.deleteSpatial} for a delete that uses the quad tree's fast
+     * spatial query.
      */
     delete(entry: E, merge = false): boolean {
         if (this.tryDelete(this.root, entry, merge)) {
@@ -135,13 +140,81 @@ export class QuadTree<E extends QuadTreeEntry> {
             if (this.tryDelete(quad.topLeft, entry, merge)) {
                 deleted = true;
             }
+
             if (this.tryDelete(quad.topRight, entry, merge)) {
                 deleted = true;
             }
+
             if (this.tryDelete(quad.bottomLeft, entry, merge)) {
                 deleted = true;
             }
+
             if (this.tryDelete(quad.bottomRight, entry, merge)) {
+                deleted = true;
+            }
+
+            if (deleted && merge) {
+                this.tryMerge(quad);
+            }
+
+            return deleted;
+        }
+
+        const index = quad.entries.indexOf(entry);
+
+        if (index > -1) {
+            quad.entries.splice(index, 1);
+
+            if (merge) {
+                this.tryMerge(quad);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Delete an entry from the quad tree.
+     * @param entry - Entry to delete (via reference comparison)
+     * @param merge - If `true`, try to merge quads after the deletion
+     * @returns `true` if `entry` was deleted
+     *
+     * @remarks
+     * If the entry's position or shape has changed, use {@link QuadTree.delete} to ensure its deletion.
+     */
+    deleteSpatial(entry: E, merge = false): boolean {
+        if (this.tryDeleteSpatial(this.root, entry, merge)) {
+            this._size--;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private tryDeleteSpatial(quad: _Quad<E>, entry: E, merge: boolean) {
+        if (!entry.intersectsRect(quad.bounds)) {
+            return false;
+        }
+
+        if (quad.isSubdivided()) {
+            let deleted = false;
+
+            if (this.tryDeleteSpatial(quad.topLeft, entry, merge)) {
+                deleted = true;
+            }
+
+            if (this.tryDeleteSpatial(quad.topRight, entry, merge)) {
+                deleted = true;
+            }
+
+            if (this.tryDeleteSpatial(quad.bottomLeft, entry, merge)) {
+                deleted = true;
+            }
+
+            if (this.tryDeleteSpatial(quad.bottomRight, entry, merge)) {
                 deleted = true;
             }
 
