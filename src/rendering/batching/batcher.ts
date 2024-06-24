@@ -171,17 +171,19 @@ export abstract class Batcher<
     }
 
     clear(): void {
-        const { batches } = this;
+        const { _batches } = this;
 
-        this.objectBatches = new WeakMap();
+        this.objectBatches.clear();
 
         this.queuedAdds.length = 0;
 
-        for (let i = 0; i < batches.length; i++) {
-            const batch = batches[i]!;
+        for (let i = 0; i < _batches.length; i++) {
+            const batch = _batches[i]!;
 
-            batch.clear();
+            this.batchPool.return(batch);
         }
+
+        _batches.length = 0;
     }
 
     /**
@@ -230,6 +232,15 @@ export abstract class Batcher<
 
             if (batch.entries.length === 0) {
                 this.batchPool.return(batch);
+
+                const lastIndex = batches.length - 1;
+
+                // Swap and continue at same index
+                if (lastIndex > i) {
+                    batches[i] = batches[lastIndex]!;
+                    batches.length--;
+                    i--;
+                }
             }
         }
 
