@@ -122,9 +122,7 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-        gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.GEQUAL);
-        gl.depthMask(false);
+        gl.disable(gl.DEPTH_TEST);
     }
 
     protected prepareShader(textureCount: number, camera?: Camera2D) {
