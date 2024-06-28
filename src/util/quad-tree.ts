@@ -14,6 +14,13 @@ export interface QuadTreeEntry {
     intersectsRect(rect: RectLike): boolean;
 }
 
+enum QuadTreeUpdate {
+    NotPresent,
+    Present,
+    Deleted,
+    Added,
+}
+
 /**
  * Quad tree.
  *
@@ -110,6 +117,124 @@ export class QuadTree<E extends QuadTreeEntry> {
         quad.entries.push(entry);
 
         return true;
+    }
+
+    /**
+     * Update an entry in the tree after it was transformed. Entry may be added to the tree if it
+     * was not present before. It may also be deleted even if it was present if the new shape is
+     * outside the quad tree's bounds.
+     * @param entry - Entry to update
+     * @param merge - If `true`, try to merge quads after the deletion
+     * @returns `true` if the entry is present after this operation
+     *
+     * @remarks
+     * Combines both {@link QuadTree.add} and {@link QuadTree.delete} into one operation which
+     * removes the need to traverse part of the tree again in {@link QuadTree.add}.
+     */
+    update(entry: E, merge = false): boolean {
+        const update = this._update(this.root, entry, true, merge);
+
+        if (update === QuadTreeUpdate.Added) {
+            this._size++;
+        } else if (update === QuadTreeUpdate.Deleted) {
+            this._size--;
+        }
+
+        return update === QuadTreeUpdate.Present ||
+            update === QuadTreeUpdate.Added
+            ? true
+            : false;
+    }
+
+    private _update(
+        quad: _Quad<E>,
+        entry: E,
+        checkAdd: boolean,
+        merge: boolean,
+    ): QuadTreeUpdate {
+        let addCandidate = false;
+
+        if (checkAdd) {
+            addCandidate = entry.intersectsRect(quad.bounds);
+        }
+
+        if (quad.isSubdivided()) {
+            let deleted = false;
+            let present = false;
+            let added = false;
+
+            const updateTopLeft = this._update(
+                quad.topLeft,
+                entry,
+                addCandidate,
+                merge,
+            );
+            deleted = deleted || updateTopLeft === QuadTreeUpdate.Deleted;
+            present = present || updateTopLeft === QuadTreeUpdate.Present;
+            added = added || updateTopLeft === QuadTreeUpdate.Added;
+
+            const updateTopRight = this._update(
+                quad.topRight,
+                entry,
+                addCandidate,
+                merge,
+            );
+            deleted = deleted || updateTopRight === QuadTreeUpdate.Deleted;
+            present = present || updateTopRight === QuadTreeUpdate.Present;
+            added = added || updateTopRight === QuadTreeUpdate.Added;
+
+            const updateBottomLeft = this._update(
+                quad.bottomLeft,
+                entry,
+                addCandidate,
+                merge,
+            );
+            deleted = deleted || updateBottomLeft === QuadTreeUpdate.Deleted;
+            present = present || updateBottomLeft === QuadTreeUpdate.Present;
+            added = added || updateBottomLeft === QuadTreeUpdate.Added;
+
+            const updateBottomRight = this._update(
+                quad.bottomRight,
+                entry,
+                addCandidate,
+                merge,
+            );
+            deleted = deleted || updateBottomRight === QuadTreeUpdate.Deleted;
+            present = present || updateBottomRight === QuadTreeUpdate.Present;
+            added = added || updateBottomRight === QuadTreeUpdate.Added;
+
+            if (deleted && merge) {
+                this.tryMerge(quad);
+            }
+
+            return added
+                ? QuadTreeUpdate.Added
+                : present
+                  ? QuadTreeUpdate.Present
+                  : deleted
+                    ? QuadTreeUpdate.Deleted
+                    : QuadTreeUpdate.NotPresent;
+        }
+
+        const index = quad.entries.indexOf(entry);
+
+        if (!addCandidate && index > -1) {
+            quad.entries.splice(index, 1);
+
+            if (merge) {
+                this.tryMerge(quad);
+            }
+
+            return QuadTreeUpdate.Deleted;
+        }
+
+        if (addCandidate && index < 0) {
+            quad.entries.push(entry);
+
+            return QuadTreeUpdate.Added;
+        }
+
+        return index > -1 ? QuadTreeUpdate.Present : QuadTreeUpdate.NotPresent;
     }
 
     /**

@@ -139,6 +139,64 @@ describe('quad tree', () => {
         expect(t.size).toEqual(2);
     });
 
+    test('updates moved entry', () => {
+        const t = new QuadTree({ x: 0, y: 0, width: 40, height: 40 }, 1, 1);
+
+        const e1 = new RectEntry(5, 1);
+
+        expect(t.add(e1)).toBe(true);
+        expect(t.size).toEqual(1);
+
+        expect(t.intersections(new Rect(5, 5, 1, 1)).size).toBe(1);
+
+        e1.rect.x = 20;
+        e1.rect.y = 20;
+
+        expect(t.update(e1)).toBe(true);
+
+        expect(t.intersections(new Rect(5, 5, 1, 1)).size).toBe(0);
+        expect(t.intersections(new Rect(20, 20, 1, 1)).size).toBe(1);
+        expect(t.size).toEqual(1);
+    });
+
+    test('adds in update', () => {
+        const t = new QuadTree({ x: 0, y: 0, width: 40, height: 40 }, 1, 1);
+
+        const e1 = new RectEntry(50, 1);
+
+        expect(t.add(e1)).toBe(false);
+        expect(t.size).toEqual(0);
+
+        e1.rect.x = 5;
+        e1.rect.y = 5;
+
+        expect(t.update(e1)).toBe(true);
+
+        expect(t.intersections(new Rect(5, 5, 1, 1)).size).toBe(1);
+        expect(t.intersections(new Rect(50, 50, 1, 1)).size).toBe(0);
+        expect(t.size).toEqual(1);
+    });
+
+    test('deletes in update', () => {
+        const t = new QuadTree({ x: 0, y: 0, width: 40, height: 40 }, 1, 1);
+
+        const e1 = new RectEntry(5, 1);
+
+        expect(t.add(e1)).toBe(true);
+        expect(t.size).toEqual(1);
+
+        expect(t.intersections(new Rect(5, 5, 1, 1)).size).toBe(1);
+
+        e1.rect.x = 50;
+        e1.rect.y = 50;
+
+        expect(t.update(e1)).toBe(false);
+
+        expect(t.intersections(new Rect(5, 5, 1, 1)).size).toBe(0);
+        expect(t.intersections(new Rect(50, 50, 1, 1)).size).toBe(0);
+        expect(t.size).toEqual(0);
+    });
+
     test('clears', () => {
         const t = new QuadTree({ x: 0, y: 0, width: 40, height: 20 }, 1);
 
