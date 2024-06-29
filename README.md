@@ -2,7 +2,16 @@
 
 2D rendering library for WebGL.
 
-Check out the [docs](https://schlechtwetterfront.github.io/rfw).
+-   Get started easily with apps, providing a default "bundle" of systems to create your application from
+-   Tickers: run logic in a manner similar to ECS systems
+-   Scene (graphs)
+-   Low abstraction render tooling
+-   Math utility modules
+-   Change tracking
+-   Performance in mind
+-   Minimal dependencies
+
+For getting started, more info, and samples check out the [docs](https://schlechtwetterfront.github.io/rfw).
 
 ## License
 
