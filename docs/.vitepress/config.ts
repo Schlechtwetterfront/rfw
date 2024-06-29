@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-    title: 'rfw2d',
+    title: 'rfw',
     description: 'A WebGL2-powered 2D rendering library.',
     base: '/rfw/',
     themeConfig: {

@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-    name: rfw2d
+    name: rfw
     text: 2D Rendering Framework for the Web
     tagline: Don't let the framework get in the way
     actions:

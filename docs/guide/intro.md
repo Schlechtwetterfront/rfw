@@ -1,8 +1,8 @@
 # Introduction
 
-## What is rfw2d?
+## What is `rfw`?
 
-`rfw2d` is a 2D rendering framwork for the web. It provides a suite of components that can be used to create visual applications running in a browser.
+`rfw` is a 2D rendering framwork for the web. It provides a suite of components that can be used to create visual applications running in a browser.
 
 It is explicitly _not_ a game framework or engine.
 
