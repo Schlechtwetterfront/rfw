@@ -27,17 +27,19 @@ export abstract class SampleApp extends CanvasApp<WGLDriver> {
         }, '6fps');
     }
 
-    protected getDiagText() {
+    protected getDiagText(fps = true) {
         const { frameTime, actualFrameTime, drawCalls, triangles } =
             this.driver.diagnostics;
 
-        return `${frameTime.perSecond.toFixed(
-            0,
-        )} FPS (${actualFrameTime.average.toFixed(
-            3,
-        )}ms) | ${drawCalls.average.toFixed(0)} draw calls | ${
+        const s = `${drawCalls.average.toFixed(0)} draw calls | ${
             triangles.last
         } tris`;
+
+        return fps
+            ? `${frameTime.perSecond.toFixed(
+                  0,
+              )} FPS (${actualFrameTime.average.toFixed(3)}ms) | ` + s
+            : s;
     }
 
     protected override render(): void {

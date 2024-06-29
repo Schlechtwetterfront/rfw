@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "skipLibCheck": true,
+
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noUncheckedIndexedAccess": true,
+        "allowSyntheticDefaultImports": true,
+
+        "paths": {
+            "@/*": ["./docs/.vitepress/*"]
+        },
+
+        "types": ["vite/client"]
+    },
+    "include": ["./**/*.d.ts", "./**/*.vue", "./**/*.ts"],
+    "exclude": ["./dist", "./node_modules"]
+}
