@@ -1,3 +1,4 @@
+import { swapDeleteAt } from '../../util';
 import { Pool } from '../../util/pool';
 import { BatchEntry, BatchEntryChange } from './entry';
 import { BatchStorage } from './storage';
@@ -182,14 +183,14 @@ export class Batch<
             entry.offset = offset;
 
             if (change & BatchEntryChange.DELETE) {
-                entries.splice(i, 1);
-                entryChanges.splice(i, 1);
+                swapDeleteAt(entries, i);
+                swapDeleteAt(entryChanges, i);
 
                 this.onDelete(entry);
 
                 // Note!
-                i -= 1;
-                entryCount -= 1;
+                i--;
+                entryCount--;
             } else {
                 storage.update(entry, offset);
 

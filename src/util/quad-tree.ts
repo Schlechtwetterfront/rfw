@@ -1,5 +1,6 @@
 import { ReadonlyRect, Rect, RectLike } from '../math/shapes';
 import { ArraySet } from './array-set';
+import { swapDeleteAt } from './collections';
 import { Pool } from './pool';
 
 /**
@@ -219,7 +220,7 @@ export class QuadTree<E extends QuadTreeEntry> {
         const index = quad.entries.indexOf(entry);
 
         if (!addCandidate && index > -1) {
-            quad.entries.splice(index, 1);
+            swapDeleteAt(quad.entries, index);
 
             if (merge) {
                 this.tryMerge(quad);
@@ -288,7 +289,7 @@ export class QuadTree<E extends QuadTreeEntry> {
         const index = quad.entries.indexOf(entry);
 
         if (index > -1) {
-            quad.entries.splice(index, 1);
+            swapDeleteAt(quad.entries, index);
 
             if (merge) {
                 this.tryMerge(quad);
@@ -353,7 +354,7 @@ export class QuadTree<E extends QuadTreeEntry> {
         const index = quad.entries.indexOf(entry);
 
         if (index > -1) {
-            quad.entries.splice(index, 1);
+            swapDeleteAt(quad.entries, index);
 
             if (merge) {
                 this.tryMerge(quad);

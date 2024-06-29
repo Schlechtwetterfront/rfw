@@ -1,5 +1,6 @@
 import { ChangeTracker } from '../../app/change-tracking';
 import { ObjectSet } from '../../collections';
+import { swapDeleteAt } from '../../util';
 import { Pool } from '../../util/pool';
 import { Batch } from './batch';
 import { BatchEntry, BatchEntryChange } from './entry';
@@ -161,7 +162,10 @@ export abstract class Batcher<
             const entry = queuedAdds[i]!;
 
             if (entry.object === object) {
-                queuedAdds.splice(i, 1);
+                swapDeleteAt(queuedAdds, i);
+
+                // Note!
+                i--;
 
                 return true;
             }

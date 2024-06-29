@@ -1,4 +1,5 @@
 import { SceneGraphObject } from '.';
+import { swapDeleteAt } from '../util';
 import { Base, BaseOptions, OBJECT_KIND, ObjectKind } from './graph';
 
 export interface GroupOptions extends BaseOptions {
@@ -56,7 +57,7 @@ export class Group extends Base {
                     const child = this._children[i]!;
                     child.parent = undefined;
 
-                    this._children.splice(i, 1);
+                    swapDeleteAt(this._children, i);
                 }
 
                 return;

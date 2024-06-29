@@ -4,6 +4,7 @@ export * from './array-set';
 export * from './arrays';
 export * from './assert';
 export * from './canvas-resizer';
+export * from './collections';
 export * from './image';
 export * from './measuring';
 export * from './pool';
