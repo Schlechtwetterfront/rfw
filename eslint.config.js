@@ -32,7 +32,6 @@ export default tseslint.config(
     {
         ignores: [
             'dist/',
-            'docs/',
             'node_modules/',
             'eslint.config.js',
             'vite-env.d.ts',
