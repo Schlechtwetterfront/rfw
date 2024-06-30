@@ -305,15 +305,37 @@ export class Batch<
 
                 hasRemovedElements = true;
             } else if (change & BatchEntryChange.DELETE) {
-                if (compact) {
-                    // Copy everything to the right over the now-free space
-                    storage.copyWithin(offset, offset + entry.size, totalSize);
+                const swapped = swapDeleteAt(this._entries, i);
+                swapDeleteAt(this.entryChanges, i);
+
+                // If swapped is undefined, current entry is last entry.
+                if (swapped) {
+                    // Any diff in the swapped entry's size needs to be adjusted for because
+                    // the change is replaced with CONTENT below.
+                    totalSize -= swapped.newSize - swapped.size;
+
+                    const isDelete =
+                        this.entryChanges[i]! & BatchEntryChange.DELETE;
+
+                    if (!isDelete) {
+                        if (compact) {
+                            // Adjust right boundary to swapped entry's new size, entry can then just
+                            // re-write its contents into the buffer.
+                            // Handles NONE, CONTENT, and SIZE_DECREASE changes.
+                            storage.copyWithin(
+                                offset + swapped.newSize,
+                                offset + entry.size,
+                                totalSize - swapped.size,
+                            );
+                        }
+
+                        swapped.size = swapped.newSize;
+
+                        this.entryChanges[i] = BatchEntryChange.CONTENT;
+                    }
                 }
 
                 totalSize -= entry.size;
-
-                this._entries.splice(i, 1);
-                this.entryChanges.splice(i, 1);
 
                 this.onDelete(entry);
 
