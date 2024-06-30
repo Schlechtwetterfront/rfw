@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref } from 'vue';
+import { ref } from 'vue';
 import { BENCHES, Bench, BenchItem } from './benches';
 import { timeoutPromise } from './util';
 
