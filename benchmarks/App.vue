@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
 import { BENCHES, Bench, BenchItem } from './benches';
+import { timeoutPromise } from './util';
 
 interface BenchItemResult {
     average: number;
     item: BenchItem;
-    fastest: boolean;
     relative: number;
 }
 
@@ -13,6 +13,16 @@ const iterations = ref(10);
 const running = ref<Bench>();
 const last = ref<Bench>();
 const results = ref<BenchItemResult[]>([]);
+
+function sortResults() {
+    results.value.sort((a, b) => a.average - b.average);
+
+    const baseline = results.value.find(i => i.item.baseline)?.average;
+
+    if (baseline !== undefined) {
+        results.value.forEach(i => (i.relative = i.average / baseline));
+    }
+}
 
 async function run(bench: Bench) {
     if (running.value) {
@@ -23,7 +33,7 @@ async function run(bench: Bench) {
     last.value = bench;
     results.value.length = 0;
 
-    await nextTick();
+    await timeoutPromise()
 
     for (const item of bench.items) {
         // Warmup
@@ -40,19 +50,12 @@ async function run(bench: Bench) {
         results.value.push({
             item,
             average: total / iterations.value,
-            fastest: false,
             relative: 1,
         });
 
-        await nextTick();
-    }
+        sortResults();
 
-    results.value.sort((a, b) => a.average - b.average);
-
-    const baseline = results.value.find(i => i.item.baseline)?.average;
-
-    if (baseline !== undefined) {
-        results.value.forEach(i => (i.relative = i.average / baseline));
+        await timeoutPromise();
     }
 
     running.value = undefined;
@@ -74,7 +77,7 @@ async function run(bench: Bench) {
     <section v-if="last">
         <h2>Benchmark &mdash; {{ last.label }}</h2>
 
-        <h3>Results</h3>
+        <h3>Results <span v-if="running">(Running...)</span></h3>
         <table>
             <tr>
                 <th>Label</th>
