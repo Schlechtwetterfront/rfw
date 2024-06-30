@@ -31,6 +31,8 @@ export default tseslint.config(
     },
     {
         ignores: [
+            'docs/.vitepress/dist',
+            'docs/.vitepress/cache',
             'dist/',
             'node_modules/',
             'eslint.config.js',

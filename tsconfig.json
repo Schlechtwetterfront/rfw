@@ -1,14 +1,16 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "noEmit": true
+        "noEmit": true,
+        "types": ["vite/client"]
     },
     "include": [
+        "./docs/.vitepress/**/*",
+        "./docs/**/*",
         "./benchmarks/**/*",
         "./samples/**/*",
         "./src/**/*",
         "./tests/**/*",
-        "./vite-env.d.ts",
         "./env.d.ts"
     ]
 }

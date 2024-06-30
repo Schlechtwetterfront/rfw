@@ -20,5 +20,10 @@
 
         "types": ["@types/earcut"]
     },
-    "exclude": ["./dist", "./node_modules", "./docs"]
+    "exclude": [
+        "./dist",
+        "./node_modules",
+        "./docs/.vitepress/dist",
+        "./docs/.vitepress/cache"
+    ]
 }

@@ -6,7 +6,7 @@ interface BenchItemResult {
     average: number;
     item: BenchItem;
     fastest: boolean;
-    relative: number
+    relative: number;
 }
 
 const iterations = ref(10);
@@ -34,8 +34,6 @@ async function run(bench: Bench) {
         for (let i = 0; i < iterations.value; i++) {
             const timing = item.fn();
 
-
-
             total += timing;
         }
 
@@ -43,18 +41,18 @@ async function run(bench: Bench) {
             item,
             average: total / iterations.value,
             fastest: false,
-            relative: 1
+            relative: 1,
         });
 
         await nextTick();
     }
 
-    results.value.sort((a, b) => a.average - b.average)
+    results.value.sort((a, b) => a.average - b.average);
 
     const baseline = results.value.find(i => i.item.baseline)?.average;
 
     if (baseline !== undefined) {
-        results.value.forEach(i => i.relative = i.average / baseline)
+        results.value.forEach(i => (i.relative = i.average / baseline));
     }
 
     running.value = undefined;
@@ -64,7 +62,7 @@ async function run(bench: Bench) {
 <template>
     <h1>Benchmarks</h1>
 
-    <input type="text" pattern="[0-9]+" v-model.number="iterations">
+    <input type="text" pattern="[0-9]+" v-model.number="iterations" />
 
     <ul>
         <li v-for="bench in BENCHES" :key="bench.label">

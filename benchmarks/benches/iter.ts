@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function prep() {
-    const a = [];
-    const m = new Map();
-    const s = new Set();
+    const a: number[] = [];
+    const m = new Map<number, number>();
+    const s = new Set<number>();
 
     for (let i = 0; i < 100_000; i++) {
         a[i] = i;
