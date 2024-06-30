@@ -197,6 +197,33 @@ describe('quad tree', () => {
         expect(t.size).toEqual(0);
     });
 
+    test('does not merge quads with subdivided children', () => {
+        const t = new QuadTree({ x: 0, y: 0, width: 40, height: 40 }, 2, 2);
+
+        t.add(new RectEntry(3, 1));
+        t.add(new RectEntry(3, 1));
+
+        expect([...t.quads()]).toHaveLength(1);
+
+        const e1 = new RectEntry(3, 1);
+
+        t.add(e1);
+
+        expect([...t.quads()]).toHaveLength(1 + 4 + 4);
+
+        t.merge();
+
+        expect([...t.quads()]).toHaveLength(1 + 4 + 4);
+
+        t.delete(e1);
+
+        expect([...t.quads()]).toHaveLength(1 + 4 + 4);
+
+        t.merge();
+
+        expect([...t.quads()]).toHaveLength(1);
+    });
+
     test('clears', () => {
         const t = new QuadTree({ x: 0, y: 0, width: 40, height: 20 }, 1);
 

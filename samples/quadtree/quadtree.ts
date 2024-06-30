@@ -17,7 +17,7 @@ import { TextObject } from '../../src/scene/text';
 import { Font } from '../../src/text';
 import { BMFont, createFontFromBMFont } from '../../src/text/bmfont';
 import { TimeSampler } from '../../src/util/measuring';
-import { Quad, QuadTree } from '../../src/util/quad-tree';
+import { QuadTree } from '../../src/util/quad-tree';
 import { SampleApp } from '../shared';
 
 const TEMP_VEC = Vec2.zero();
@@ -48,7 +48,7 @@ export class QuadTreeApp extends SampleApp {
     private font!: Font;
 
     private quadTreeEntries = new Map<Rect, LineObject>();
-    private quadEntities = new Map<Quad, LineObject>();
+    private quadEntities: LineObject[] = [];
     private quadTree: QuadTree<Rect>;
     private cursor!: LineObject;
 
@@ -72,7 +72,7 @@ export class QuadTreeApp extends SampleApp {
         });
 
         canvas.addEventListener('click', e => {
-            if (e.ctrlKey) {
+            if (e.ctrlKey && !e.altKey) {
                 const pos = this.driver.projections.projectPointToScene(
                     new Vec2(e.offsetX, e.offsetY),
                     this.camera,
@@ -81,7 +81,7 @@ export class QuadTreeApp extends SampleApp {
                 this.addRect(pos.x, pos.y);
             }
 
-            if (e.altKey) {
+            if (!e.ctrlKey && e.altKey) {
                 this.updateMouse(e.offsetX, e.offsetY);
 
                 const intersections = this.quadTree.intersections(
@@ -89,7 +89,24 @@ export class QuadTreeApp extends SampleApp {
                 );
 
                 for (const entry of intersections.values) {
-                    this.quadTree.delete(entry);
+                    this.quadTree.delete(entry, true);
+
+                    const line = this.quadTreeEntries.get(entry);
+
+                    if (line) {
+                        this.quadTreeEntries.delete(entry);
+                        this.lineBatches.delete(line);
+                    }
+                }
+            } else if (e.ctrlKey && e.altKey) {
+                this.updateMouse(e.offsetX, e.offsetY);
+
+                const intersections = this.quadTree.intersections(
+                    this.sceneMouse,
+                );
+
+                for (const entry of intersections.values) {
+                    this.quadTree.deleteSpatial(entry, true);
 
                     const line = this.quadTreeEntries.get(entry);
 
@@ -169,28 +186,26 @@ export class QuadTreeApp extends SampleApp {
     protected override tick(elapsed: number): void {
         super.tick(elapsed);
 
+        this.quadEntities.forEach(o => this.lineBatches.delete(o));
+
         for (const quad of this.quadTree.quads()) {
-            let object = this.quadEntities.get(quad);
+            const pos = TEMP_VEC.copyFrom(quad.bounds);
 
-            if (!object) {
-                const pos = TEMP_VEC.copyFrom(quad.bounds);
+            const object = new LineObject({
+                points: buildRectPoints(
+                    pos.x,
+                    pos.y,
+                    quad.bounds.width,
+                    quad.bounds.height,
+                ),
+                closed: true,
+            });
 
-                object = new LineObject({
-                    points: buildRectPoints(
-                        pos.x,
-                        pos.y,
-                        quad.bounds.width,
-                        quad.bounds.height,
-                    ),
-                    closed: true,
-                });
+            this.quadEntities.push(object);
 
-                this.quadEntities.set(quad, object);
+            this.lineBatches.add(object);
 
-                this.lineBatches.add(object);
-
-                this.transforms.change(object);
-            }
+            this.transforms.change(object);
         }
 
         if (true) {

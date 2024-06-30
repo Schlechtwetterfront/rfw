@@ -401,6 +401,15 @@ export class QuadTree<E extends QuadTreeEntry> {
         this.tryMerge(quad.bottomLeft);
         this.tryMerge(quad.bottomRight);
 
+        if (
+            quad.topLeft.isSubdivided() ||
+            quad.topRight.isSubdivided() ||
+            quad.bottomLeft.isSubdivided() ||
+            quad.bottomRight.isSubdivided()
+        ) {
+            return;
+        }
+
         const entryCount =
             quad.topLeft.entries.length +
             quad.topRight.entries.length +
