@@ -33,7 +33,7 @@ async function run(bench: Bench) {
     last.value = bench;
     results.value.length = 0;
 
-    await timeoutPromise()
+    await timeoutPromise();
 
     for (const item of bench.items) {
         // Warmup
