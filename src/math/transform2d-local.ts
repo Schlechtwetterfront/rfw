@@ -34,10 +34,12 @@ export class LocalTransform2D
     composeWorld(parent?: LocalTransform2DLike): void {
         this.compose();
 
-        this.worldMatrix.copyFrom(this.matrix);
-
         if (parent) {
-            this.worldMatrix.multiplyMat(parent.worldMatrix);
+            this.worldMatrix
+                .copyFrom(parent.worldMatrix)
+                .multiplyMat(this.matrix);
+        } else {
+            this.worldMatrix.copyFrom(this.matrix);
         }
     }
 

@@ -76,7 +76,7 @@ export class Transform2D implements ReadonlyTransform2D {
 
         mat.makeIdentity()
             .scaleVec(this.scale)
-            .rotateDegrees(this.degrees)
+            .rotateRadians(this.radians)
             .translateVec(this.position);
     }
 

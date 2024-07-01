@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { Mat2D, Transform2D, Vec2 } from '../../src/math';
+import { LocalTransform2D, Mat2D, Transform2D, Vec2 } from '../../src/math';
 
 describe('transform2d', () => {
     test('rotation conversions', () => {
@@ -48,5 +48,24 @@ describe('transform2d', () => {
         expect(t.scale.y).toEqual(2);
         expect(t.position.x).toEqual(3);
         expect(t.position.y).toEqual(4);
+    });
+
+    test('composes child transforms correctly', () => {
+        const p = new Vec2(10, 0);
+
+        const parent = new LocalTransform2D();
+        const child = new LocalTransform2D();
+
+        parent.degrees = 90;
+
+        child.position.x = 10;
+
+        parent.composeWorld();
+        child.composeWorld(parent);
+
+        const pp = p.clone().multiplyMat(child.worldMatrix);
+
+        expect(pp.x).toBeCloseTo(0);
+        expect(pp.y).toBeCloseTo(20);
     });
 });
