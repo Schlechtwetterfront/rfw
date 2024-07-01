@@ -26,6 +26,7 @@ export default defineConfig({
                     text: 'Samples',
                     items: [
                         { text: 'Introduction', link: '/samples/intro' },
+                        { text: 'Simple Scene', link: '/samples/scene' },
                         { text: 'Bunnymark', link: '/samples/bunnymark' },
                         { text: 'Quad Tree', link: '/samples/quadtree' },
                         { text: 'Render Mode', link: '/samples/render-mode' },
