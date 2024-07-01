@@ -154,7 +154,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = Math.round(posVec.x);
+                    f32View[offset32++] = posVec.x;
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
@@ -173,7 +173,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY + scaledHeight * ym;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = Math.round(posVec.x);
+                    f32View[offset32++] = posVec.x;
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
@@ -192,7 +192,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = Math.round(posVec.x);
+                    f32View[offset32++] = posVec.x;
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
@@ -211,7 +211,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = Math.round(posVec.x);
+                    f32View[offset32++] = posVec.x;
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
@@ -230,7 +230,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY + scaledHeight * ym;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = Math.round(posVec.x);
+                    f32View[offset32++] = posVec.x;
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
@@ -249,7 +249,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY + scaledHeight * ym;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = Math.round(posVec.x);
+                    f32View[offset32++] = posVec.x;
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
