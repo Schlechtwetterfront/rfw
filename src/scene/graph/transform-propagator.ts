@@ -1,10 +1,11 @@
 import { SceneGraphObject } from '..';
 import { ChangeTracker } from '../../app/change-tracking';
+import { ArraySet } from '../../util';
 import { Group } from '../group';
 import { OBJECT_KIND, ObjectKind } from './base';
 
 export class TransformPropagator {
-    private readonly rootObjects = new Set<SceneGraphObject>();
+    private readonly rootObjects = new ArraySet<SceneGraphObject>();
 
     constructor(private readonly changeTracker: ChangeTracker) {}
 
@@ -14,6 +15,8 @@ export class TransformPropagator {
      * @param o - Scene graph object
      */
     change(o: SceneGraphObject): void {
+        this.changeTracker.registerChange();
+
         let actualObject = o;
 
         while (actualObject.parent) {
@@ -29,6 +32,8 @@ export class TransformPropagator {
      * @param o - Scene graph object
      */
     update(o: SceneGraphObject): void {
+        this.changeTracker.registerChange();
+
         this.traverseAndPropagate(o);
     }
 
@@ -36,11 +41,9 @@ export class TransformPropagator {
      * Compose changed transforms and propagate along scene graph.
      */
     propagate(): void {
-        if (this.rootObjects.size > 0) {
-            this.changeTracker.registerChange();
-        }
+        for (let i = 0; i < this.rootObjects.size; i++) {
+            const o = this.rootObjects.values[i]!;
 
-        for (const o of this.rootObjects) {
             this.traverseAndPropagate(o);
         }
 
