@@ -15,10 +15,6 @@ export class Group extends Base {
 
     [OBJECT_KIND] = ObjectKind.GROUP;
 
-    get [Symbol.iterator]() {
-        return this._children;
-    }
-
     get [Symbol.toStringTag]() {
         return `Group ${this.label}`;
     }
