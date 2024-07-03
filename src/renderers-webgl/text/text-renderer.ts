@@ -17,7 +17,7 @@ import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './text.template.frag?raw';
 import VERT_SRC from './text.vert?raw';
 
-interface TextRenderBatch extends RenderBatch {
+export interface TextRenderBatch extends RenderBatch {
     readonly glyphCount: number;
 
     readonly textureCount: number;
@@ -101,7 +101,7 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
         this.prepareRenderPass(textureCount, camera);
         this.prepareShader(textureCount, camera);
 
-        this.renderBatches(batches, batch => {
+        this.upload(batches, batch => {
             bindMultiTextureOneSampler(
                 gl,
                 this.driver.textures,

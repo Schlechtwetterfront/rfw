@@ -16,7 +16,7 @@ import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './textured-mesh-batch.template.frag?raw';
 import VERT_SRC from './textured-mesh-batch.vert?raw';
 
-interface TexturedMeshRenderBatch extends RenderBatch {
+export interface TexturedMeshRenderBatch extends RenderBatch {
     readonly vertexCount: number;
 
     readonly textureCount: number;
@@ -84,7 +84,7 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
         this.prepareRenderPass(textureCount, camera);
         this.prepareShader(textureCount, camera);
 
-        this.renderBatches(batches, batch => {
+        this.upload(batches, batch => {
             bindMultiTexture(
                 gl,
                 this.driver.textures,

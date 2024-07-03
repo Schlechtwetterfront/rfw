@@ -25,10 +25,7 @@ export abstract class WGLBatchedRenderer<B extends RenderBatch = RenderBatch>
         return Promise.resolve();
     }
 
-    protected renderBatches(
-        batches: readonly B[],
-        renderBatch?: (batch: B) => void,
-    ) {
+    upload(batches: readonly B[], renderBatch?: (batch: B) => void) {
         const { gl } = this;
 
         const batchCount = batches.length;
@@ -83,8 +80,6 @@ export abstract class WGLBatchedRenderer<B extends RenderBatch = RenderBatch>
             renderBatch?.(batch);
 
             gl.bindVertexArray(null);
-
-            this.driver.diagnostics.drawCalls.count();
         }
     }
 

@@ -78,7 +78,7 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
         this.prepareRenderPass(camera);
         this.prepareShader(camera);
 
-        this.renderBatches(batches, batch => {
+        this.upload(batches, batch => {
             gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, batch.size);
 
             this.driver.diagnostics.triangles.count(batch.size * 2);
