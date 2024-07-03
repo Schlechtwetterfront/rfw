@@ -91,7 +91,9 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-        gl.disable(gl.DEPTH_TEST);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
+        gl.depthMask(false);
     }
 
     protected prepareShader(camera?: Camera2D): void {

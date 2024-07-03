@@ -1,6 +1,6 @@
 import { BYTES_PER_GLYPH, FontTextureIndexProvider } from '.';
 import { Vec2 } from '../../math';
-import { MAX_Z } from '../../rendering';
+import { zToDepth } from '../../rendering';
 import {
     ElementByteBufferManager,
     ElementByteBuffersManager,
@@ -95,7 +95,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
             -layout.width * xm,
             -layout.height * ym,
         );
-        const z = object.transform.z / MAX_Z;
+        const z = zToDepth(object.transform.z);
 
         let processedGlyphs = 0;
 

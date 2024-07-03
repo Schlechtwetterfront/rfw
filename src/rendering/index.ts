@@ -4,6 +4,15 @@ export * from './render-driver';
 
 export const MAX_Z = 1000;
 
+/**
+ * Convert a z index to a depth value.
+ * @param z - Z value
+ * @returns Depth value
+ */
+export function zToDepth(z: number): number {
+    return (MAX_Z - z) / MAX_Z;
+}
+
 export interface ResourceOptions {
     label?: string;
 }

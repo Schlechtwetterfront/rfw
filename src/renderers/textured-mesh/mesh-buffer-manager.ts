@@ -1,7 +1,7 @@
 import { BYTES_PER_VERTEX, TexturedMeshLike } from '.';
 import { Color } from '../../colors';
 import { Vec2 } from '../../math';
-import { MAX_Z } from '../../rendering';
+import { zToDepth } from '../../rendering';
 import {
     ElementByteBufferManager,
     ElementByteBuffersManager,
@@ -67,7 +67,7 @@ export class MeshBufferManager<
         buffer.markChanged(vertexOffset, vertexOffset + triangleVertexCount);
 
         const posVec = TEMP_VEC;
-        const z = object.transform.z / MAX_Z;
+        const z = zToDepth(object.transform.z);
 
         for (let i = 0; i < triangleVertexCount; i++) {
             const index = indices[i]!;

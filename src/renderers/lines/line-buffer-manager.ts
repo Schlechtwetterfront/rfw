@@ -1,6 +1,6 @@
 import { BYTES_PER_LINE_SEGMENT, LineLike } from '.';
 import { Vec2 } from '../../math';
-import { MAX_Z } from '../../rendering';
+import { zToDepth } from '../../rendering';
 import { BatchEntry, BatchStorageFactory } from '../../rendering/batching';
 import {
     ElementByteBufferManager,
@@ -53,7 +53,7 @@ export class LineBufferManager extends ElementByteBuffersManager<
         const posVec = TEMP_VEC;
 
         const wt = object.transform.worldMatrix;
-        const z = object.transform.z / MAX_Z;
+        const z = zToDepth(object.transform.z);
 
         const lineStyle = object.style;
 
