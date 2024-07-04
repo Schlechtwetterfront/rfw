@@ -18,6 +18,16 @@ export default defineConfig({
                     items: [
                         { text: 'Introduction', link: '/guide/intro' },
                         { text: 'Quick Start', link: '/guide/get-started' },
+                        { text: 'Math', link: '/guide/math' },
+                        { text: 'Rendering', link: '/guide/rendering' },
+                    ],
+                },
+                {
+                    text: 'Advanced',
+                    items: [
+                        { text: 'Batching', link: '/guide/batching' },
+                        { text: 'Buffers', link: '/guide/buffers' },
+                        { text: 'Performance', link: '/guide/performance' },
                     ],
                 },
             ],

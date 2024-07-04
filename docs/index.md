@@ -10,6 +10,9 @@ hero:
           text: Get Started
           link: /guide/intro
         - theme: alt
+          text: Samples
+          link: /samples/intro
+        - theme: alt
           text: GitHub
           link: https://github.com/Schlechtwetterfront/rfw
 
