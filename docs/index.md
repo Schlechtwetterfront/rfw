@@ -14,7 +14,7 @@ hero:
           link: /samples/intro
         - theme: alt
           text: API Reference
-          link: /reference
+          link: /reference/
 
 features:
     - title: Scene graph
