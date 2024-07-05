@@ -9,6 +9,7 @@ export default defineConfig({
         nav: [
             { text: 'Guide', link: '/guide/intro' },
             { text: 'Samples', link: '/samples/intro' },
+            { text: 'API Reference', link: '/reference' },
         ],
 
         sidebar: {

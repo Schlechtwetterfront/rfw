@@ -29,8 +29,11 @@ jobs:
       - name: Install deps
         run: npm install
 
-      - name: Format check
+      - name: Build vitepress docs
         run: npm run docs:build
+
+      - name: Build reference
+        run: npm run reference:build
 
       - name: Upload
         uses: actions/upload-pages-artifact@v3

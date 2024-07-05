@@ -13,8 +13,8 @@ hero:
           text: Samples
           link: /samples/intro
         - theme: alt
-          text: GitHub
-          link: https://github.com/Schlechtwetterfront/rfw
+          text: API Reference
+          link: /reference
 
 features:
     - title: Scene graph

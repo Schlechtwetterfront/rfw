@@ -37,12 +37,14 @@
         "format:check": "prettier \"{docs,benchmarks,samples,src,tests}/**/*.{ts,js,css,scss,json,vue}\" --check",
         "docs:dev": "vitepress dev docs",
         "docs:build": "vitepress build docs",
-        "docs:preview": "vitepress preview docs"
+        "docs:preview": "vitepress preview docs",
+        "reference:build": "typedoc src/index.ts --out docs/.vitepress/dist/reference/"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^5.0.5",
         "eslint": "^8.57.0",
         "prettier": "^3.2.5",
+        "typedoc": "^0.26.3",
         "typescript": "^5.0.2",
         "typescript-eslint": "^7.1.1",
         "vite": "^5.1.5",
