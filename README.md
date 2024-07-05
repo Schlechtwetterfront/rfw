@@ -1,9 +1,9 @@
 # `rfw` [![npm](https://img.shields.io/npm/v/rfw2d)](https://www.npmjs.com/package/rfw2d)
 
-<p style="text-align: center;">
+<p align="center">
     <a href="https://schlechtwetterfront.github.io/rfw">Documentation</a>
     ·
-    <a href="https://schlechtwetterfront.github.io/rfw/samples/intro">Samples</a>
+    <a href="https://schlechtwetterfront.github.io/rfw/samples/">Samples</a>
     ·
     <a href="https://schlechtwetterfront.github.io/rfw/reference/">Reference</a>
 </p>
