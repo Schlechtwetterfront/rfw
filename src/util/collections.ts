@@ -3,6 +3,8 @@
  * @param a - Array to delete in
  * @param element - Element to delete
  * @returns Swapped element, if found
+ *
+ * @category Utility
  */
 export function swapDelete<T>(a: T[], element: T): T | undefined {
     const index = a.indexOf(element);
@@ -19,6 +21,8 @@ export function swapDelete<T>(a: T[], element: T): T | undefined {
  * @param a - Array to delete in
  * @param index - Index to delete
  * @returns Swapped element, if any
+ *
+ * @category Utility
  */
 export function swapDeleteAt<T>(a: T[], index: number): T | undefined {
     const { length } = a;

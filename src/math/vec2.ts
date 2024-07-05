@@ -4,6 +4,8 @@ import { Mat2DLike } from './mat2d';
 
 /**
  * Two-dimensional vector (point).
+ *
+ * @category Math
  */
 export interface Vec2Like {
     /** X component. */
@@ -13,6 +15,7 @@ export interface Vec2Like {
     readonly y: number;
 }
 
+/** @category Math */
 export interface ReadonlyVec2 extends Vec2Like {
     /** Length. */
     get length(): number;
@@ -150,6 +153,8 @@ export interface ReadonlyVec2 extends Vec2Like {
  *
  * Methods (like {@link Vec2.multiply}, {@link Vec2.add}) generally _mutate_ the instance. Create
  * new instances with {@link Vec2.clone}.
+ *
+ * @category Math
  */
 export class Vec2 implements ReadonlyVec2 {
     /** @inheritdoc */

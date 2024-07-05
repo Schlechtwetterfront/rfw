@@ -1,3 +1,4 @@
+/** @category Color */
 export type RGBATuple = [r: number, g: number, b: number, a: number];
 
 /**
@@ -6,6 +7,8 @@ export type RGBATuple = [r: number, g: number, b: number, a: number];
  * @param normalize - If `true`, write values in range [0,1] otherwise [0,255]
  * @param target - Optional, target tuple
  * @returns RGBA tuple
+ *
+ * @category Color
  */
 export function parseHexColor(
     hex: string,

@@ -1,6 +1,7 @@
 import { TO_RADIANS } from './constants';
 import { Vec2Like } from './vec2';
 
+/** @category Math */
 export enum MAT_ORDER {
     COLUMN_MAJOR,
     ROW_MAJOR,
@@ -12,6 +13,8 @@ export enum MAT_ORDER {
  * a c tx
  * b d ty
  * 0 0 1
+ *
+ * @category Math
  */
 export interface Mat2DLike {
     readonly a: number;
@@ -24,6 +27,8 @@ export interface Mat2DLike {
 
 /**
  * Read-only version of {@link Mat2D}.
+ *
+ * @category Math
  */
 export interface ReadonlyMat2D extends Mat2DLike {
     equals(other: Mat2DLike, epsilon?: number): boolean;
@@ -46,6 +51,8 @@ export interface ReadonlyMat2D extends Mat2DLike {
  *
  * Methods (like {@link Mat2D.translate}, {@link Mat2D.multiplyMat}) generally _mutate_ the instance.
  * Create new instances with {@link Mat2D.clone}.
+ *
+ * @category Math
  */
 export class Mat2D implements ReadonlyMat2D {
     get determinant() {

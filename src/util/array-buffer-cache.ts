@@ -3,6 +3,8 @@ import { roundUpPowerOfTwo } from '../math/util';
 /**
  * Keeps a cache of `ArrayBuffer`s. Buffers are sized to a power of two. Only one buffer exists for
  * any size at a time. It does not create new buffers for the same size.
+ *
+ * @category Utility
  */
 export class ArrayBufferCache {
     private readonly buffers = new Array<ArrayBuffer>();

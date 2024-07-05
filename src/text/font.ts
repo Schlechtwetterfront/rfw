@@ -4,6 +4,7 @@ import { Rect } from '../math/shapes';
 import { TextureHandle } from '../rendering/textures';
 import { TextLayout, TextLayoutOptions, layoutText } from './layout';
 
+/** @category Text */
 export class Glyph {
     constructor(
         public readonly codePoint: number,
@@ -15,6 +16,7 @@ export class Glyph {
     ) {}
 }
 
+/** @category Text */
 export class Font {
     private readonly _glyphs: Map<number, Glyph>;
 

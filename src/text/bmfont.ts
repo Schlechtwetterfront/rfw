@@ -3,6 +3,7 @@ import { Vec2 } from '../math';
 import { Rect } from '../math/shapes';
 import { TextureHandle } from '../rendering/textures';
 
+/** @category Text */
 export interface BMFontChar {
     id: number;
     index: number;
@@ -18,6 +19,7 @@ export interface BMFontChar {
     page: number;
 }
 
+/** @category Text */
 export interface BMFont {
     pages: string[];
     chars: BMFontChar[];
@@ -54,6 +56,7 @@ export interface BMFont {
     kernings: [];
 }
 
+/** @category Text */
 export function createFontFromBMFont(
     raw: BMFont,
     pages: TextureHandle[],

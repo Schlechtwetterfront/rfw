@@ -1,5 +1,7 @@
 /**
  * Array-backed set. Trades memory for iteration speed
+ *
+ * @category Utility
  */
 export class ArraySet<V> {
     private readonly indices: Map<V, number>;

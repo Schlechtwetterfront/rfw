@@ -1,5 +1,7 @@
 /**
  * Array-backed map. Trades memory for iteration speed
+ *
+ * @category Utility
  */
 export class ArrayMap<K, V> {
     private readonly indices: Map<K, number>;

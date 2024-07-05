@@ -5,6 +5,8 @@ import { Pool } from './pool';
 
 /**
  * Quad tree entry interface.
+ *
+ * @category Utility
  */
 export interface QuadTreeEntry {
     /**
@@ -26,6 +28,8 @@ enum QuadTreeUpdate {
  * Quad tree.
  *
  * Entries must implement the {@link QuadTreeEntry} interface.
+ *
+ * @category Utility
  */
 export class QuadTree<E extends QuadTreeEntry> {
     private readonly quadPool = new Pool({

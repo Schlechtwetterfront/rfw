@@ -1,6 +1,7 @@
 import { Vec2Like } from '../vec2';
 import { RectLike } from './rect';
 
+/** @category Math */
 export interface Shape {
     /**
      * Check if this shape and `rect` intersect.

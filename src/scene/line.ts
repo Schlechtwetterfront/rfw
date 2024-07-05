@@ -3,6 +3,7 @@ import { Color } from '../colors';
 import { ReadonlyVec2, Vec2 } from '../math';
 import { ObjectOptions, SceneObject } from './graph';
 
+/** @category Scene */
 export class LineSegment {
     constructor(
         public before: Vec2,
@@ -13,6 +14,7 @@ export class LineSegment {
     ) {}
 }
 
+/** @category Scene */
 export interface LineStyle {
     thickness: number;
     alignment: number;
@@ -21,6 +23,7 @@ export interface LineStyle {
     color: Color;
 }
 
+/** @category Scene */
 export function lineStyleOrDefaults(style?: Partial<LineStyle>): LineStyle {
     return {
         thickness: 1,
@@ -32,12 +35,14 @@ export function lineStyleOrDefaults(style?: Partial<LineStyle>): LineStyle {
     };
 }
 
+/** @category Scene */
 export interface LineOptions extends ObjectOptions {
     style?: Partial<LineStyle>;
     points?: Vec2[];
     closed?: boolean;
 }
 
+/** @category Scene */
 export class LineObject extends SceneObject implements SizedObject {
     private _style: LineStyle;
     private _points: Vec2[];

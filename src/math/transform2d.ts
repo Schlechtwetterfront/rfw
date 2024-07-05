@@ -4,6 +4,8 @@ import { ReadonlyVec2, Vec2 } from './vec2';
 
 /**
  * Two-dimensional transform (position, rotation, scale).
+ *
+ * @category Math
  */
 export interface Transform2DLike {
     readonly matrix: ReadonlyMat2D;
@@ -17,10 +19,13 @@ export interface Transform2DLike {
     readonly degrees: number;
 }
 
+/** @category Math */
 export interface ReadonlyTransform2D extends Transform2DLike {}
 
 /**
  * Two-dimensional transform (position, rotation, scale).
+ *
+ * @category Math
  */
 export class Transform2D implements ReadonlyTransform2D {
     /**

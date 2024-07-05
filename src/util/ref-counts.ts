@@ -3,6 +3,8 @@ import { ArrayMap } from './array-map';
 /**
  * Manually reference-count a collection of objects. Will not keep references to objects with a
  * ref-count of 0.
+ *
+ * @category Utility
  */
 export class RefCounts<O> {
     private readonly _refs = new ArrayMap<O, number>();

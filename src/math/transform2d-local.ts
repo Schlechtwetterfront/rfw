@@ -8,11 +8,14 @@ import {
 /**
  * A {@link Transform2D} representing a transform in some local space (e.g., parented in a scene
  * graph).
+ *
+ * @category Math
  */
 export interface LocalTransform2DLike extends Transform2DLike {
     readonly worldMatrix: Mat2DLike;
 }
 
+/** @category Math */
 export interface ReadonlyLocalTransform2D extends ReadonlyTransform2D {
     readonly worldMatrix: ReadonlyMat2D;
 
@@ -24,6 +27,8 @@ export interface ReadonlyLocalTransform2D extends ReadonlyTransform2D {
  * graph).
  *
  * Has an additional {@link LocalTransform2D.worldMatrix} composed via {@link LocalTransform2D.composeWorld}.
+ *
+ * @category Math
  */
 export class LocalTransform2D
     extends Transform2D

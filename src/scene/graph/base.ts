@@ -1,13 +1,16 @@
 import { LocalTransform2D, Vec2Like } from '../../math';
 import { Group } from '../group';
 
+/** @category Scene */
 export enum ObjectKind {
     OBJECT = 1 << 0,
     GROUP = 1 << 1,
 }
 
+/** @category Scene */
 export const OBJECT_KIND = Symbol('kind');
 
+/** @category Scene */
 export interface BaseOptions {
     label?: string;
     x?: number;
@@ -19,6 +22,7 @@ export interface BaseOptions {
     scale?: number;
 }
 
+/** @category Scene */
 export abstract class Base {
     readonly transform = new LocalTransform2D();
 

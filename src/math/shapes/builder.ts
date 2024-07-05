@@ -3,6 +3,7 @@ import { Vec2 } from '../vec2';
 import { CircleLike } from './circle';
 import { RectLike } from './rect';
 
+/** @category Math */
 export function buildPointsFromRect(
     rect: RectLike,
     closed = false,
@@ -15,6 +16,7 @@ export function buildPointsFromRect(
     return buildRectPoints(x, y, width, height, closed, results);
 }
 
+/** @category Math */
 export function buildRectPoints(
     x: number,
     y: number,
@@ -39,6 +41,7 @@ export function buildRectPoints(
     return results;
 }
 
+/** @category Math */
 export function buildSquarePoints(
     x: number,
     y: number,
@@ -51,6 +54,7 @@ export function buildSquarePoints(
     return buildRectPoints(x, y, length, length, closed, results);
 }
 
+/** @category Math */
 export function buildPointsFromCircle(
     circle: CircleLike,
     sections: number,
@@ -62,6 +66,7 @@ export function buildPointsFromCircle(
     return buildCirclePoints(x, y, radius, sections, closed, results);
 }
 
+/** @category Math */
 export function buildCirclePoints(
     cx: number,
     cy: number,

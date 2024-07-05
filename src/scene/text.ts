@@ -10,6 +10,7 @@ import {
 import { Char, toChars } from '../text/chars';
 import { ObjectOptions, SceneObject } from './graph';
 
+/** @category Scene */
 export interface TextOptions extends ObjectOptions {
     text: string;
     font: Font;
@@ -19,6 +20,7 @@ export interface TextOptions extends ObjectOptions {
 }
 
 // todo: Spans
+/** @category Scene */
 export class TextObject extends SceneObject implements TextLike {
     private _text: string;
     private _style: TextStyle;

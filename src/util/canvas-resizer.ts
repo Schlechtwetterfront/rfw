@@ -3,6 +3,8 @@ import { ReadonlyVec2, Vec2 } from '../math';
 /**
  * Applies a {@link HTMLCanvasElement | canvas element's} actual size to its `width` and `height`
  * properties to ensure correct render dimensions.
+ *
+ * @category Utility
  */
 export class CanvasResizer {
     private readonly resizeObserver: ResizeObserver;

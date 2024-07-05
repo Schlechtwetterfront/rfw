@@ -1,5 +1,7 @@
 /**
  * A set-like structure.
+ *
+ * @category Utility
  */
 export interface ObjectSet<O> {
     add(o: O): this;

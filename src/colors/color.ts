@@ -7,6 +7,8 @@ import { HSL, HSLA, HSV, HSVA, RGBA } from './formats';
  *
  * @remarks
  * In [0,1] range.
+ *
+ * @category Color
  */
 export interface ColorLike {
     readonly r: number;
@@ -20,6 +22,8 @@ export interface ColorLike {
  *
  * @remarks
  * In [0,1] range.
+ *
+ * @category Color
  */
 export interface ReadonlyColor extends ColorLike {
     /**
@@ -106,6 +110,8 @@ const TEMP_COLOR: number[] = [];
  * In [0,1] range.
  *
  * Methods generally _mutate_ the instance. Create new instances with {@link Color.clone}.
+ *
+ * @category Color
  */
 export class Color implements ReadonlyColor, RGBA {
     /** Set all components. */

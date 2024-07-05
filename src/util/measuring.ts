@@ -2,6 +2,7 @@ const PERFORMANCE = performance;
 
 const ENABLE_PERFORMANCE = true;
 
+/** @category Utility */
 export class Sampler {
     private readonly samples: number[] = [];
 
@@ -47,6 +48,7 @@ export class Sampler {
     }
 }
 
+/** @category Utility */
 export class MarkTimeSampler extends Sampler {
     private started = false;
 
@@ -79,6 +81,7 @@ export class MarkTimeSampler extends Sampler {
     }
 }
 
+/** @category Utility */
 export class TimeSampler extends Sampler {
     private startTimestamp?: number;
 
@@ -111,6 +114,7 @@ export class TimeSampler extends Sampler {
     }
 }
 
+/** @category Utility */
 export class CountedSampler extends Sampler {
     current = 0;
 

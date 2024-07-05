@@ -1,8 +1,10 @@
+/** @category Text */
 export interface Char {
     codePoint: number;
     string: string;
 }
 
+/** @category Text */
 export function toChars(s: string): Char[] {
     const charStrings = Array.from(s);
     const charCount = charStrings.length;

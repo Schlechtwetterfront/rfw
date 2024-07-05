@@ -1,7 +1,9 @@
+/** @category Utility */
 export interface SparseSetEntry {
     readonly hashCode: number;
 }
 
+/** @category Utility */
 export class SparseSet<V> {
     private readonly indices: (number | undefined)[];
     private readonly _values: V[];

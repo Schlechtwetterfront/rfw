@@ -5,11 +5,14 @@ export * from './chars';
 export * from './font';
 export * from './layout';
 
+/** @category Text */
 export type WordBreak = 'word' | 'char';
 
 // todo: Justify?
+/** @category Text */
 export type TextAlignment = 'start' | 'center' | 'end';
 
+/** @category Text */
 export class LineHeight {
     constructor(
         public height: number,
@@ -25,6 +28,7 @@ export class LineHeight {
     }
 }
 
+/** @category Text */
 export interface TextStyle {
     color: Color;
     size: number;
@@ -33,6 +37,7 @@ export interface TextStyle {
     break: WordBreak;
 }
 
+/** @category Text */
 export function textStyleOrDefaults(style?: Partial<TextStyle>): TextStyle {
     return {
         color: Color.white(),

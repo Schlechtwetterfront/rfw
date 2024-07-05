@@ -1,3 +1,4 @@
+/** @category Utility */
 export class ManualPromise<T = void> {
     private _resolve!: (v: T) => void;
     private promise!: Promise<T>;

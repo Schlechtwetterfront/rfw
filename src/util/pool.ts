@@ -1,5 +1,7 @@
 /**
  * Object pool.
+ *
+ * @category Utility
  */
 export class Pool<O> {
     private readonly ctor: () => O;

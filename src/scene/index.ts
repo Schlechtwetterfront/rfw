@@ -8,8 +8,10 @@ export * from './line';
 export * from './mesh';
 export * from './text';
 
+/** @category Scene */
 export type SceneGraphObject = Group | SceneObject;
 
+/** @category Scene */
 export interface SizedObject {
     readonly size: number;
 }

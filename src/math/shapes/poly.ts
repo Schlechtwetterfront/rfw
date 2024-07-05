@@ -3,10 +3,12 @@ import { ReadonlyVec2, Vec2, Vec2Like } from '../vec2';
 import { Rect, RectLike } from './rect';
 import { Shape } from './shape';
 
+/** @category Math */
 export interface PolyLike {
     readonly points: readonly Vec2Like[];
 }
 
+/** @category Math */
 export interface ReadonlyPoly extends PolyLike, Shape {
     readonly points: readonly ReadonlyVec2[];
 
@@ -25,6 +27,7 @@ const TEMP_RECT = Rect.zero();
 const TEMP_VEC0 = Vec2.zero();
 const TEMP_VEC1 = Vec2.zero();
 
+/** @category Math */
 export class Poly implements ReadonlyPoly {
     points: Vec2[];
 

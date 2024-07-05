@@ -7,6 +7,8 @@ import { Shape } from './shape';
  *
  * @remarks
  * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
+ *
+ * @category Math
  */
 export interface RectLike {
     readonly x: number;
@@ -20,6 +22,8 @@ export interface RectLike {
  *
  * @remarks
  * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
+ *
+ * @category Math
  */
 export interface ReadonlyRect extends RectLike, Shape {
     /** Rect `x` plus `width`. */
@@ -51,6 +55,8 @@ export interface ReadonlyRect extends RectLike, Shape {
  *
  * @remarks
  * `x` and `y` are the rectangle's origin, `width` and `height` extend along the positive x/y axes.
+ *
+ * @category Math
  */
 export class Rect implements ReadonlyRect, Vec2Like {
     /** @inheritdoc */

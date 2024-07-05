@@ -1,3 +1,4 @@
+/** @category Utility */
 export function assert(
     condition: boolean,
     message?: string,
@@ -7,6 +8,7 @@ export function assert(
     }
 }
 
+/** @category Utility */
 export function assertEqual<V, E extends V>(
     value: V,
     expected: E,
@@ -17,6 +19,7 @@ export function assertEqual<V, E extends V>(
     }
 }
 
+/** @category Utility */
 export function assertDefined<T>(
     value: T,
     message?: string,

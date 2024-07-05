@@ -4,6 +4,7 @@ import { ArraySet } from '../../util';
 import { Group } from '../group';
 import { OBJECT_KIND, ObjectKind } from './base';
 
+/** @category Scene */
 export class TransformPropagator {
     private readonly rootObjects = new ArraySet<SceneGraphObject>();
 

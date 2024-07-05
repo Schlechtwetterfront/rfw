@@ -2,6 +2,7 @@ import { TextStyle } from '.';
 import { Char, toChars } from './chars';
 import { Font, Glyph } from './font';
 
+/** @category Text */
 export class TextLine {
     get text() {
         return this.glyphs.map(c => c.string).join('');
@@ -13,6 +14,7 @@ export class TextLine {
     ) {}
 }
 
+/** @category Text */
 export class TextLayout {
     readonly widestLine: TextLine;
     readonly glyphCount: number;
@@ -45,10 +47,12 @@ export class TextLayout {
     }
 }
 
+/** @category Text */
 export interface TextLayoutOptions {
     maxLineWidth?: number;
 }
 
+/** @category Text */
 export function layoutText(
     text: string,
     style: TextStyle,
@@ -60,6 +64,7 @@ export function layoutText(
     return layoutChars(chars, style, font, options);
 }
 
+/** @category Text */
 export function layoutChars(
     chars: Char[],
     style: TextStyle,
@@ -219,6 +224,7 @@ export function layoutChars(
 // todo: Improve
 const WHITESPACE = ' \t\v\r\n';
 
+/** @category Text */
 export function isWhitespace(s: string): boolean {
     return WHITESPACE.indexOf(s) > -1;
 }

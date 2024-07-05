@@ -7,6 +7,8 @@ import { Shape } from './shape';
  *
  * @remarks
  * `x` and `y` refer to the circle's center.
+ *
+ * @category Math
  */
 export interface CircleLike {
     readonly x: number;
@@ -19,6 +21,8 @@ export interface CircleLike {
  *
  * @remarks
  * `x` and `y` refer to the circle's center.
+ *
+ * @category Math
  */
 export interface ReadonlyCircle extends CircleLike, Shape {
     readonly x: number;
@@ -45,6 +49,8 @@ const TEMP_VEC = Vec2.zero();
  *
  * @remarks
  * `x` and `y` refer to the circle's center.
+ *
+ * @category Math
  */
 export class Circle implements ReadonlyCircle, Vec2Like {
     constructor(

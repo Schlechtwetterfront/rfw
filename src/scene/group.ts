@@ -2,10 +2,12 @@ import { SceneGraphObject } from '.';
 import { swapDeleteAt } from '../util';
 import { Base, BaseOptions, OBJECT_KIND, ObjectKind } from './graph';
 
+/** @category Scene */
 export interface GroupOptions extends BaseOptions {
     children?: SceneGraphObject[];
 }
 
+/** @category Scene */
 export class Group extends Base {
     private _children: SceneGraphObject[] = [];
 

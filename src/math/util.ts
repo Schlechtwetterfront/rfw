@@ -4,8 +4,11 @@ import { Vec2Like } from './vec2';
  * Round a value up to a power of two. If `n` is a power of two, returns `n`.
  * @param n - Number to round from
  * @returns Power of two
+ *
  * @remarks
  * Only works in a 32-bit range
+ *
+ * @category Math
  */
 export function roundUpPowerOfTwo(n: number): number {
     return 1 << (32 - Math.clz32(n - 1));
@@ -15,8 +18,11 @@ export function roundUpPowerOfTwo(n: number): number {
  * Get the next higher power of two from `n`.
  * @param n - Base value
  * @returns Next higher power of two
+ *
  * @remarks
  * Only works in a 32-bit range
+ *
+ * @category Math
  */
 export function higherPowerOfTwo(n: number): number {
     return 1 << (32 - Math.clz32(n));
@@ -26,8 +32,11 @@ export function higherPowerOfTwo(n: number): number {
  * Round a value down to a power of two. If `n` is a power of two, returns `n`.
  * @param n - Number to round from
  * @returns Power of two
+ *
  * @remarks
  * Only works in a 32-bit range
+ *
+ * @category Math
  */
 export function roundDownPowerOfTwo(n: number): number {
     return 1 << (31 - Math.clz32(n));
@@ -37,8 +46,11 @@ export function roundDownPowerOfTwo(n: number): number {
  * Get the next lower power of two from `n`.
  * @param n - Base value
  * @returns Next lower power of two
+ *
  * @remarks
  * Only works in a 32-bit range
+ *
+ * @category Math
  */
 export function lowerPowerOfTwo(n: number): number {
     return 1 << (31 - Math.clz32(n - 1));
@@ -50,11 +62,14 @@ export function lowerPowerOfTwo(n: number): number {
  * @param v1 - 1 value
  * @param t - Time
  * @returns Lerped value
+ *
+ * @category Math
  */
 export function lerp(v0: number, v1: number, t: number): number {
     return (1 - t) * v0 + t * v1;
 }
 
+/** @category Math */
 export function clamp(value: number, min: number, max: number): number {
     return Math.min(max, Math.max(min, value));
 }
@@ -66,6 +81,8 @@ export function clamp(value: number, min: number, max: number): number {
  * @param p2 - Start of line 2
  * @param p3 - End of line 2
  * @returns `true` if the lines intersect
+ *
+ * @category Math
  */
 export function linesIntersect(
     p0: Vec2Like,
