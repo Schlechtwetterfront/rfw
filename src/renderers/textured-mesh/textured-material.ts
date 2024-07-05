@@ -5,7 +5,7 @@ import { TextureHandle } from '../../rendering/textures';
 /**
  * Simple material with texture and color.
  *
- * @category Rendering
+ * @category Rendering - Textured Mesh
  */
 export class TexturedMaterial implements Material {
     constructor(

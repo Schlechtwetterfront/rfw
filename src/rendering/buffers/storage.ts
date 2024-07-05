@@ -1,7 +1,7 @@
 /**
  * Generic storage with change tracking.
  *
- * @category Rendering
+ * @category Rendering - Buffers
  */
 export interface ChangeTrackedStorage {
     /** Clear any changes. */
@@ -25,7 +25,7 @@ export interface ChangeTrackedStorage {
 /**
  * Change tracked object storage.
  *
- * @category Rendering
+ * @category Rendering - Buffers
  */
 export interface ObjectStorage<O> extends ChangeTrackedStorage {
     /**

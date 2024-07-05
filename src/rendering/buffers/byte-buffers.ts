@@ -1,7 +1,7 @@
 /**
  * Byte buffer with change tracking.
  *
- * @category Rendering
+ * @category Rendering - Buffers
  */
 export interface ByteBuffer {
     /** Changed range start byte offset. */
@@ -19,7 +19,7 @@ export interface ByteBuffer {
 /**
  * Collection of byte buffers.
  *
- * @category Rendering
+ * @category Rendering - Buffers
  */
 export interface ByteBuffers {
     /** Buffers. */

@@ -8,7 +8,7 @@ import { ByteBuffer } from './byte-buffers';
  * views of {@link ByteBufferManager.buffer}) must be tracked via {@link ByteBufferManager.setChanged}
  * or {@link ByteBufferManager.markChanged}.
  *
- * @category Rendering
+ * @category Rendering - Buffers
  */
 export class ByteBufferManager implements ByteBuffer, WriteBuffer {
     private _changedFromByte = 0;

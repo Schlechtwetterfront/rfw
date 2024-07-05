@@ -16,7 +16,7 @@ import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './textured-mesh-batch.template.frag?raw';
 import VERT_SRC from './textured-mesh-batch.vert?raw';
 
-/** @category Rendering - WebGL */
+/** @category Rendering - Textured Mesh - WebGL */
 export interface TexturedMeshRenderBatch extends RenderBatch {
     readonly vertexCount: number;
 
@@ -24,7 +24,7 @@ export interface TexturedMeshRenderBatch extends RenderBatch {
     readonly textures: readonly TextureHandle[];
 }
 
-/** @category Rendering - WebGL */
+/** @category Rendering - Textured Mesh - WebGL */
 export interface WGLTexturedMeshBatchRendererProgramData {
     program: WebGLProgram;
     projectionLocation: WebGLUniformLocation;
@@ -35,7 +35,7 @@ export interface WGLTexturedMeshBatchRendererProgramData {
 const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
-/** @category Rendering - WebGL */
+/** @category Rendering - Textured Mesh - WebGL */
 export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMeshRenderBatch> {
     protected programs: WGLTexturedMeshBatchRendererProgramData[] = [];
 

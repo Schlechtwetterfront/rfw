@@ -9,10 +9,10 @@ import {
 import { ByteBuffers } from '../../rendering/buffers';
 import { buildLineBatchStorage } from './line-buffer-manager';
 
-/** @category Rendering */
+/** @category Rendering - Lines */
 export type LineBatchStorage = BatchStorage<BatchEntry<LineLike>> & ByteBuffers;
 
-/** @category Rendering */
+/** @category Rendering - Lines */
 export interface LineBatcherOptions {
     maxSegmentCount?: number;
     batchStorageFactory?: BatchStorageFactory<
@@ -22,7 +22,7 @@ export interface LineBatcherOptions {
     changeTracker: ChangeTracker;
 }
 
-/** @category Rendering */
+/** @category Rendering - Lines */
 export class LineBatcher extends SizedBatcher<LineLike, LineBatchStorage> {
     constructor(options: LineBatcherOptions) {
         super({

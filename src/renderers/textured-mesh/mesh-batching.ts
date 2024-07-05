@@ -16,13 +16,13 @@ import { Pool } from '../../util/pool';
 import { RefCounts } from '../../util/ref-counts';
 import { buildMeshBatchStorage } from './mesh-buffer-manager';
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export interface MeshBatchEntry<O> extends BatchEntry<O> {
     texture?: TextureHandle;
     changeState: 'initial' | 'position' | 'all' | 'none';
 }
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export class MeshBatch<O>
     extends Batch<O, MeshBatchEntry<O>, MeshBatchStorage<O>>
     implements TextureIndexProvider

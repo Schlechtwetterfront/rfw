@@ -18,12 +18,12 @@ import { Pool } from '../../util/pool';
 import { RefCounts } from '../../util/ref-counts';
 import { getTextBatchStorageFactory } from './text-buffer-manager';
 
-/** @category Rendering */
+/** @category Rendering - Text */
 export interface TextBatchEntry extends BatchEntry<TextLike> {
     font?: Font;
 }
 
-/** @category Rendering */
+/** @category Rendering - Text */
 export class TextBatch
     extends Batch<TextLike, TextBatchEntry, TextBatchStorage>
     implements FontTextureIndexProvider

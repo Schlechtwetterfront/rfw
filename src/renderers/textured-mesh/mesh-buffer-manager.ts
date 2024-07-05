@@ -11,7 +11,7 @@ import { FLOAT_SIZE } from '../../util/sizes';
 import { TextureIndexProvider } from '../../rendering/textures';
 import { MeshBatchEntry, MeshBatchStorageFactory } from './mesh-batching';
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export const buildMeshBatchStorage: MeshBatchStorageFactory<
     TexturedMeshLike
 > = maxSize => new MeshBufferManager(maxSize);
@@ -19,7 +19,7 @@ export const buildMeshBatchStorage: MeshBatchStorageFactory<
 const TEMP_VEC = Vec2.zero();
 const TEMP_COLOR = Color.white();
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export class MeshBufferManager<
     O extends TexturedMeshLike,
 > extends ElementByteBuffersManager<MeshBatchEntry<O>> {
