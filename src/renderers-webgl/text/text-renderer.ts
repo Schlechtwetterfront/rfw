@@ -24,7 +24,7 @@ export interface TextRenderBatch extends RenderBatch {
     readonly textures: readonly TextureHandle[];
 }
 
-interface ProgramData {
+export interface WGLTextRendererProgramData {
     program: WebGLProgram;
     projectionLocation: WebGLUniformLocation;
     samplerLocation: WebGLUniformLocation;
@@ -35,7 +35,7 @@ const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
 export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
-    protected programs: ProgramData[] = [];
+    protected programs: WGLTextRendererProgramData[] = [];
     protected sampler?: WebGLSampler;
 
     constructor(driver: WGLDriver) {

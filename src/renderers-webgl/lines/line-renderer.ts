@@ -10,7 +10,7 @@ import { assert, assertDefined } from '../../util/assert';
 import FRAG_SRC from './lines.frag?raw';
 import VERT_SRC from './lines.vert?raw';
 
-interface ProgramData {
+export interface WGLLineRendererProgramData {
     program: WebGLProgram;
     projectionLocation: WebGLUniformLocation;
     cameraScaleLocation: WebGLUniformLocation;
@@ -20,7 +20,7 @@ const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
 export class WGLLineRenderer extends WGLBatchedRenderer {
-    protected program?: ProgramData;
+    protected program?: WGLLineRendererProgramData;
     protected meshData?: { buffer: WebGLBuffer };
 
     constructor(driver: WGLDriver) {

@@ -23,7 +23,7 @@ export interface TexturedMeshRenderBatch extends RenderBatch {
     readonly textures: readonly TextureHandle[];
 }
 
-interface ProgramData {
+export interface WGLTexturedMeshBatchRendererProgramData {
     program: WebGLProgram;
     projectionLocation: WebGLUniformLocation;
     samplerLocation: WebGLUniformLocation;
@@ -34,7 +34,7 @@ const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
 export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMeshRenderBatch> {
-    protected programs: ProgramData[] = [];
+    protected programs: WGLTexturedMeshBatchRendererProgramData[] = [];
 
     constructor(driver: WGLDriver) {
         super(driver);

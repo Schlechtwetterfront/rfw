@@ -148,7 +148,7 @@ export interface ReadonlyVec2 extends Vec2Like {
 /**
  * Two-dimensional vector (point).
  *
- * Methods (like {@link Vec2.multiple}, {@link Vec2.add}) generally _mutate_ the instance. Create
+ * Methods (like {@link Vec2.multiply}, {@link Vec2.add}) generally _mutate_ the instance. Create
  * new instances with {@link Vec2.clone}.
  */
 export class Vec2 implements ReadonlyVec2 {

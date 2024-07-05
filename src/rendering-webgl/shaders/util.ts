@@ -42,11 +42,11 @@ export function bindMultiTexture(
     }
 }
 
-type UniformLocationsQuery = {
+export type UniformLocationsQuery = {
     [k: string]: string;
 };
 
-type UniformLocations<Q> = {
+export type UniformLocations<Q> = {
     [K in keyof Q]: WebGLUniformLocation;
 };
 

@@ -1,4 +1,4 @@
-type RGBATuple = [r: number, g: number, b: number, a: number];
+export type RGBATuple = [r: number, g: number, b: number, a: number];
 
 /**
  * Parse a hex color in format `#rgb`, `#rgba`, `#rrggbb`, or `#rrggbbaa` into a tuple.

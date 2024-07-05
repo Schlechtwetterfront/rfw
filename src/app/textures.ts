@@ -50,7 +50,8 @@ export class Textures implements RenderContextLifeCycleHandler {
     /**
      * Create a texture from an `ImageBitmapSource`.
      * @param source - Image bitmap source
-     * @param options - Options for the created resource
+     * @param resourceOptions - Options for the created resource
+     * @param imageBitmapOptions - Options to use when creating the `ImageBitmap`
      * @returns Promise of the resulting {@link TextureHandle}
      */
     async addFromImageBitmapSource(
