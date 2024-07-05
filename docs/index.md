@@ -7,10 +7,10 @@ hero:
     actions:
         - theme: brand
           text: Get Started
-          link: /guide/intro
+          link: /guide/
         - theme: alt
           text: Samples
-          link: /samples/intro
+          link: /samples/
         - theme: alt
           text: API Reference
           link: /reference/

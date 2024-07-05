@@ -7,8 +7,8 @@ export default defineConfig({
     base: '/rfw/',
     themeConfig: {
         nav: [
-            { text: 'Guide', link: '/guide/intro' },
-            { text: 'Samples', link: '/samples/intro' },
+            { text: 'Guide', link: '/guide/' },
+            { text: 'Samples', link: '/samples/' },
             { text: 'API Reference', link: '/reference/', target: '_self' },
         ],
 
@@ -17,7 +17,7 @@ export default defineConfig({
                 {
                     text: 'Guide',
                     items: [
-                        { text: 'Introduction', link: '/guide/intro' },
+                        { text: 'Introduction', link: '/guide/' },
                         { text: 'Quick Start', link: '/guide/get-started' },
                         { text: 'Math', link: '/guide/math' },
                         { text: 'Rendering', link: '/guide/rendering' },
@@ -36,7 +36,7 @@ export default defineConfig({
                 {
                     text: 'Samples',
                     items: [
-                        { text: 'Introduction', link: '/samples/intro' },
+                        { text: 'Introduction', link: '/samples/' },
                         { text: 'Simple Scene', link: '/samples/scene' },
                         { text: 'Bunnymark', link: '/samples/bunnymark' },
                         { text: 'Quad Tree', link: '/samples/quadtree' },
