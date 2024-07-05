@@ -4,7 +4,6 @@ layout: home
 hero:
     name: rfw
     text: 2D Rendering Framework for the Web
-    tagline: Don't let the framework get in the way
     actions:
         - theme: brand
           text: Get Started
@@ -15,6 +14,7 @@ hero:
         - theme: alt
           text: API Reference
           link: /reference/
+          target: _self
 
 features:
     - title: Scene graph
