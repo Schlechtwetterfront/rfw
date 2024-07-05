@@ -8,6 +8,8 @@ const TEMP_FLAT_POSITIONS: number[] = [];
  * @param vertices - Unique vertices
  * @param islandMarkers - Optional, indices into `vertices` to mark which sections are islands
  * @returns Indices into `vertices` defining all triangles
+ *
+ * @category Rendering
  */
 export function triangulate(
     vertices: Vertex[],
@@ -50,6 +52,8 @@ export function triangulate(
  * @param vertices - Unique vertices of the polygon
  * @param islandMarkers - Optional, indices into `vertices` to mark which sections are islands
  * @returns Mesh of the triangulated polygon
+ *
+ * @category Rendering
  */
 export function buildTriangulatedMesh(
     vertices: Vertex[],

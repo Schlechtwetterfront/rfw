@@ -1,5 +1,7 @@
 /**
  * Object containg different formats of the elapsed time since the last tick.
+ *
+ * @category App
  */
 export interface Elapsed {
     /** Elapsed time in seconds. */
@@ -13,8 +15,10 @@ const TEMP_ELAPSED = {
     elapsedMilliseconds: 0,
 } satisfies Elapsed;
 
+/** @category App */
 export type TickHandler = (elapsed: Elapsed) => void;
 
+/** @category App */
 export class TickerHandle {
     constructor(
         /** @internal */
@@ -30,10 +34,14 @@ class Ticker {
     ) {}
 }
 
+/** @category App */
 export type MillisecondInterval = number;
+/** @category App */
 export type FPSInterval = `${number}fps`;
+/** @category App */
 export type HertzInterval = `${number}hz`;
 
+/** @category App */
 export type Interval =
     | MillisecondInterval
     | 'animationFrame'
@@ -45,6 +53,8 @@ export type Interval =
  * Parse a ticker interval into a millisecond number.
  * @param interval - Interval
  * @returns Milliseconds
+ *
+ * @category App
  */
 export function parseInterval(interval: Interval | undefined): number {
     if (typeof interval === 'number') {
@@ -62,6 +72,8 @@ export function parseInterval(interval: Interval | undefined): number {
 
 /**
  * Manages tickers. Tickers are executed periodically.
+ *
+ * @category App
  */
 export class Tickers {
     private id = 0;

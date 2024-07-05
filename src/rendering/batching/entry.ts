@@ -2,6 +2,8 @@
  * Defines how a batch entry has changed.
  *
  * Size increase is not part of this enum because it's handled as a delete + an add.
+ *
+ * @category Rendering - Batching
  */
 export enum BatchEntryChange {
     /** No change.*/
@@ -19,6 +21,8 @@ export enum BatchEntryChange {
 
 /**
  * Batch entry.
+ *
+ * @category Rendering - Batching
  */
 export interface BatchEntry<O> {
     /** Entry object. */
@@ -37,6 +41,8 @@ export interface BatchEntry<O> {
  * Initialize an 'empty' batch entry.
  * @param extendedProps - Object defining additional props of a derived entry type
  * @returns Empty entry
+ *
+ * @category Rendering - Batching
  */
 export function createBatchEntry<O, E extends BatchEntry<O> = BatchEntry<O>>(
     extendedProps: Omit<E, keyof BatchEntry<O>>,
@@ -54,6 +60,8 @@ export function createBatchEntry<O, E extends BatchEntry<O> = BatchEntry<O>>(
 /**
  * Resets a batch entry to its empty defaults.
  * @param entry - Entry to reset
+ *
+ * @category Rendering - Batching
  */
 export function resetBatchEntry<O, E extends BatchEntry<O> = BatchEntry<O>>(
     entry: E,

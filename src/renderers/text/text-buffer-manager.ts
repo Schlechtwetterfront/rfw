@@ -9,6 +9,7 @@ import { PositiveXAxis, PositiveYAxis } from '../../rendering/projection';
 import { FLOAT_SIZE } from '../../util/sizes';
 import { TextBatchEntry, TextBatchStorageFactory } from './text-batching';
 
+/** @category Rendering */
 export function getTextBatchStorageFactory(
     x: PositiveXAxis,
     y: PositiveYAxis,
@@ -19,6 +20,7 @@ export function getTextBatchStorageFactory(
 const TEMP_VEC = Vec2.zero();
 const TEMP_VEC2 = Vec2.zero();
 
+/** @category Rendering */
 export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry> {
     private buffer: ElementByteBufferManager;
 

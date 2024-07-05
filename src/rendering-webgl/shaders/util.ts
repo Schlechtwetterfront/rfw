@@ -1,6 +1,7 @@
 import { TextureHandle } from '../../rendering/textures';
 import { WGLTextures } from '../textures/textures';
 
+/** @category Rendering - WebGL */
 export function bindMultiTextureOneSampler(
     gl: WebGL2RenderingContext,
     textures: WGLTextures,
@@ -22,6 +23,7 @@ export function bindMultiTextureOneSampler(
     }
 }
 
+/** @category Rendering - WebGL */
 export function bindMultiTexture(
     gl: WebGL2RenderingContext,
     textures: WGLTextures,
@@ -42,14 +44,17 @@ export function bindMultiTexture(
     }
 }
 
+/** @category Rendering - WebGL */
 export type UniformLocationsQuery = {
     [k: string]: string;
 };
 
+/** @category Rendering - WebGL */
 export type UniformLocations<Q> = {
     [K in keyof Q]: WebGLUniformLocation;
 };
 
+/** @category Rendering - WebGL */
 export function getUniformLocations<Q extends UniformLocationsQuery>(
     gl: WebGL2RenderingContext,
     program: WebGLProgram,

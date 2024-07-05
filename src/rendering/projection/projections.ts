@@ -8,6 +8,7 @@ import { PROJECTION_MAT } from './constants';
 import { PositiveXAxis, PositiveYAxis } from './types';
 import { makeCameraViewportProjection } from './viewport';
 
+/** @category Rendering */
 export interface Projections {
     /**
      * Project viewport point `point` to scene.
@@ -65,12 +66,14 @@ export interface Projections {
     getViewportClipProjection(target?: Mat2D): Mat2D;
 }
 
+/** @category Rendering */
 export interface ProjectionOptions {
     readonly centered: boolean;
     readonly x: PositiveXAxis;
     readonly y: PositiveYAxis;
 }
 
+/** @category Rendering */
 export class DefaultProjections implements Projections {
     constructor(
         protected readonly context: RenderContext,

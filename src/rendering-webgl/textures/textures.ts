@@ -9,6 +9,7 @@ import { setTextureParameters } from './util';
 
 const WHITE_PIXEL = new Uint8Array([255, 255, 255, 255]);
 
+/** @category Rendering - WebGL */
 export class WGLTextures
     implements DriverTextures, RenderContextLifeCycleHandler
 {

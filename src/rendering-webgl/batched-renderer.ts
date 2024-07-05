@@ -3,6 +3,9 @@ import { RenderBatch } from '../rendering/batching';
 import { WGLDriver } from './driver';
 import { VAOWithBuffers, createVAOAndBuffers } from './util/vao-with-buffers';
 
+/**
+ * @category Rendering - WebGL
+ */
 export abstract class WGLBatchedRenderer<B extends RenderBatch = RenderBatch>
     implements RenderContextLifeCycleHandler
 {

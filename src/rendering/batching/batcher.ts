@@ -28,6 +28,8 @@ import { BatchEntry, BatchEntryChange } from './entry';
  *
  * Depending on what is being batched and what the criteria for when a batch is 'full' are, derived
  * versions of {@link Batch} and {@link BatchEntry} may be necessary.
+ *
+ * @category Rendering - Batching
  */
 export abstract class Batcher<
     O,

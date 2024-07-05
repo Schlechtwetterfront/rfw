@@ -3,6 +3,8 @@ import { ObjectStorage } from './storage';
 
 /**
  * Manages a byte buffer of element size.
+ *
+ * @category Rendering
  */
 export class ElementByteBufferManager implements WriteElementByteBuffer {
     private _changedFromByte = 0;
@@ -81,6 +83,8 @@ export class ElementByteBufferManager implements WriteElementByteBuffer {
 /**
  * Manages multiple element byte buffers. Useful when one object is written into multiple buffers (
  * e.g., index and vertex buffer).
+ *
+ * @category Rendering
  */
 export abstract class ElementByteBuffersManager<O>
     implements ElementByteBuffers, ObjectStorage<O>

@@ -7,6 +7,8 @@ import { ByteBuffer } from './byte-buffers';
  * Any changes (e.g., applied via using {@link ByteBufferManager.u8View} directly or creating new
  * views of {@link ByteBufferManager.buffer}) must be tracked via {@link ByteBufferManager.setChanged}
  * or {@link ByteBufferManager.markChanged}.
+ *
+ * @category Rendering
  */
 export class ByteBufferManager implements ByteBuffer, WriteBuffer {
     private _changedFromByte = 0;

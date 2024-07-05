@@ -16,11 +16,13 @@ import { Pool } from '../../util/pool';
 import { RefCounts } from '../../util/ref-counts';
 import { buildMeshBatchStorage } from './mesh-buffer-manager';
 
+/** @category Rendering */
 export interface MeshBatchEntry<O> extends BatchEntry<O> {
     texture?: TextureHandle;
     changeState: 'initial' | 'position' | 'all' | 'none';
 }
 
+/** @category Rendering */
 export class MeshBatch<O>
     extends Batch<O, MeshBatchEntry<O>, MeshBatchStorage<O>>
     implements TextureIndexProvider
@@ -90,15 +92,18 @@ export class MeshBatch<O>
     }
 }
 
+/** @category Rendering */
 export interface MeshBatchStorage<O>
     extends BatchStorage<MeshBatchEntry<O>>,
         ByteBuffers {
     textureIndexProvider?: TextureIndexProvider;
 }
 
+/** @category Rendering */
 export type MeshBatchStorageFactory<O extends TexturedMeshLike> =
     BatchStorageFactory<MeshBatchEntry<O>, MeshBatchStorage<O>>;
 
+/** @category Rendering */
 export interface MeshBatcherOptions<O extends TexturedMeshLike> {
     maxTextureCount: number;
     maxVertexCount?: number;
@@ -108,6 +113,7 @@ export interface MeshBatcherOptions<O extends TexturedMeshLike> {
 
 const DEFAULT_MAX_VERTEX_COUNT = 64_000;
 
+/** @category Rendering */
 export class MeshBatcher<O extends TexturedMeshLike> extends Batcher<
     O,
     MeshBatchEntry<O>,

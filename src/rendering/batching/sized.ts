@@ -11,6 +11,7 @@ import {
 } from './entry';
 import { BatchStorage, BatchStorageFactory } from './storage';
 
+/** @category Rendering - Batching */
 export interface SizedBatcherOptions<O, S extends BatchStorage<BatchEntry<O>>> {
     maxSize?: number;
     batchStorageFactory: BatchStorageFactory<BatchEntry<O>, S>;
@@ -20,6 +21,8 @@ export interface SizedBatcherOptions<O, S extends BatchStorage<BatchEntry<O>>> {
 /**
  * Batcher that batches only on a size criterium. The unit of the size can be anything (vertices,
  * line segments, glyphs, ...).
+ *
+ * @category Rendering - Batching
  */
 export class SizedBatcher<
     O extends SizedObject,

@@ -6,6 +6,8 @@ import { ChangeTrackedStorage } from './storage';
  *
  * An element is e.g., a vertex, line segmeent, etc. That means offsets into an element buffer do not
  * equal offsets into a byte buffer (a vertex can be of any byte length).
+ *
+ * @category Rendering
  */
 export interface ElementBuffer {
     /** Changed range start element offset. */
@@ -19,6 +21,8 @@ export interface ElementBuffer {
 
 /**
  * Byte bvffer that stores elements.
+ *
+ * @category Rendering
  */
 export interface ElementByteBuffer extends ByteBuffer {
     readonly elementByteLength: number;
@@ -26,6 +30,8 @@ export interface ElementByteBuffer extends ByteBuffer {
 
 /**
  * Change tracked, writeable element buffer.
+ *
+ * @category Rendering
  */
 export interface WriteElementByteBuffer
     extends ElementByteBuffer,
@@ -36,6 +42,8 @@ export interface WriteElementByteBuffer
 
 /**
  * Collection of element byte buffers.
+ *
+ * @category Rendering
  */
 export interface ElementByteBuffers {
     readonly buffers: readonly ElementByteBuffer[];

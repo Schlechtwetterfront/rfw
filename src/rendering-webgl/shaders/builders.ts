@@ -2,6 +2,7 @@ import { higherPowerOfTwo } from '../../math/util';
 import { MultiTextureShaderInfo } from '../../rendering/shaders';
 import { WGLShaders } from './shaders';
 
+/** @category Rendering - WebGL */
 export function buildMultiTextureUniforms(
     textureCount: number,
     samplerName = 'u_sampler',
@@ -17,6 +18,7 @@ export function buildMultiTextureUniforms(
     }
 }
 
+/** @category Rendering - WebGL */
 export function buildMultiTextureSampling(
     textureCount: number,
     samplerName = 'u_sampler',
@@ -46,6 +48,7 @@ export function buildMultiTextureSampling(
     }
 }
 
+/** @category Rendering - WebGL */
 export function buildMultiTextureSamplingAndSize(
     textureCount: number,
     samplerName = 'u_sampler',
@@ -80,6 +83,7 @@ export function buildMultiTextureSamplingAndSize(
     }
 }
 
+/** @category Rendering - WebGL */
 export async function buildMultiTextureSamplingAndSizeShaders(
     shaders: WGLShaders,
     label: string,
@@ -118,6 +122,7 @@ export async function buildMultiTextureSamplingAndSizeShaders(
     return textShaders;
 }
 
+/** @category Rendering - WebGL */
 export async function buildMultiTextureSamplingShaders(
     shaders: WGLShaders,
     label: string,

@@ -3,6 +3,8 @@
  * render.
  *
  * An {@link App} has a change tracker by default.
+ *
+ * @category App
  */
 export class ChangeTracker {
     private _changed = true;

@@ -1,5 +1,6 @@
 import { roundUpPowerOfTwo } from '../../math/util';
 
+/** @category Rendering - WebGL */
 export class WGLBufferCache {
     private readonly buffers: WebGLBuffer[] = [];
 

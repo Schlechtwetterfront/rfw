@@ -1,5 +1,6 @@
 import { CountedSampler, TimeSampler } from '../util/measuring';
 
+/** @category Rendering */
 export class RenderDiagnostics {
     readonly actualFrameTime = new TimeSampler('frameTime');
     readonly frameTime = new TimeSampler('fps');

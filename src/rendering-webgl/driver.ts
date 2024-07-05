@@ -23,6 +23,9 @@ const DEFAULT_CONTEXT_ATTRS = {
     preserveDrawingBuffer: false,
 } satisfies WebGLContextAttributes;
 
+/**
+ * @category Rendering - WebGL
+ */
 export class WGLDriver implements RenderDriver {
     private lifeCycleHandlers = new Set<RenderContextLifeCycleHandler>();
     private contextOK = true;

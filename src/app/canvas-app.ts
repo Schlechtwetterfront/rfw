@@ -8,6 +8,8 @@ import { Textures } from './textures';
 /**
  * An extended base {@link App}, that assumes some things (e.g., a canvas) and sets up some more
  * defaults.
+ *
+ * @category App
  */
 export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
     protected readonly canvasResizer: CanvasResizer;

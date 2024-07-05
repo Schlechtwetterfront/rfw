@@ -8,6 +8,7 @@ import {
 } from '../../rendering/buffers';
 import { FLOAT_SIZE } from '../../util/sizes';
 
+/** @category Rendering */
 export const buildLineBatchStorage: BatchStorageFactory<
     BatchEntry<LineLike>,
     LineBufferManager
@@ -17,6 +18,7 @@ export const buildLineBatchStorage: BatchStorageFactory<
 
 const TEMP_VEC = Vec2.zero();
 
+/** @category Rendering */
 export class LineBufferManager extends ElementByteBuffersManager<
     BatchEntry<LineLike>
 > {

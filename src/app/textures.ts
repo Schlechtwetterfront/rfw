@@ -11,6 +11,8 @@ import { fetchImageBitmap } from '../util/image';
  * @remarks
  * This service keeps hold of all sources used to create textures. This allows restoring textures and
  * contents after a context-loss ({@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/webglcontextlost_event}).
+ *
+ * @category App
  */
 export class Textures implements RenderContextLifeCycleHandler {
     protected readonly textureSources = new Map<TextureHandle, ImageBitmap>();

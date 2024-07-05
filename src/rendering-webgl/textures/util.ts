@@ -1,9 +1,11 @@
+/** @category Rendering - WebGL */
 export interface CombinedFilterParams {
     filter: 'linear' | 'nearest';
 }
 
 const FILTER = 'filter' satisfies keyof CombinedFilterParams;
 
+/** @category Rendering - WebGL */
 export interface MinMagFilterParams {
     minFilter:
         | 'linear'
@@ -18,6 +20,7 @@ export interface MinMagFilterParams {
 const MIN_FILTER = 'minFilter' satisfies keyof MinMagFilterParams;
 const MAG_FILTER = 'magFilter' satisfies keyof MinMagFilterParams;
 
+/** @category Rendering - WebGL */
 export function getMinFilter(
     gl: WebGL2RenderingContext,
     filter: MinMagFilterParams['minFilter'],
@@ -46,6 +49,7 @@ export function getMinFilter(
     }
 }
 
+/** @category Rendering - WebGL */
 export function getMagFilter(
     gl: WebGL2RenderingContext,
     filter: MinMagFilterParams['magFilter'],
@@ -62,14 +66,17 @@ export function getMagFilter(
     }
 }
 
+/** @category Rendering - WebGL */
 export type FilterParams = CombinedFilterParams | MinMagFilterParams;
 
+/** @category Rendering - WebGL */
 export interface CombinedWrapParams {
     wrap: 'repeat' | 'mirroredRepeat' | 'clamp';
 }
 
 const WRAP = 'wrap' satisfies keyof CombinedWrapParams;
 
+/** @category Rendering - WebGL */
 export interface STWrapParams {
     wrapS: 'repeat' | 'mirroredRepeat' | 'clamp';
     wrapT: 'repeat' | 'mirroredRepeat' | 'clamp';
@@ -97,18 +104,22 @@ function getWrap(
     }
 }
 
+/** @category Rendering - WebGL */
 export type WrapParams = CombinedWrapParams | STWrapParams;
 
+/** @category Rendering - WebGL */
 export interface LevelParams {
     baseLevel: number;
     maxLevel: number;
 }
 
+/** @category Rendering - WebGL */
 export interface LODParams {
     minLOD: number;
     maxLOD: number;
 }
 
+/** @category Rendering - WebGL */
 export type TextureParams = Partial<FilterParams> &
     Partial<WrapParams> &
     Partial<LevelParams> &
@@ -118,6 +129,8 @@ export type TextureParams = Partial<FilterParams> &
  * Set texture parameters for the currently bound texture.
  * @param gl - GL
  * @param params - Parameters
+ *
+ * @category Rendering - WebGL
  */
 export function setTextureParameters(
     gl: WebGL2RenderingContext,
@@ -202,6 +215,7 @@ export function setTextureParameters(
     }
 }
 
+/** @category Rendering - WebGL */
 export type SamplerParams = Partial<FilterParams> &
     Partial<WrapParams> &
     Partial<LODParams>;
@@ -211,6 +225,8 @@ export type SamplerParams = Partial<FilterParams> &
  * @param gl - GL
  * @param sampler - Sampler
  * @param params - Params
+ *
+ * @category Rendering - WebGL
  */
 export function setSamplerParameters(
     gl: WebGL2RenderingContext,

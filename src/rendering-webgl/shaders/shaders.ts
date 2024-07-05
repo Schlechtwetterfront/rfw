@@ -2,6 +2,7 @@ import { RenderContextLifeCycleHandler } from '../../rendering';
 import { ShaderHandle, Shaders } from '../../rendering/shaders';
 import { WGLDriver } from '../driver';
 
+/** @category Rendering - WebGL */
 export class WGLShaders implements Shaders, RenderContextLifeCycleHandler {
     private gl: WebGL2RenderingContext;
 

@@ -6,6 +6,8 @@ import { DriverTextures } from './textures';
 
 /**
  * Driver for a concrete rendering backend (e.g., WebGL).
+ *
+ * @category Rendering
  */
 export interface RenderDriver {
     /** Diagnostics like frame time. */

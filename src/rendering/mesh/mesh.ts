@@ -1,6 +1,7 @@
 import { Color } from '../../colors';
 import { Vec2 } from '../../math';
 
+/** @category Rendering */
 export class Vertex {
     constructor(
         public readonly position = Vec2.zero(),
@@ -24,6 +25,7 @@ export class Vertex {
     }
 }
 
+/** @category Rendering */
 export class Mesh {
     get triangulatedVertexCount() {
         return this.indices.length;

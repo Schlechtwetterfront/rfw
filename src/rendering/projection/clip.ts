@@ -4,6 +4,7 @@ import { makeCameraProjection } from './camera';
 import { CAMERA_MAT } from './constants';
 import { PositiveXAxis, PositiveYAxis } from './types';
 
+/** @category Rendering */
 export function makeClipProjection(
     mat: Mat2D,
     dimensions: Vec2Like,
@@ -19,6 +20,7 @@ export function makeClipProjection(
     mat.ty = centered ? 0 : 1;
 }
 
+/** @category Rendering */
 export function makeCameraClipProjection(
     mat: Mat2D,
     dimensions: Vec2Like,

@@ -18,10 +18,12 @@ import { Pool } from '../../util/pool';
 import { RefCounts } from '../../util/ref-counts';
 import { getTextBatchStorageFactory } from './text-buffer-manager';
 
+/** @category Rendering */
 export interface TextBatchEntry extends BatchEntry<TextLike> {
     font?: Font;
 }
 
+/** @category Rendering */
 export class TextBatch
     extends Batch<TextLike, TextBatchEntry, TextBatchStorage>
     implements FontTextureIndexProvider
@@ -117,17 +119,20 @@ export class TextBatch
     }
 }
 
+/** @category Rendering */
 export interface TextBatchStorage
     extends BatchStorage<TextBatchEntry>,
         ByteBuffers {
     textureIndexProvider?: FontTextureIndexProvider;
 }
 
+/** @category Rendering */
 export type TextBatchStorageFactory = BatchStorageFactory<
     TextBatchEntry,
     TextBatchStorage
 >;
 
+/** @category Rendering */
 export interface TextBatcherOptionsWithFactory {
     maxTextureCount: number;
     maxGlyphCount?: number;
@@ -135,6 +140,7 @@ export interface TextBatcherOptionsWithFactory {
     changeTracker: ChangeTracker;
 }
 
+/** @category Rendering */
 export interface TextBatcherOptionsWithAxes {
     maxTextureCount: number;
     maxGlyphCount?: number;
@@ -143,12 +149,14 @@ export interface TextBatcherOptionsWithAxes {
     changeTracker: ChangeTracker;
 }
 
+/** @category Rendering */
 export type TextBatcherOptions =
     | TextBatcherOptionsWithFactory
     | TextBatcherOptionsWithAxes;
 
 const DEFAULT_MAX_GLYPH_COUNT = 16_000;
 
+/** @category Rendering */
 export class TextBatcher extends Batcher<TextLike, TextBatchEntry, TextBatch> {
     private readonly storageFactory: TextBatchStorageFactory;
 

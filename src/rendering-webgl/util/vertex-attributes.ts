@@ -2,6 +2,8 @@ import { BYTE_SIZE, FLOAT_SIZE, INT_16_SIZE, INT_32_SIZE } from '../../util';
 
 /**
  * Available integer vertex attribute types.
+ *
+ * @category Rendering - WebGL
  */
 export type IntVertexAttributeType =
     | 'byte'
@@ -15,11 +17,15 @@ export type IntVertexAttributeType =
 
 /**
  * Available float vertex attribute types.
+ *
+ * @category Rendering - WebGL
  */
 export type FloatVertexAttributeType = 'halfFloat' | 'float';
 
 /**
  * Available vertex attribute types.
+ *
+ * @category Rendering - WebGL
  */
 export type VertexAttributeType =
     | IntVertexAttributeType
@@ -29,6 +35,8 @@ export type VertexAttributeType =
  * Is the given type an integer type? Might require using `vertexAttribIPointer`.
  * @param type - Type
  * @returns `true` if integer type
+ *
+ * @category Rendering - WebGL
  */
 export function isIntType(
     type: VertexAttributeType,
@@ -38,6 +46,8 @@ export function isIntType(
 
 /**
  * A vertex attribute.
+ *
+ * @category Rendering - WebGL
  */
 export interface VertexAttribute {
     /** Attribute index/location. */
@@ -67,6 +77,8 @@ export interface VertexAttribute {
  * @param gl - GL
  * @param attributes - Vertex attributes in order
  * @param options - Options to apply to all attributes
+ *
+ * @category Rendering - WebGL
  */
 export function setVertexAttributes(
     gl: WebGL2RenderingContext,
@@ -131,6 +143,8 @@ export function setVertexAttributes(
  * @param gl - GL
  * @param type - Type
  * @returns WebGL type constant
+ *
+ * @category Rendering - WebGL
  */
 export function getTypeWebGLType(
     gl: WebGL2RenderingContext,
@@ -176,6 +190,8 @@ export function getTypeWebGLType(
  * Get byte size of the given type.
  * @param type - Type
  * @returns Size in bytes
+ *
+ * @category Rendering - WebGL
  */
 export function getTypeSize(type: VertexAttributeType) {
     switch (type) {

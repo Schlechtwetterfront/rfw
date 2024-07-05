@@ -5,6 +5,8 @@ import { BatchStorage } from './storage';
 
 /**
  * A generic batch of objects.
+ *
+ * @category Rendering - Batching
  */
 export class Batch<
     O,

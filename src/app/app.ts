@@ -4,6 +4,8 @@ import { Tickers } from './tickers';
 
 /**
  * Base application.
+ *
+ * @category App
  */
 export abstract class App<G extends RenderDriver> {
     private initialized = false;

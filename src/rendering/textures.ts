@@ -1,9 +1,11 @@
 import { ResourceOptions } from '.';
 
+/** @category Rendering */
 export class TextureHandle {
     constructor(public readonly label?: string) {}
 }
 
+/** @category Rendering */
 export interface DriverTextures {
     readonly white: TextureHandle;
 
@@ -28,10 +30,12 @@ export interface DriverTextures {
     ): Promise<void>;
 }
 
+/** @category Rendering */
 export interface TextureIndexProvider {
     getTextureIndex(tex: TextureHandle): number | undefined;
 }
 
+/** @category Rendering */
 export function getMaxTextures(batches: readonly { textureCount: number }[]) {
     return batches.reduce(
         (max, b) => (b.textureCount > max ? b.textureCount : max),
@@ -39,6 +43,7 @@ export function getMaxTextures(batches: readonly { textureCount: number }[]) {
     );
 }
 
+/** @category Rendering */
 export interface WithTexture {
     readonly texture: TextureHandle;
 }

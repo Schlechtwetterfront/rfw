@@ -1,10 +1,12 @@
 import { ByteBuffer } from '../../rendering/buffers';
 
+/** @category Rendering - WebGL */
 export interface VAOWithBuffers {
     vao: WebGLVertexArrayObject;
     buffers: WebGLBuffer[];
 }
 
+/** @category Rendering - WebGL */
 export function createVAOAndBuffers(
     gl: WebGL2RenderingContext,
     buffers: readonly ByteBuffer[],

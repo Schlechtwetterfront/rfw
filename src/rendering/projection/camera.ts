@@ -2,6 +2,7 @@ import { Mat2D } from '../../math';
 import { Camera2D } from '../camera2d';
 import { PositiveXAxis, PositiveYAxis } from './types';
 
+/** @category Rendering */
 export function makeCameraProjection(
     mat: Mat2D,
     camera: Camera2D,

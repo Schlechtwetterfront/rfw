@@ -1,12 +1,15 @@
 import { ChangeTracker } from '../app/change-tracking';
 import { Transform2D, Vec2Like } from '../math';
 
+/** @category Rendering */
 export interface CameraOptions {
     changeTracker?: ChangeTracker;
 }
 
 /**
  * An orthographic camera.
+ *
+ * @category Rendering
  */
 export class Camera2D {
     private readonly changeTracker?: ChangeTracker;

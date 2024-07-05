@@ -17,6 +17,7 @@ import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './text.template.frag?raw';
 import VERT_SRC from './text.vert?raw';
 
+/** @category Rendering - WebGL */
 export interface TextRenderBatch extends RenderBatch {
     readonly glyphCount: number;
 
@@ -24,6 +25,7 @@ export interface TextRenderBatch extends RenderBatch {
     readonly textures: readonly TextureHandle[];
 }
 
+/** @category Rendering - WebGL */
 export interface WGLTextRendererProgramData {
     program: WebGLProgram;
     projectionLocation: WebGLUniformLocation;
@@ -34,6 +36,7 @@ export interface WGLTextRendererProgramData {
 const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
+/** @category Rendering - WebGL */
 export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
     protected programs: WGLTextRendererProgramData[] = [];
     protected sampler?: WebGLSampler;

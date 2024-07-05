@@ -4,6 +4,7 @@ import { makeCameraProjection } from './camera';
 import { CAMERA_MAT } from './constants';
 import { PositiveXAxis, PositiveYAxis } from './types';
 
+/** @category Rendering */
 export function makeViewportProjection(
     mat: Mat2D,
     dimensions: Vec2Like,
@@ -19,6 +20,7 @@ export function makeViewportProjection(
     mat.ty = dimensions.y * (centered ? 0.5 : y === 'up' ? 1 : 0);
 }
 
+/** @category Rendering */
 export function makeCameraViewportProjection(
     mat: Mat2D,
     dimensions: Vec2Like,

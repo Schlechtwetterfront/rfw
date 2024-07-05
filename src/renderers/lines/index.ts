@@ -5,6 +5,7 @@ import { BYTE_SIZE, FLOAT_SIZE } from '../../util/sizes';
 export * from './line-batching';
 export * from './line-buffer-manager';
 
+/** @category Rendering */
 export const BYTES_PER_LINE_SEGMENT =
     FLOAT_SIZE * 2 + // Before
     FLOAT_SIZE * 2 + // Start
@@ -19,6 +20,7 @@ export const BYTES_PER_LINE_SEGMENT =
     FLOAT_SIZE + // Distance end
     BYTE_SIZE * 4; // Color
 
+/** @category Rendering */
 export interface LineLike extends SizedObject {
     readonly segmentCount: number;
     readonly segments: readonly LineSegment[];
