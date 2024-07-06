@@ -309,26 +309,6 @@ export class Mat2D implements ReadonlyMat2D {
         return this;
     }
 
-    static sum(...mats: Mat2DLike[]): Mat2D {
-        const mat = this.identity();
-
-        for (const m of mats) {
-            mat.add(m);
-        }
-
-        return mat;
-    }
-
-    static difference(...mats: Mat2DLike[]): Mat2D {
-        const mat = this.identity();
-
-        for (const m of mats) {
-            mat.subtract(m);
-        }
-
-        return mat;
-    }
-
     static from(m: Mat2DLike): Mat2D {
         return new Mat2D(m.a, m.b, m.c, m.d, m.tx, m.ty);
     }

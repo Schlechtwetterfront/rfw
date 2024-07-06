@@ -1,6 +1,7 @@
 import { TypedArray } from '../util/arrays';
 import { PI_2, TO_DEGREES, TO_RADIANS } from './constants';
 import { Mat2DLike } from './mat2d';
+import { RectLike } from './shapes';
 
 /**
  * Two-dimensional vector (point).
@@ -146,6 +147,20 @@ export interface ReadonlyVec2 extends Vec2Like {
      * @returns New instance
      */
     clone(): Vec2;
+}
+
+/**
+ * Create a new vec.
+ * @param x - X
+ * @param y - Y
+ * @returns New {@link Vec2} instance
+ *
+ * @category Math
+ */
+export function vec(x = 0, y?: number): Vec2 {
+    y ??= x;
+
+    return new Vec2(x, y);
 }
 
 /**
@@ -659,6 +674,60 @@ export class Vec2 implements ReadonlyVec2 {
     }
 
     /**
+     * Copy top right coordinates from `rect`.
+     * @param rect - Rect
+     * @returns Self
+     */
+    copyTopRightFrom(rect: RectLike): this {
+        const right = rect.x + rect.width;
+        const top = rect.y + rect.height;
+
+        this.x = right;
+        this.y = top;
+
+        return this;
+    }
+
+    /**
+     * Copy center coordinates from `rect`.
+     * @param rect - Rect
+     * @returns Self
+     */
+    copyCenterFrom(rect: RectLike): this {
+        const cx = rect.x + rect.width * 0.5;
+        const cy = rect.y + rect.height * 0.5;
+
+        this.x = cx;
+        this.y = cy;
+
+        return this;
+    }
+
+    /**
+     * Apply anchor relative to `rect`s dimensions to this vec.
+     * @param rect - Rect
+     * @param anchor - Anchor
+     * @returns Self
+     *
+     * @example
+     * ```ts
+     * const r = new Rect(10, 10, 20, 20);
+     *
+     * // v.x === 30, v.y === 20
+     * const v = new Vec2().copyAnchorPointFrom(r, { x: 1, y: 0.5 });
+     * ```
+     */
+    copyAnchorPointFrom(rect: RectLike, anchor: Vec2Like): this {
+        const x = rect.x + anchor.x * rect.width;
+        const y = rect.y + anchor.y * rect.height;
+
+        this.x = x;
+        this.y = y;
+
+        return this;
+    }
+
+    /**
      * Get a read-only version of this vector. Does not clone.
      * @returns Read-only vector
      */
@@ -668,14 +737,6 @@ export class Vec2 implements ReadonlyVec2 {
 
     toString(): string {
         return `Vec2(${this.x}, ${this.y})`;
-    }
-
-    static distance(from: Vec2Like, to: Vec2Like): number {
-        return TEMP_VEC.copyFrom(from).subtractVec(to).length;
-    }
-
-    static distanceSquared(from: Vec2Like, to: Vec2Like): number {
-        return TEMP_VEC.copyFrom(from).subtractVec(to).lengthSquared;
     }
 
     static from(v: Vec2Like): Vec2 {
@@ -696,5 +757,3 @@ export class Vec2 implements ReadonlyVec2 {
         return new Vec2(1, 1);
     }
 }
-
-const TEMP_VEC = Vec2.zero();

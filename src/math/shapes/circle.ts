@@ -71,7 +71,7 @@ export class Circle implements ReadonlyCircle, Vec2Like {
     }
 
     intersectsCircle(other: CircleLike): boolean {
-        const d = Vec2.distance(this, other);
+        const d = TEMP_VEC.copyFrom(this).subtractVec(other).length;
 
         return d < this.radius + other.radius;
     }
@@ -92,7 +92,7 @@ export class Circle implements ReadonlyCircle, Vec2Like {
     }
 
     containsPoint(point: Vec2Like): boolean {
-        return Vec2.distance(this, point) <= this.radius;
+        return TEMP_VEC.copyFrom(this).subtractVec(point).length <= this.radius;
     }
 
     /**

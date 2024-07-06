@@ -96,6 +96,45 @@ export class Rect implements ReadonlyRect, Vec2Like {
     }
 
     /**
+     * Copy position from the given vec.
+     * @param param0 - Posiiton
+     * @returns Self
+     */
+    copyPositionFrom({ x, y }: Vec2Like): this {
+        this.x = x;
+        this.y = y;
+
+        return this;
+    }
+
+    /**
+     * Set center of this rect.
+     * @param x - Center x
+     * @param y - Center y
+     * @returns Self
+     */
+    setCenter(x: number, y?: number): this {
+        y ??= x;
+
+        this.x = x - this.width * 0.5;
+        this.y = y - this.height * 0.5;
+
+        return this;
+    }
+
+    /**
+     * Set center of this rect.
+     * @param vec - Center vec
+     * @returns Self
+     */
+    copyCenterFrom({ x, y }: Vec2Like): this {
+        this.x = x - this.width * 0.5;
+        this.y = y - this.height * 0.5;
+
+        return this;
+    }
+
+    /**
      * Set this rect's dimensions to a bounding box of `points`.
      * @param points - Points to encompass
      * @returns Self
@@ -134,6 +173,14 @@ export class Rect implements ReadonlyRect, Vec2Like {
         return this;
     }
 
+    /**
+     * Multiply this rect by a matrix.
+     * @param mat - Matrix
+     * @returns Self
+     *
+     * @remarks
+     * Projected rect will be axis-aligned.
+     */
     multiplyMat(mat: Mat2DLike): this {
         const { x, y, width, height } = this;
 
@@ -154,6 +201,14 @@ export class Rect implements ReadonlyRect, Vec2Like {
     }
 
     // Sync: Mat2D.invert
+    /**
+     * Inversely multiply this rect by a matrix.
+     * @param mat - Matrix
+     * @returns Self
+     *
+     * @remarks
+     * Projected rect will be axis-aligned.
+     */
     multiplyMatInverse(mat: Mat2DLike): this {
         const determinant = mat.a * mat.d - mat.b * mat.c;
 

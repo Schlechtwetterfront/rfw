@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { Mat2D, Vec2 } from '../../src/math';
+import { Rect } from '../../src';
+import { Mat2D, vec, Vec2 } from '../../src/math';
 
 function right() {
     return new Vec2(1, 0);
@@ -229,5 +230,26 @@ describe('vec2', () => {
             .multiplyMat(rotationMat);
 
         expect(tsr).toEqual({ x: -20, y: 22 });
+    });
+
+    test('anchor', () => {
+        const r = new Rect(10, 10, 20, 30);
+
+        expect(vec().copyAnchorPointFrom(r, { x: 1, y: 0.5 })).toEqual({
+            x: 30,
+            y: 25,
+        });
+    });
+
+    test('copy top right', () => {
+        const r = new Rect(10, 10, 20, 30);
+
+        expect(vec().copyTopRightFrom(r)).toEqual({ x: 30, y: 40 });
+    });
+
+    test('copy center', () => {
+        const r = new Rect(10, 10, 20, 30);
+
+        expect(vec().copyTopRightFrom(r)).toEqual({ x: 30, y: 40 });
     });
 });
