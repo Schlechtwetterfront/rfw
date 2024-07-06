@@ -29,6 +29,7 @@ export interface TextRenderBatch extends RenderBatch {
 export interface WGLTextRendererProgramData {
     program: WebGLProgram;
     projectionLocation: WebGLUniformLocation;
+    cameraProjectionLocation: WebGLUniformLocation;
     samplerLocation: WebGLUniformLocation;
     samplerUnits: Int32Array;
 }
@@ -68,6 +69,7 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
                 program,
                 ...getUniformLocations(gl, program, {
                     projectionLocation: 'u_projection',
+                    cameraProjectionLocation: 'u_cameraProjection',
                     samplerLocation: 'u_sampler',
                 }),
                 samplerUnits,
@@ -137,21 +139,43 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
 
         const { gl } = this;
 
-        const { program, projectionLocation, samplerLocation, samplerUnits } =
-            this.programs[Math.log2(textureCount)]!;
+        const {
+            program,
+            projectionLocation,
+            cameraProjectionLocation,
+            samplerLocation,
+            samplerUnits,
+        } = this.programs[Math.log2(textureCount)]!;
 
         gl.useProgram(program);
         gl.uniform1iv(samplerLocation, samplerUnits);
 
-        if (camera) {
-            this.driver.projections.getClipProjection(camera, PROJECTION_MAT);
-        } else {
+        // Clip
+        {
             this.driver.projections.getViewportClipProjection(PROJECTION_MAT);
+
+            PROJECTION_MAT.copyTo3x2(PROJECTION_ARRAY);
+
+            gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
         }
 
-        PROJECTION_MAT.copyTo3x2(PROJECTION_ARRAY);
+        // Camera
+        {
+            if (camera)
+                this.driver.projections.getCameraProjection(
+                    camera,
+                    PROJECTION_MAT,
+                );
+            else PROJECTION_MAT.makeIdentity();
 
-        gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
+            PROJECTION_MAT.copyTo3x2(PROJECTION_ARRAY);
+
+            gl.uniformMatrix3x2fv(
+                cameraProjectionLocation,
+                false,
+                PROJECTION_ARRAY,
+            );
+        }
     }
 
     protected override initializeAttributes(buffers: WebGLBuffer[]): void {

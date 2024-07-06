@@ -73,7 +73,6 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
 
         const scaledLineHeight =
             textStyle.lineHeight.get(font.originalLineHeight) * fontScale;
-        const descender = font.originalLineHeight - font.originalBaseLine;
 
         const atlasWidth = font.pageDimensions.x;
         const atlasHeight = font.pageDimensions.y;
@@ -82,7 +81,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
         const distanceFieldRange = font.distanceFieldRange;
         const origin = TEMP_VEC2.copyFrom(anchor).multiply(
             -layout.width,
-            -layout.height,
+            layout.height,
         );
         const z = zToDepth(object.transform.z);
 
@@ -94,7 +93,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
             const lineGlyphCount = line.glyphs.length;
 
             let x = 0;
-            const y = origin.y + l * scaledLineHeight;
+            const y = origin.y - l * scaledLineHeight;
 
             switch (textStyle.align) {
                 case 'start':
@@ -113,33 +112,29 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
             for (let c = 0; c < lineGlyphCount; c++) {
                 const glyph = line.glyphs[c]!;
 
-                const {
-                    right: xExtent,
-                    top: yExtent,
-                    width,
-                    height,
-                } = glyph.rect;
+                const { right, top, width, height } = glyph.rect;
+
                 const left = glyph.rect.x;
-                const right = xExtent;
-                const top = glyph.rect.y;
-                const bottom = yExtent;
+                const bottom = glyph.rect.y;
 
                 const scaledWidth = width * fontScale;
                 const scaledHeight = height * fontScale;
 
                 const glyphX = x + glyph.offset.x * fontScale;
-                const glyphY = y + (glyph.offset.y - descender) * fontScale;
+                const glyphY = y + (glyph.offset.y - height) * fontScale;
 
-                const uvTop = top / atlasHeight;
-                const uvBottom = bottom / atlasHeight;
+                const uvTop = 1 - top / atlasHeight;
+                const uvRight = right / atlasWidth;
+                const uvBottom = 1 - bottom / atlasHeight;
+                const uvLeft = left / atlasWidth;
 
                 let offset32 =
                     ((glyphOffset + processedGlyphs) * BYTES_PER_GLYPH) /
                     FLOAT_SIZE;
 
-                // 0 -- 1
-                // |    |
                 // 3 -- 2
+                // |    |
+                // 0 -- 1
 
                 // 0
                 {
@@ -151,26 +146,7 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
-                    f32View[offset32++] = left / atlasWidth;
-                    f32View[offset32++] = uvTop;
-
-                    color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
-
-                    f32View[offset32++] = distanceFieldRange;
-                    i32View[offset32++] = glyph.page + pageOffset;
-                }
-
-                // 3
-                {
-                    posVec.x = glyphX;
-                    posVec.y = glyphY + scaledHeight;
-                    posVec.multiplyMat(world);
-
-                    f32View[offset32++] = posVec.x;
-                    f32View[offset32++] = posVec.y;
-                    f32View[offset32++] = z;
-
-                    f32View[offset32++] = left / atlasWidth;
+                    f32View[offset32++] = uvLeft;
                     f32View[offset32++] = uvBottom;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
@@ -179,17 +155,17 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     i32View[offset32++] = glyph.page + pageOffset;
                 }
 
-                // 1
+                // 3
                 {
-                    posVec.x = glyphX + scaledWidth;
-                    posVec.y = glyphY;
+                    posVec.x = glyphX;
+                    posVec.y = glyphY + scaledHeight;
                     posVec.multiplyMat(world);
 
                     f32View[offset32++] = posVec.x;
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
-                    f32View[offset32++] = right / atlasWidth;
+                    f32View[offset32++] = uvLeft;
                     f32View[offset32++] = uvTop;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
@@ -208,8 +184,8 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
-                    f32View[offset32++] = right / atlasWidth;
-                    f32View[offset32++] = uvTop;
+                    f32View[offset32++] = uvRight;
+                    f32View[offset32++] = uvBottom;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 
@@ -227,7 +203,26 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
-                    f32View[offset32++] = left / atlasWidth;
+                    f32View[offset32++] = uvLeft;
+                    f32View[offset32++] = uvTop;
+
+                    color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
+
+                    f32View[offset32++] = distanceFieldRange;
+                    i32View[offset32++] = glyph.page + pageOffset;
+                }
+
+                // 1
+                {
+                    posVec.x = glyphX + scaledWidth;
+                    posVec.y = glyphY;
+                    posVec.multiplyMat(world);
+
+                    f32View[offset32++] = posVec.x;
+                    f32View[offset32++] = posVec.y;
+                    f32View[offset32++] = z;
+
+                    f32View[offset32++] = uvRight;
                     f32View[offset32++] = uvBottom;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
@@ -246,8 +241,8 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     f32View[offset32++] = posVec.y;
                     f32View[offset32++] = z;
 
-                    f32View[offset32++] = right / atlasWidth;
-                    f32View[offset32++] = uvBottom;
+                    f32View[offset32++] = uvRight;
+                    f32View[offset32++] = uvTop;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 

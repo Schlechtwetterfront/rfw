@@ -67,10 +67,15 @@ export function createFontFromBMFont(
         const glyph = new Glyph(
             char.id,
             char.char,
-            new Rect(char.x, char.y, char.width, char.height),
+            new Rect(
+                char.x,
+                raw.common.scaleH - char.y - char.height,
+                char.width,
+                char.height,
+            ),
             char.xadvance,
             char.page,
-            new Vec2(char.xoffset, char.yoffset),
+            new Vec2(char.xoffset, -char.yoffset),
         );
 
         glyphs.push(glyph);
