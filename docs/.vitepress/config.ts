@@ -24,6 +24,10 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: 'Components',
+                    items: [{ text: 'Text', link: '/guide/text' }],
+                },
+                {
                     text: 'Advanced',
                     items: [
                         { text: 'Batching', link: '/guide/batching' },
@@ -41,6 +45,7 @@ export default defineConfig({
                             text: 'Solar System',
                             link: '/samples/scene',
                         },
+                        { text: 'On Drawing', link: '/samples/text' },
                         { text: 'Bunnymark', link: '/samples/bunnymark' },
                         { text: 'Quad Tree', link: '/samples/quadtree' },
                         { text: 'Render Mode', link: '/samples/render-mode' },

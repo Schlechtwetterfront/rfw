@@ -131,15 +131,6 @@ const table = computed(() => {
     gap: 16px;
 }
 
-input {
-    display: block;
-
-    font: inherit;
-    border-radius: 4px;
-    background-color: var(--vp-c-bg-soft);
-    padding: 4px 8px;
-}
-
 th,
 td {
     text-align: left;
