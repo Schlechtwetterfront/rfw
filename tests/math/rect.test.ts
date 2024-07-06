@@ -12,6 +12,15 @@ describe('rect', () => {
         expect(Rect.one()).not.toBe(Rect.one());
     });
 
+    test('top right center', () => {
+        const r = new Rect(0, 10, 100, 1000);
+
+        expect(r.top).toBe(1010);
+        expect(r.right).toBe(100);
+        expect(r.cx).toBe(50);
+        expect(r.cy).toBe(510);
+    });
+
     test('equals', () => {
         expect(new Rect(1, 2, 3, 4).equals(new Rect(1, 2, 3, 4))).toBe(true);
         expect(

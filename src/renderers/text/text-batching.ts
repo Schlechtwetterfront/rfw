@@ -11,7 +11,6 @@ import {
     resetBatchEntry,
 } from '../../rendering/batching';
 import { ByteBuffers } from '../../rendering/buffers';
-import { PositiveXAxis, PositiveYAxis } from '../../rendering/projection';
 import { TextureHandle } from '../../rendering/textures';
 import { Font } from '../../text';
 import { Pool } from '../../util/pool';
@@ -144,8 +143,6 @@ export interface TextBatcherOptionsWithFactory {
 export interface TextBatcherOptionsWithAxes {
     maxTextureCount: number;
     maxGlyphCount?: number;
-    x: PositiveXAxis;
-    y: PositiveYAxis;
     changeTracker: ChangeTracker;
 }
 
@@ -199,13 +196,12 @@ export class TextBatcher extends Batcher<TextLike, TextBatchEntry, TextBatch> {
             ('batchStorageFactory' satisfies keyof TextBatcherOptionsWithFactory) in
             options
                 ? options.batchStorageFactory
-                : getTextBatchStorageFactory(options.x, options.y);
+                : getTextBatchStorageFactory();
 
         this.maxTextureCount = options.maxTextureCount;
         this.maxGlyphCount = maxSize;
     }
 
-    /** @inheritdoc */
     add(object: TextLike): this {
         if (this.has(object)) {
             return this;

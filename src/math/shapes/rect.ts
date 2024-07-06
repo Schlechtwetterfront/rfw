@@ -27,12 +27,17 @@ export interface RectLike {
  */
 export interface ReadonlyRect extends RectLike, Shape {
     /** Rect `x` plus `width`. */
-    readonly xExtent: number;
+    readonly right: number;
 
     /** Rect `y` plus `height`. */
-    readonly yExtent: number;
+    readonly top: number;
 
-    /** @inheritdoc */
+    /** Rect center x. */
+    readonly cx: number;
+
+    /** Rect center y. */
+    readonly cy: number;
+
     intersectsRect(other: RectLike): boolean;
 
     /**
@@ -58,14 +63,20 @@ export interface ReadonlyRect extends RectLike, Shape {
  * @category Math
  */
 export class Rect implements ReadonlyRect, Vec2Like {
-    /** @inheritdoc */
-    get xExtent() {
+    get right() {
         return this.x + this.width;
     }
 
-    /** @inheritdoc */
-    get yExtent() {
+    get top() {
         return this.y + this.height;
+    }
+
+    get cx() {
+        return this.x + this.width * 0.5;
+    }
+
+    get cy() {
+        return this.y + this.height * 0.5;
     }
 
     constructor(
@@ -245,7 +256,7 @@ export class Rect implements ReadonlyRect, Vec2Like {
     extend(other: RectLike): this {
         const { x, y, width, height } = this;
         const right = x + width;
-        const bottom = y + height;
+        const top = y + height;
 
         const {
             x: otherX,
@@ -254,12 +265,12 @@ export class Rect implements ReadonlyRect, Vec2Like {
             height: otherHeight,
         } = other;
         const otherRight = otherX + otherWidth;
-        const otherBottom = otherY + otherHeight;
+        const otherTop = otherY + otherHeight;
 
         this.x = Math.min(x, otherX);
         this.y = Math.min(y, otherY);
         this.width = Math.max(right, otherRight) - this.x;
-        this.height = Math.max(bottom, otherBottom) - this.y;
+        this.height = Math.max(top, otherTop) - this.y;
 
         return this;
     }
@@ -278,7 +289,7 @@ export class Rect implements ReadonlyRect, Vec2Like {
 
         const { x, y, width, height } = this;
         const right = x + width;
-        const bottom = y + height;
+        const top = y + height;
 
         const {
             x: otherX,
@@ -287,12 +298,12 @@ export class Rect implements ReadonlyRect, Vec2Like {
             height: otherHeight,
         } = other;
         const otherRight = otherX + otherWidth;
-        const otherBottom = otherY + otherHeight;
+        const otherTop = otherY + otherHeight;
 
         this.x = Math.max(x, otherX);
         this.y = Math.max(y, otherY);
         this.width = Math.max(Math.min(right, otherRight) - this.x, 0);
-        this.height = Math.max(Math.min(bottom, otherBottom) - this.y, 0);
+        this.height = Math.max(Math.min(top, otherTop) - this.y, 0);
 
         return this;
     }

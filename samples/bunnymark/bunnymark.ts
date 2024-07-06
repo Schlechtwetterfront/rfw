@@ -4,7 +4,6 @@ import BUNNY_TEX_URL from '../assets/bunny.png';
 import { Vec2 } from '../../src/math';
 import { Rect } from '../../src/math/shapes';
 import { lerp } from '../../src/math/util';
-import { TextBatcher } from '../../src/renderers/text';
 import {
     MeshBatcher,
     TexturedMaterial,
@@ -39,13 +38,6 @@ class BunnyObject extends MeshObject {
 }
 
 export class BunnyMarkApp extends SampleApp {
-    private readonly globalTextBatches = new TextBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-        x: 'right',
-        y: 'up',
-    });
-
     private meshBatches = new MeshBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
@@ -141,17 +133,17 @@ export class BunnyMarkApp extends SampleApp {
 
                     remainingSquishDuration.x = SQUISH_DURATION;
                     scale.x = SQUISH_SCALE;
-                } else if (position.x > this.bounds.xExtent) {
+                } else if (position.x > this.bounds.right) {
                     movementPerSecond.x *= -1;
-                    position.x = this.bounds.xExtent;
+                    position.x = this.bounds.right;
 
                     remainingSquishDuration.x = SQUISH_DURATION;
                     scale.x = SQUISH_SCALE;
                 }
 
-                if (position.y > this.bounds.yExtent) {
+                if (position.y > this.bounds.top) {
                     movementPerSecond.y = 0;
-                    position.y = this.bounds.yExtent;
+                    position.y = this.bounds.top;
 
                     remainingSquishDuration.y = SQUISH_DURATION;
                     scale.y = SQUISH_SCALE;
@@ -196,7 +188,5 @@ export class BunnyMarkApp extends SampleApp {
         super.render();
 
         this.renderers.mesh.render(this.meshBatches.finalize(), this.camera);
-
-        this.renderers.text.render(this.globalTextBatches.finalize());
     }
 }

@@ -1,5 +1,4 @@
 import { Color } from '../../colors';
-import { Material } from '../../rendering/mesh';
 import { TextureHandle } from '../../rendering/textures';
 
 /**
@@ -7,7 +6,7 @@ import { TextureHandle } from '../../rendering/textures';
  *
  * @category Rendering - Textured Mesh
  */
-export class TexturedMaterial implements Material {
+export class TexturedMaterial {
     constructor(
         public texture: TextureHandle,
         public color = Color.white(),

@@ -2,7 +2,7 @@ import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
 import { Color } from '../../src/colors';
-import { Vec2, Vec2Like } from '../../src/math';
+import { vec, Vec2, Vec2Like } from '../../src/math';
 import { Rect, RectLike } from '../../src/math/shapes';
 import { LineBatcher } from '../../src/renderers/lines';
 import { TextBatcher } from '../../src/renderers/text';
@@ -62,8 +62,6 @@ export class RenderModeApp extends SampleApp {
     private readonly textBatches = new TextBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
-        x: 'right',
-        y: 'up',
     });
 
     private readonly lineBatches = new LineBatcher({
@@ -106,12 +104,13 @@ export class RenderModeApp extends SampleApp {
     }
 
     private updateMouse(x: number, y: number) {
-        this.mouse.x = x;
-        this.mouse.y = y;
+        this.mouse.copyPositionFrom(
+            this.driver.projections.projectDOMPointToViewport(vec(x, y)),
+        );
 
         this.sceneMouse.copyFrom(this.mouse);
 
-        this.driver.projections.projectPointToScene(
+        this.driver.projections.projectViewportPointToScene(
             this.sceneMouse,
             this.camera,
         );

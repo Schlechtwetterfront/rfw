@@ -3,7 +3,7 @@ import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
 import { Color } from '../../src/colors';
-import { Vec2 } from '../../src/math';
+import { vec, Vec2 } from '../../src/math';
 import { Rect } from '../../src/math/shapes';
 import {
     buildRectPoints,
@@ -28,14 +28,6 @@ export class QuadTreeApp extends SampleApp {
     private readonly textBatches = new TextBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
-        x: 'right',
-        y: 'up',
-    });
-    private readonly globalTextBatches = new TextBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-        x: 'right',
-        y: 'up',
     });
 
     private readonly lineBatches = new LineBatcher({
@@ -52,7 +44,7 @@ export class QuadTreeApp extends SampleApp {
     private quadTree: QuadTree<Rect>;
     private cursor!: LineObject;
 
-    private mouse = new Rect(0, 0, 24, 24);
+    private viewportMouse = new Rect(0, 0, 24, 24);
     private sceneMouse = Rect.zero();
 
     private intersectionTime = new TimeSampler('intersections');
@@ -73,7 +65,7 @@ export class QuadTreeApp extends SampleApp {
 
         canvas.addEventListener('click', e => {
             if (e.ctrlKey && !e.altKey) {
-                const pos = this.driver.projections.projectPointToScene(
+                const pos = this.driver.projections.projectDOMPointToScene(
                     new Vec2(e.offsetX, e.offsetY),
                     this.camera,
                 );
@@ -126,12 +118,15 @@ export class QuadTreeApp extends SampleApp {
     }
 
     private updateMouse(x: number, y: number) {
-        this.mouse.x = x - 12;
-        this.mouse.y = y - 12;
+        const viewportMouse = this.driver.projections.projectDOMPointToViewport(
+            vec(x, y),
+        );
 
-        this.sceneMouse.copyFrom(this.mouse);
+        this.viewportMouse.copyCenterFrom(viewportMouse);
 
-        this.driver.projections.projectRectToScene(
+        this.sceneMouse.copyFrom(this.viewportMouse);
+
+        this.driver.projections.projectViewportRectToScene(
             this.sceneMouse,
             this.camera,
         );
@@ -156,8 +151,8 @@ export class QuadTreeApp extends SampleApp {
                 font: this.font,
                 style: { size: 32 },
                 text: 'Quad tree sample',
-                position: new Vec2().set(this.bounds.x, this.bounds.yExtent),
-                anchor: new Vec2(0, 1),
+                position: vec(this.bounds.x, this.bounds.top),
+                anchor: vec(0, 1),
             });
 
             this.textBatches.add(title);
@@ -167,8 +162,8 @@ export class QuadTreeApp extends SampleApp {
                 font: this.font,
                 style: { size: 16 },
                 text: 'Use CTRL+Click to add, ALT+Click to remove',
-                position: new Vec2(-600 + title.layout.width + 24, 400),
-                anchor: new Vec2(0, 1),
+                position: vec(-600 + title.layout.width + 24, 400),
+                anchor: vec(0, 1),
             });
 
             this.textBatches.add(subtitle);
@@ -187,6 +182,7 @@ export class QuadTreeApp extends SampleApp {
         super.tick(elapsed);
 
         this.quadEntities.forEach(o => this.lineBatches.delete(o));
+        this.quadEntities.length = 0;
 
         for (const quad of this.quadTree.quads()) {
             const pos = TEMP_VEC.copyFrom(quad.bounds);
@@ -229,7 +225,7 @@ export class QuadTreeApp extends SampleApp {
             });
         }
 
-        this.cursor.transform.position.copyFrom(this.mouse);
+        this.cursor.transform.position.copyFrom(this.viewportMouse);
         this.transforms.change(this.cursor);
         this.globalLineBatches.change(this.cursor);
     }
@@ -240,7 +236,6 @@ export class QuadTreeApp extends SampleApp {
         this.renderers.line.render(this.lineBatches.finalize(), this.camera);
         this.renderers.line.render(this.globalLineBatches.finalize());
         this.renderers.text.render(this.textBatches.finalize(), this.camera);
-        this.renderers.text.render(this.globalTextBatches.finalize());
     }
 
     addRects(count: number): void {
