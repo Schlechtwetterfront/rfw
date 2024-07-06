@@ -19,8 +19,8 @@ export default defineConfig({
                     items: [
                         { text: 'Introduction', link: '/guide/' },
                         { text: 'Quick Start', link: '/guide/get-started' },
-                        { text: 'Math', link: '/guide/math' },
                         { text: 'Rendering', link: '/guide/rendering' },
+                        { text: 'Math', link: '/guide/math' },
                     ],
                 },
                 {
@@ -37,7 +37,10 @@ export default defineConfig({
                     text: 'Samples',
                     items: [
                         { text: 'Introduction', link: '/samples/' },
-                        { text: 'Simple Scene', link: '/samples/scene' },
+                        {
+                            text: 'Solar System',
+                            link: '/samples/scene',
+                        },
                         { text: 'Bunnymark', link: '/samples/bunnymark' },
                         { text: 'Quad Tree', link: '/samples/quadtree' },
                         { text: 'Render Mode', link: '/samples/render-mode' },

@@ -35,6 +35,8 @@ const zeroVec2 = new Vec2();
 zeroVec.add(1, 1).multiplyVec(zeroVec2);
 ```
 
+See [`Vec2`](/reference/classes/Vec2.html).
+
 ### `Mat2D`
 
 A 3x2 matrix for e.g., transforms.
@@ -45,6 +47,8 @@ const id = Mat2D.identity();
 // Operations mutate and can be chained
 id.translate(1, 1).rotateDegrees(90).scale(2, 2);
 ```
+
+See [`Mat2D`](/reference/classes/Mat2D.html).
 
 ### `Transform2D` and `LocalTransform2D`
 
@@ -66,6 +70,8 @@ parent.composeWorld();
 // Compose and additionally apply parent's transform
 child.composeWorld(parent);
 ```
+
+See [`Transform2D`](/reference/classes/Transform2D.html), [`LocalTransform2D`](/reference/classes/LocalTransform2D.html).
 
 ## Shapes
 
@@ -98,3 +104,5 @@ const p = new Poly(Vec2.zero(), Vec2.one(), new Vec2(1, 0));
 
 p.intersectsRect(boundingRect);
 ```
+
+See [`Shape`](/reference/interfaces/Shape.html), [`Rect`](/reference/classes/Rect.html), [`Circle`](/reference/classes/Circle.html), [`Poly`](/reference/classes/Poly.html).

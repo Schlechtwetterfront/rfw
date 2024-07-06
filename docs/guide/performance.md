@@ -29,7 +29,9 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
     }
     ```
 
--   Disregard array order on mutations if not necessary.
+    See [`ArraySet`](/reference/classes/ArraySet.html), [`ArrayMap`](/reference/classes/ArrayMap.html), [`SparseSet`](/reference/classes/SparseSet.html).
+
+-   **Disregard array order on mutations if not necessary.**
 
     Especially `Array.splice` to remove elements from arrays is very inefficient. If the order of the array is irrelevant, consider doing a swap-delete.
 
@@ -46,9 +48,11 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
     // Or swapDelete(a, 3) where 3 is the searched for value
     ```
 
--   Use object pools.
+    See [`swapDelete`](/reference/functions/swapDelete.html), [`swapDeleteAt`](/reference/functions/swapDeleteAt.html).
 
-    When many short-lived objects of a kind are needed (and cannot be pre-allocated) an object pool might come in useful.
+-   **Use object pools.**
+
+    When many short-lived objects of a kind are needed an object pool might come in useful.
 
     ```ts
     const vecPool = new Pool<Vec2>({
@@ -61,3 +65,5 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
 
     vecPool.return(v1);
     ```
+
+    See [`Pool`](/reference/classes/Pool.html).

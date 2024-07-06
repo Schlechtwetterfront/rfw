@@ -1,5 +1,5 @@
-import { SampleApp } from '../../samples/shared';
 import {
+    CanvasApp,
     Color,
     Group,
     LineBatcher,
@@ -10,6 +10,9 @@ import {
     SceneGraphObject,
     TexturedMaterial,
     Vertex,
+    WGLDriver,
+    WGLLineRenderer,
+    WGLTexturedMeshBatchRenderer,
     buildCirclePoints,
     buildTriangulatedMesh,
 } from '../../src';
@@ -109,12 +112,18 @@ interface RenderSpaceObject {
     radius: number;
 }
 
-export class SceneApp extends SampleApp {
+const BACKGROUND_COLOR = Color.fromHexString('#111');
+
+export class SceneApp extends CanvasApp<WGLDriver> {
+    private readonly meshRenderer = new WGLTexturedMeshBatchRenderer(
+        this.driver,
+    );
+    private readonly lineRenderer = new WGLLineRenderer(this.driver);
+
     private readonly meshBatches = new MeshBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
     });
-
     private readonly lineBatches = new LineBatcher({
         changeTracker: this.changeTracker,
     });
@@ -192,7 +201,9 @@ export class SceneApp extends SampleApp {
     protected override render(): void {
         super.render();
 
-        this.renderers.line.render(this.lineBatches.finalize(), this.camera);
-        this.renderers.mesh.render(this.meshBatches.finalize(), this.camera);
+        this.driver.clearViewport(BACKGROUND_COLOR);
+
+        this.lineRenderer.render(this.lineBatches.finalize(), this.camera);
+        this.meshRenderer.render(this.meshBatches.finalize(), this.camera);
     }
 }

@@ -1,4 +1,4 @@
-# Simple Scene
+# Solar System
 
 A simple scene of our solar system (distances not to scale).
 
@@ -27,7 +27,7 @@ watchEffect(async () => {
 </script>
 
 <section>
-    <canvas class="sample-canvas" ref="canvas" tabindex="0"></canvas>
+    <canvas class="sample-canvas" ref="canvas" tabindex="0" style="aspect-ratio: 1"></canvas>
 </section>
 
 ::: details Code

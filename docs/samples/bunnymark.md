@@ -22,7 +22,7 @@ watchEffect(async () => {
 
     const driver = await WGLDriver.fromCanvas(c);
 
-    app = new BunnyMarkApp(new Rect(-300, -150, 600, 300), c, driver);
+    app = new BunnyMarkApp(new Rect(-344, -172, 688, 344), c, driver);
     app.addDiagTicker(d)
 
     await app.initializeAndStart();
