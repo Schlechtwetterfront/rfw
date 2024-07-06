@@ -2,7 +2,9 @@
 
 `rfw` chooses certain abstractions, conventions, and trade-offs that can allow for great performance. It also provides some tools for the user to do the same - if they so choose.
 
--   `for`-loop iteration is a lot faster than iterator-based iteration (`for ... of`) or methods like `forEach`.
+Check out the [benchmarks](/benchmarks/) that some of these decisions are based on.
+
+-   **`for`-loop iteration is a lot faster than iterator-based iteration (`for ... of`) or methods like `forEach`.**
 
     For arrays: Iterate arrays with a simple `for`-loop.
 

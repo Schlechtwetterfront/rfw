@@ -45,13 +45,7 @@ Use `npm run dev <app path>` to run any of the apps in a Vite dev web server. E.
 npm run dev samples/bunnymark
 ```
 
-to run a sample, or:
-
-```sh
-npm run dev benchmarks
-```
-
-to run the benchmark app.
+to run a sample.
 
 ### Tests
 
@@ -59,7 +53,7 @@ Use `npm run test` to watch tests and `npm run types:watch` to continuously chec
 
 ### Docs
 
-Use `npm run docs:dev` to start the doc dev web server.
+Use `npm run docs:dev` to start the doc dev web server. The benchmarks are available under `benchmarks/`.
 
 The reference is built separately, with `npm run reference:build` and does not have a dev version.
 

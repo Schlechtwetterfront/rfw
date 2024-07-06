@@ -1,3 +1,5 @@
+import { Bench } from './bench';
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 function prep() {
     const a: number[] = [];
@@ -82,3 +84,30 @@ export function benchSetIterForEach() {
 
     return performance.now() - start;
 }
+
+export const BENCH: Bench = {
+    label: 'Iter',
+    items: [
+        {
+            label: 'Array (for)',
+            fn: benchArrayIterFor,
+            baseline: true,
+        },
+        {
+            label: 'Array (for of)',
+            fn: benchArrayIterForEach,
+        },
+        {
+            label: 'Map (for of keys)',
+            fn: benchMapIterForEachKeys,
+        },
+        {
+            label: 'Map (for of values)',
+            fn: benchMapIterForEachValues,
+        },
+        {
+            label: 'Set (for of)',
+            fn: benchSetIterForEach,
+        },
+    ],
+};

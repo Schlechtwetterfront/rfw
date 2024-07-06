@@ -44,6 +44,19 @@ export default defineConfig({
                     ],
                 },
             ],
+            '/benchmarks/': [
+                {
+                    text: 'Benchmarks',
+                    items: [
+                        { text: 'Introduction', link: '/benchmarks/' },
+                        { text: 'Iteration', link: '/benchmarks/iter' },
+                        {
+                            text: 'Array Delete',
+                            link: '/benchmarks/array-delete',
+                        },
+                    ],
+                },
+            ],
         },
 
         socialLinks: [

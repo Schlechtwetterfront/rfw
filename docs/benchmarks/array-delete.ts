@@ -1,4 +1,5 @@
 import { swapDeleteAt } from '../../src';
+import { Bench } from './bench';
 
 function prep() {
     const a = [];
@@ -37,3 +38,18 @@ export function benchSwapDeleteIndex() {
 
     return performance.now() - start;
 }
+
+export const BENCH: Bench = {
+    label: 'Array delete',
+    items: [
+        {
+            label: 'Splice (index)',
+            fn: benchSpliceDelete,
+        },
+        {
+            label: 'Swap (index)',
+            fn: benchSwapDeleteIndex,
+            baseline: true,
+        },
+    ],
+};
