@@ -38,7 +38,6 @@ export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
         driver.addLifeCycleHandler(this.textures);
     }
 
-    /** @inheritdoc */
     protected override tick(elapsed: number): void {
         const resized = this.canvasResizer.resize();
 
@@ -49,7 +48,6 @@ export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
         }
     }
 
-    /** @inheritdoc */
     protected override render(): void {
         this.transforms.propagate();
     }

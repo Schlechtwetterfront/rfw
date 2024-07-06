@@ -12,10 +12,8 @@ export interface PolyLike {
 export interface ReadonlyPoly extends PolyLike, Shape {
     readonly points: readonly ReadonlyVec2[];
 
-    /** @inheritdoc */
     intersectsRect(other: RectLike): boolean;
 
-    /** @inheritdoc */
     containsPoint(point: Vec2Like): boolean;
 
     equals(other: PolyLike, epsilon?: number): boolean;
@@ -27,7 +25,13 @@ const TEMP_RECT = Rect.zero();
 const TEMP_VEC0 = Vec2.zero();
 const TEMP_VEC1 = Vec2.zero();
 
-/** @category Math */
+/**
+ * A polygon.
+ *
+ * Can be converted into a mesh with {@link buildTriangulatedMesh} or geometry with {@link triangulate}.
+ *
+ * @category Math
+ */
 export class Poly implements ReadonlyPoly {
     points: Vec2[];
 
@@ -35,7 +39,6 @@ export class Poly implements ReadonlyPoly {
         this.points = points;
     }
 
-    /** @inheritdoc */
     intersectsRect(rect: RectLike): boolean {
         if (!this.points.length) {
             return false;
@@ -100,7 +103,6 @@ export class Poly implements ReadonlyPoly {
 
     // todo: Switch to robust algorithm (for points on boundary)? Other primitives are robust and
     // contain points on their border
-    /** @inheritdoc */
     containsPoint(point: Vec2Like): boolean {
         if (this.points.length < 3) {
             return false;
@@ -115,6 +117,12 @@ export class Poly implements ReadonlyPoly {
         return this.containsPointOnly(point);
     }
 
+    /**
+     * Only check if the poly contains the point. Unlike {@link containsPoint}, does not do a
+     * bounding box check.
+     * @param point - Point to check
+     * @returns `true` if this shape contains the point
+     */
     containsPointOnly(point: Vec2Like): boolean {
         if (this.points.length < 3) {
             return false;
@@ -141,7 +149,6 @@ export class Poly implements ReadonlyPoly {
         return hasHit;
     }
 
-    /** @inheritdoc */
     equals(other: PolyLike, epsilon = Number.EPSILON): boolean {
         const { points } = this;
         const pointCount = points.length;
@@ -168,7 +175,6 @@ export class Poly implements ReadonlyPoly {
         return this;
     }
 
-    /** @inheritdoc */
     clone(): Poly {
         const points = this.points.map(p => p.clone());
 

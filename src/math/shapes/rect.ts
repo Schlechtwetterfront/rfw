@@ -42,7 +42,6 @@ export interface ReadonlyRect extends RectLike, Shape {
      */
     containsRect(other: RectLike): boolean;
 
-    /** @inheritdoc */
     containsPoint(point: Vec2Like): boolean;
 
     equals(other: RectLike, epsilon?: number): boolean;
@@ -243,7 +242,6 @@ export class Rect implements ReadonlyRect, Vec2Like {
         return this;
     }
 
-    /** @inheritdoc */
     intersectsRect(other: RectLike): boolean {
         if (
             other.x < this.x + this.width &&
@@ -256,7 +254,6 @@ export class Rect implements ReadonlyRect, Vec2Like {
         return false;
     }
 
-    /** @inheritdoc */
     containsRect(other: RectLike): boolean {
         if (
             this.x <= other.x &&
@@ -269,7 +266,6 @@ export class Rect implements ReadonlyRect, Vec2Like {
         return false;
     }
 
-    /** @inheritdoc */
     containsPoint({ x, y }: Vec2Like): boolean {
         const { x: thisX, y: thisY } = this;
 

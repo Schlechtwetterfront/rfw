@@ -10,27 +10,22 @@ export class ElementByteBufferManager implements WriteElementByteBuffer {
     private _changedFromByte = 0;
     private _changedByteLength = 0;
 
-    /** @inheritdoc */
     get changedFromByte() {
         return this._changedFromByte;
     }
 
-    /** @inheritdoc */
     get changedByteLength() {
         return this._changedByteLength;
     }
 
-    /** @inheritdoc */
     get byteLength() {
         return this.arrayBuffer.byteLength;
     }
 
-    /** @inheritdoc */
     readonly arrayBuffer: ArrayBuffer;
 
     readonly u8View: Uint8Array;
 
-    /** @inheritdoc */
     readonly arrayBufferView: ArrayBufferView;
 
     /**
@@ -47,19 +42,16 @@ export class ElementByteBufferManager implements WriteElementByteBuffer {
         this.arrayBufferView = this.u8View = new Uint8Array(this.arrayBuffer);
     }
 
-    /** @inheritdoc */
     clearChange(): void {
         this._changedFromByte = 0;
         this._changedByteLength = 0;
     }
 
-    /** @inheritdoc */
     setChanged(start: number, end: number): void {
         this._changedFromByte = start * this.elementByteLength;
         this._changedByteLength = (end - start) * this.elementByteLength;
     }
 
-    /** @inheritdoc */
     markChanged(start: number, end: number): void {
         if (this._changedByteLength === 0) {
             this._changedFromByte = start * this.elementByteLength;
@@ -91,7 +83,6 @@ export abstract class ElementByteBuffersManager<O>
 {
     constructor(readonly buffers: readonly WriteElementByteBuffer[]) {}
 
-    /** @inheritdoc */
     clearChange(): void {
         for (let i = 0; i < this.buffers.length; i++) {
             const buffer = this.buffers[i]!;
@@ -100,7 +91,6 @@ export abstract class ElementByteBuffersManager<O>
         }
     }
 
-    /** @inheritdoc */
     setChanged(start: number, end: number): void {
         for (let i = 0; i < this.buffers.length; i++) {
             const buffer = this.buffers[i]!;
@@ -109,7 +99,6 @@ export abstract class ElementByteBuffersManager<O>
         }
     }
 
-    /** @inheritdoc */
     markChanged(start: number, end: number): void {
         for (let i = 0; i < this.buffers.length; i++) {
             const buffer = this.buffers[i]!;
@@ -118,10 +107,8 @@ export abstract class ElementByteBuffersManager<O>
         }
     }
 
-    /** @inheritdoc */
     abstract update(object: O, offset: number): void;
 
-    /** @inheritdoc */
     copyWithin(target: number, start: number, end: number): void {
         for (let i = 0; i < this.buffers.length; i++) {
             const buffer = this.buffers[i]!;

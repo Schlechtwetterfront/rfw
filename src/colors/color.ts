@@ -247,9 +247,6 @@ export class Color implements ReadonlyColor, RGBA {
         return this.set(rr + m, gg + m, bb + m, a);
     }
 
-    /**
-     * @inheritdoc
-     */
     equalsWithAlpha(
         r: number,
         g: number,
@@ -265,9 +262,6 @@ export class Color implements ReadonlyColor, RGBA {
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     equals(r: number, g: number, b: number, epsilon = Number.EPSILON): boolean {
         return (
             Math.abs(this.r - r) < epsilon &&
@@ -276,9 +270,6 @@ export class Color implements ReadonlyColor, RGBA {
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     equalsColor(other: ColorLike, epsilon?: number): boolean {
         return this.equalsWithAlpha(
             other.r,
@@ -289,16 +280,10 @@ export class Color implements ReadonlyColor, RGBA {
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     equalsColorWithAlpha(other: ColorLike, epsilon?: number): boolean {
         return this.equals(other.r, other.g, other.b, epsilon);
     }
 
-    /**
-     * @inheritdoc
-     */
     clone(): Color {
         return new Color(this.r, this.g, this.b, this.a);
     }
@@ -317,9 +302,6 @@ export class Color implements ReadonlyColor, RGBA {
         return this;
     }
 
-    /**
-     * @inheritdoc
-     */
     copyToARGB(array: TypedArray, offset = 0, normalized = false): void {
         if (normalized) {
             array[0 + offset] = this.a;
@@ -334,9 +316,6 @@ export class Color implements ReadonlyColor, RGBA {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     copyToRGB(array: TypedArray, offset = 0, normalized = false): void {
         if (normalized) {
             array[0 + offset] = this.r;
@@ -349,9 +328,6 @@ export class Color implements ReadonlyColor, RGBA {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     copyToRGBA(array: TypedArray, offset = 0, normalized = false): void {
         if (normalized) {
             array[0 + offset] = this.r;

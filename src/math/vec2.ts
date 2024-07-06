@@ -157,17 +157,14 @@ export interface ReadonlyVec2 extends Vec2Like {
  * @category Math
  */
 export class Vec2 implements ReadonlyVec2 {
-    /** @inheritdoc */
     get length(): number {
         return Math.sqrt(this.x ** 2 + this.y ** 2);
     }
 
-    /** @inheritdoc */
     get lengthSquared(): number {
         return this.x ** 2 + this.y ** 2;
     }
 
-    /** @inheritdoc */
     get radians(): number {
         const length = this.length;
 
@@ -180,7 +177,6 @@ export class Vec2 implements ReadonlyVec2 {
         return radians < 0 ? radians + PI_2 : radians;
     }
 
-    /** @inheritdoc */
     get degrees(): number {
         return this.radians * TO_DEGREES;
     }
@@ -190,12 +186,10 @@ export class Vec2 implements ReadonlyVec2 {
         this.x = this.y = xy;
     }
 
-    /** @inheritdoc */
     get min(): number {
         return Math.min(this.x, this.y);
     }
 
-    /** @inheritdoc */
     get max(): number {
         return Math.max(this.x, this.y);
     }
@@ -406,66 +400,54 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
-    /** @inheritdoc */
     dot(x: number, y?: number): number {
         return this.x * x + this.y * (y ?? x);
     }
 
-    /** @inheritdoc */
     dotVec(vec: Vec2Like): number {
         return this.x * vec.x + this.y * vec.y;
     }
 
-    /** @inheritdoc */
     cross(x: number, y?: number): number {
         return this.x * (y ?? x) - this.y * x;
     }
 
-    /** @inheritdoc */
     crossVec(vec: Vec2Like): number {
         return this.x * vec.y - this.y * vec.x;
     }
 
-    /** @inheritdoc */
     radiansTo(x: number, y?: number): number {
         const radians = Math.atan2((y ?? x) - this.y, x - this.x);
 
         return radians < 0 ? radians + PI_2 : radians;
     }
 
-    /** @inheritdoc */
     radiansToVec(vec: Vec2Like): number {
         return this.radiansTo(vec.x, vec.y);
     }
 
-    /** @inheritdoc */
     degreesTo(x: number, y?: number): number {
         return this.radiansTo(x, y) * TO_DEGREES;
     }
 
-    /** @inheritdoc */
     degreesToVec(vec: Vec2Like): number {
         return this.radiansTo(vec.x, vec.y) * TO_DEGREES;
     }
 
-    /** @inheritdoc */
     radiansBetween(x: number, y?: number): number {
         const radians = Math.atan2(y ?? x, x) - Math.atan2(this.y, this.x);
 
         return radians < 0 ? radians + PI_2 : radians;
     }
 
-    /** @inheritdoc */
     radiansBetweenVec(vec: Vec2Like): number {
         return this.radiansBetween(vec.x, vec.y);
     }
 
-    /** @inheritdoc */
     degreesBetween(x: number, y?: number): number {
         return this.radiansBetween(x, y ?? x) * TO_DEGREES;
     }
 
-    /** @inheritdoc */
     degreesBetweenVec(vec: Vec2Like): number {
         return this.radiansBetweenVec(vec) * TO_DEGREES;
     }
@@ -638,22 +620,18 @@ export class Vec2 implements ReadonlyVec2 {
         return this;
     }
 
-    /** @inheritdoc */
     equals(x: number, y: number, epsilon: number = Number.EPSILON): boolean {
         return Math.abs(this.x - x) < epsilon && Math.abs(this.y - y) < epsilon;
     }
 
-    /** @inheritdoc */
     equalsVec(other: Vec2Like, epsilon?: number): boolean {
         return this.equals(other.x, other.y, epsilon);
     }
 
-    /** @inheritdoc */
     componentsEqual(epsilon: number = Number.EPSILON): boolean {
         return Math.abs(this.x - this.y) < epsilon;
     }
 
-    /** @inheritdoc */
     clone(): Vec2 {
         return new Vec2(this.x, this.y);
     }

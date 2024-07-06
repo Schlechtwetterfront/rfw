@@ -589,6 +589,8 @@ export class QuadTree<E extends QuadTreeEntry> {
 
 /**
  * A quad in the {@link QuadTree}.
+ *
+ * @category Utility
  */
 export interface Quad {
     readonly topLeft?: Quad;
@@ -606,6 +608,8 @@ export interface Quad {
 
 /**
  * A subidivided quad in the {@link QuadTree}.
+ *
+ * @category Utility
  */
 export interface SubdividedQuad {
     readonly topLeft: Quad;

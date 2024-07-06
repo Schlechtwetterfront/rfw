@@ -31,10 +31,8 @@ export interface ReadonlyCircle extends CircleLike, Shape {
 
     intersectsCircle(other: CircleLike): boolean;
 
-    /** @inheritdoc */
     intersectsRect(rect: RectLike): boolean;
 
-    /** @inheritdoc */
     containsPoint({ x, y }: Vec2Like): boolean;
 
     equals(other: CircleLike, epsilon?: number): boolean;

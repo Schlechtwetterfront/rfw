@@ -165,7 +165,6 @@ export class MeshBatcher<O extends TexturedMeshLike> extends Batcher<
         this.maxVertexCount = maxSize;
     }
 
-    /** @inheritdoc */
     add(object: O): this {
         if (this.has(object)) {
             return this;

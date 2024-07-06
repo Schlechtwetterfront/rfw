@@ -52,7 +52,6 @@ export class SizedBatcher<
         super(maxSize, entryPool, batchPool, options.changeTracker);
     }
 
-    /** @inheritdoc */
     add(object: O): this {
         if (this.has(object)) {
             return this;

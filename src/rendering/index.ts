@@ -7,7 +7,7 @@ export const MAX_Z = 1000;
 
 /**
  * Convert a z index to a depth value.
- * @param z - Z value
+ * @param z - Z index
  * @returns Depth value
  *
  * @category Rendering

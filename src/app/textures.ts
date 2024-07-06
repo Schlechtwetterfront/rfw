@@ -95,9 +95,6 @@ export class Textures implements RenderContextLifeCycleHandler {
         return this.textureSources.delete(handle);
     }
 
-    /**
-     * @inheritdoc
-     */
     async initialize(): Promise<void> {
         await this.driverTextures.initialized;
 
@@ -108,9 +105,6 @@ export class Textures implements RenderContextLifeCycleHandler {
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     uninitialize(): Promise<void> {
         return Promise.resolve();
     }
