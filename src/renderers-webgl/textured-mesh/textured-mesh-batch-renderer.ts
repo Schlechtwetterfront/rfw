@@ -98,6 +98,7 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
             gl.drawArrays(gl.TRIANGLES, 0, batch.vertexCount);
 
             this.driver.diagnostics.triangles.count(batch.vertexCount / 3);
+            this.driver.diagnostics.drawCalls.count();
         });
     }
 

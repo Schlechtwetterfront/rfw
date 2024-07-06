@@ -84,6 +84,7 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
             gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, batch.size);
 
             this.driver.diagnostics.triangles.count(batch.size * 2);
+            this.driver.diagnostics.drawCalls.count();
         });
     }
 

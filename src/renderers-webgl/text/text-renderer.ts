@@ -118,6 +118,7 @@ export class WGLTextRenderer extends WGLBatchedRenderer<TextRenderBatch> {
             gl.drawArrays(gl.TRIANGLES, 0, batch.glyphCount * 6);
 
             this.driver.diagnostics.triangles.count(batch.glyphCount * 2);
+            this.driver.diagnostics.drawCalls.count();
         });
     }
 
