@@ -92,7 +92,7 @@ const p = vec(event.offsetX, event.offsetY);
 app.driver.projections.projectDOMPointToViewport(p);
 ```
 
-See [`Projections`](/reference/interfaces/Projections.html).
+See [`Projections`](/reference/interfaces/Projections.html){target="\_self"}.
 
 The scene space is relative to a camera. `rfw` does not decide where any objects "reside" by default. A UI-like element (imagine e.g., a scale of a graph) could only ever work in viewport space and ignore the camera projection. The actual data points could be in scene space because the graph itself is pannable.
 

@@ -30,4 +30,4 @@ Text align within the bounds can be specified with `style.align`. `TextObject`s 
 
 `style.break` controls line break behavior.
 
-See [`TextObject`](/reference/classes/TextObject.html), [`TextStyle`](/reference/interfaces/TextStyle.html), [`TextLayout`](/reference/classes/TextLayout.html).
+See [`TextObject`](/reference/classes/TextObject.html){target="\_self"}, [`TextStyle`](/reference/interfaces/TextStyle.html){target="\_self"}, [`TextLayout`](/reference/classes/TextLayout.html){target="\_self"}.

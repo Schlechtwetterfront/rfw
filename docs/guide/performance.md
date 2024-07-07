@@ -29,7 +29,7 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
     }
     ```
 
-    See [`ArraySet`](/reference/classes/ArraySet.html), [`ArrayMap`](/reference/classes/ArrayMap.html), [`SparseSet`](/reference/classes/SparseSet.html).
+    See [`ArraySet`](/reference/classes/ArraySet.html){target="\_self"}, [`ArrayMap`](/reference/classes/ArrayMap.html){target="\_self"}, [`SparseSet`](/reference/classes/SparseSet.html){target="\_self"}.
 
 -   **Disregard array order on mutations if not necessary.**
 
@@ -48,7 +48,7 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
     // Or swapDelete(a, 3) where 3 is the searched for value
     ```
 
-    See [`swapDelete`](/reference/functions/swapDelete.html), [`swapDeleteAt`](/reference/functions/swapDeleteAt.html).
+    See [`swapDelete`](/reference/functions/swapDelete.html){target="\_self"}, [`swapDeleteAt`](/reference/functions/swapDeleteAt.html){target="\_self"}.
 
 -   **Use object pools.**
 
@@ -66,4 +66,4 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
     vecPool.return(v1);
     ```
 
-    See [`Pool`](/reference/classes/Pool.html).
+    See [`Pool`](/reference/classes/Pool.html){target="\_self"}.

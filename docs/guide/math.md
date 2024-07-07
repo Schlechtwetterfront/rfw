@@ -35,7 +35,7 @@ const zeroVec2 = new Vec2();
 zeroVec.add(1, 1).multiplyVec(zeroVec2);
 ```
 
-See [`Vec2`](/reference/classes/Vec2.html).
+See [`Vec2`](/reference/classes/Vec2.html){target="\_self"}.
 
 ### `Mat2D`
 
@@ -48,7 +48,7 @@ const id = Mat2D.identity();
 id.translate(1, 1).rotateDegrees(90).scale(2, 2);
 ```
 
-See [`Mat2D`](/reference/classes/Mat2D.html).
+See [`Mat2D`](/reference/classes/Mat2D.html){target="\_self"}.
 
 ### `Transform2D` and `LocalTransform2D`
 
@@ -71,7 +71,7 @@ parent.composeWorld();
 child.composeWorld(parent);
 ```
 
-See [`Transform2D`](/reference/classes/Transform2D.html), [`LocalTransform2D`](/reference/classes/LocalTransform2D.html).
+See [`Transform2D`](/reference/classes/Transform2D.html){target="\_self"}, [`LocalTransform2D`](/reference/classes/LocalTransform2D.html){target="\_self"}.
 
 ## Shapes
 
@@ -105,4 +105,4 @@ const p = new Poly(Vec2.zero(), Vec2.one(), new Vec2(1, 0));
 p.intersectsRect(boundingRect);
 ```
 
-See [`Shape`](/reference/interfaces/Shape.html), [`Rect`](/reference/classes/Rect.html), [`Circle`](/reference/classes/Circle.html), [`Poly`](/reference/classes/Poly.html).
+See [`Shape`](/reference/interfaces/Shape.html){target="\_self"}, [`Rect`](/reference/classes/Rect.html){target="\_self"}, [`Circle`](/reference/classes/Circle.html){target="\_self"}, [`Poly`](/reference/classes/Poly.html){target="\_self"}.
