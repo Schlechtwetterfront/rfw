@@ -252,4 +252,11 @@ describe('vec2', () => {
 
         expect(vec().copyTopRightFrom(r)).toEqual({ x: 30, y: 40 });
     });
+
+    test('project onto', () => {
+        const v1 = vec(10, 0);
+        const v2 = vec(3, 3);
+
+        expect(v2.projectOnVec(v1)).toEqual({ x: 3, y: 0 });
+    });
 });

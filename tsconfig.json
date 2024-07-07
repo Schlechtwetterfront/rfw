@@ -7,7 +7,6 @@
     "include": [
         "./docs/.vitepress/**/*",
         "./docs/**/*",
-        "./benchmarks/**/*",
         "./samples/**/*",
         "./src/**/*",
         "./tests/**/*",

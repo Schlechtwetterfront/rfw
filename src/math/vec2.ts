@@ -551,6 +551,35 @@ export class Vec2 implements ReadonlyVec2 {
     }
 
     /**
+     * Project this vector onto the vector defined by `x` and `y`.
+     * @param x - X
+     * @param y - Y
+     * @returns Self
+     */
+    projectOn(x: number, y?: number): this {
+        y ??= x;
+
+        const dot = this.dot(x, y);
+        const otherDot = x ** 2 + y ** 2;
+
+        const dotResult = dot / otherDot;
+
+        this.x = x * dotResult;
+        this.y = y * dotResult;
+
+        return this;
+    }
+
+    /**
+     * Project this vector onto `vec`.
+     * @param vec - Vector
+     * @returns Self
+     */
+    projectOnVec(vec: Vec2Like): this {
+        return this.projectOn(vec.x, vec.y);
+    }
+
+    /**
      * Make all components absolute.
      * @returns Self
      */
