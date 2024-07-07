@@ -1,4 +1,4 @@
-import { LocalTransform2DLike } from '../../math';
+import { ReadonlyLocalTransform2D } from '../../math';
 import { Mesh } from '../../rendering/mesh';
 import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util/sizes';
 import { TexturedMaterial } from './textured-material';
@@ -23,5 +23,5 @@ export const BYTES_PER_VERTEX =
 export interface TexturedMeshLike {
     readonly mesh: Mesh;
     readonly material: TexturedMaterial;
-    readonly transform: LocalTransform2DLike;
+    readonly transform: ReadonlyLocalTransform2D;
 }

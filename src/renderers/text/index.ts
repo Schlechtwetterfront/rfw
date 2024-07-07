@@ -1,4 +1,4 @@
-import { LocalTransform2DLike, Vec2Like } from '../../math';
+import { ReadonlyLocalTransform2D, ReadonlyVec2 } from '../../math';
 import { Font, TextLayout, TextStyle } from '../../text';
 import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util/sizes';
 export * from './text-batching';
@@ -9,8 +9,8 @@ export interface TextLike {
     readonly style: TextStyle;
     readonly font: Font;
     readonly layout: TextLayout;
-    readonly anchor: Vec2Like;
-    readonly transform: LocalTransform2DLike;
+    readonly anchor: ReadonlyVec2;
+    readonly transform: ReadonlyLocalTransform2D;
 }
 
 /** @category Rendering */

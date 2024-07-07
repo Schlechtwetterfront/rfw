@@ -1,4 +1,4 @@
-import { LocalTransform2DLike } from '../../math';
+import { ReadonlyLocalTransform2D } from '../../math';
 import { SizedObject } from '../../scene';
 import { LineSegment, LineStyle } from '../../scene/line';
 import { BYTE_SIZE, FLOAT_SIZE } from '../../util/sizes';
@@ -25,5 +25,5 @@ export interface LineLike extends SizedObject {
     readonly segmentCount: number;
     readonly segments: readonly LineSegment[];
     readonly style: LineStyle;
-    readonly transform: LocalTransform2DLike;
+    readonly transform: ReadonlyLocalTransform2D;
 }
