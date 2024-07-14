@@ -19,7 +19,6 @@ import { buildMeshBatchStorage } from './mesh-buffer-manager';
 /** @category Rendering - Textured Mesh */
 export interface MeshBatchEntry<O> extends BatchEntry<O> {
     texture?: TextureHandle;
-    changeState: 'initial' | 'position' | 'all' | 'none';
 }
 
 /** @category Rendering - Textured Mesh */
@@ -132,14 +131,12 @@ export class MeshBatcher<O extends TexturedMeshLike> extends Batcher<
             create: () => {
                 return createBatchEntry<O, MeshBatchEntry<O>>({
                     texture: undefined,
-                    changeState: 'initial',
                 });
             },
             reset: e => {
                 resetBatchEntry(e);
 
                 e.texture = undefined;
-                e.changeState = 'initial';
             },
         });
 

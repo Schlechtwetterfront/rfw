@@ -120,10 +120,12 @@ export class SceneApp extends CanvasApp<WGLDriver> {
     );
     private readonly lineRenderer = new WGLLineRenderer(this.driver);
 
+    // #region mesh-batcher
     private readonly meshBatches = new MeshBatcher({
         maxTextureCount: this.driver.textures.maxTextureCount,
         changeTracker: this.changeTracker,
     });
+    // #endregion mesh-batcher
     private readonly lineBatches = new LineBatcher({
         changeTracker: this.changeTracker,
     });
@@ -168,7 +170,9 @@ export class SceneApp extends CanvasApp<WGLDriver> {
 
             this.transforms.change(root);
 
+            // #region add-to-mesh-batcher
             this.meshBatches.add(meshObject);
+            // #endregion add-to-mesh-batcher
             this.lineBatches.add(lineObject);
 
             this.objects.push({
@@ -204,6 +208,13 @@ export class SceneApp extends CanvasApp<WGLDriver> {
         this.driver.clearViewport(BACKGROUND_COLOR);
 
         this.lineRenderer.render(this.lineBatches.finalize(), this.camera);
-        this.meshRenderer.render(this.meshBatches.finalize(), this.camera);
+
+        // #region finalize-mesh-batches
+        const meshBatches = this.meshBatches.finalize();
+        // #endregion finalize-mesh-batches
+
+        // #region render-mesh-batches
+        this.meshRenderer.render(meshBatches, this.camera);
+        // #endregion render-mesh-batches
     }
 }

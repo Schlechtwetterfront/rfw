@@ -1,7 +1,5 @@
 # Rendering
 
-## The Path of a Renderable
-
 To draw something on the canvas, several systems come into play:
 
 -   Scene / scene graph (A)
@@ -92,10 +90,8 @@ const p = vec(event.offsetX, event.offsetY);
 app.driver.projections.projectDOMPointToViewport(p);
 ```
 
-See [`Projections`](/reference/interfaces/Projections.html){target="\_self"}.
+See [`Projections`](/ref/interfaces/Projections).
 
 The scene space is relative to a camera. `rfw` does not decide where any objects "reside" by default. A UI-like element (imagine e.g., a scale of a graph) could only ever work in viewport space and ignore the camera projection. The actual data points could be in scene space because the graph itself is pannable.
 
 By default, one pixel equals one unit in all the spaces.
-
-TODO: Custom renderer, shader handling
