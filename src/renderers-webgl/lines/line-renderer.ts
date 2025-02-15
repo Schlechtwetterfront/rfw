@@ -49,7 +49,7 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
         };
 
         this.meshData = {
-            buffer: gl.createBuffer()!,
+            buffer: gl.createBuffer(),
         };
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.meshData.buffer);

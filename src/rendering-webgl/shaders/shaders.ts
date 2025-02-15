@@ -1,9 +1,9 @@
 import { RenderContextLifeCycleHandler } from '../../rendering';
-import { ShaderHandle, Shaders } from '../../rendering/shaders';
+import { ShaderHandle } from '../../rendering/shaders';
 import { WGLDriver } from '../driver';
 
 /** @category Rendering - WebGL */
-export class WGLShaders implements Shaders, RenderContextLifeCycleHandler {
+export class WGLShaders implements RenderContextLifeCycleHandler {
     private gl: WebGL2RenderingContext;
 
     private readonly shaders = new WeakMap<ShaderHandle, WebGLProgram>();

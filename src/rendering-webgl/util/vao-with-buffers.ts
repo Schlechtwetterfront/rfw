@@ -12,12 +12,12 @@ export function createVAOAndBuffers(
     buffers: readonly ByteBuffer[],
 ): VAOWithBuffers {
     const data = {
-        vao: gl.createVertexArray()!,
+        vao: gl.createVertexArray(),
         buffers: [],
     } as VAOWithBuffers;
 
     for (let i = 0; i < buffers.length; i++) {
-        const buffer = gl.createBuffer()!;
+        const buffer = gl.createBuffer();
 
         data.buffers.push(buffer);
 

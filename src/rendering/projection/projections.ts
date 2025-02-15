@@ -289,7 +289,7 @@ export class DefaultProjections implements Projections {
         return target;
     }
 
-    getViewportClipProjection(target?: Mat2D | undefined): Mat2D {
+    getViewportClipProjection(target?: Mat2D): Mat2D {
         target ??= Mat2D.identity();
 
         makeClipProjection(target, this.context.dimensions, false);

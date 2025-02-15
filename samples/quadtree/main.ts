@@ -1,4 +1,3 @@
-/* eslint-disable no-constant-condition */
 import { Rect } from '../../src';
 import '../assets/styles.css';
 import { usePanAndZoom } from '../interaction';

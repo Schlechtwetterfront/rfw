@@ -4,9 +4,6 @@ export class ShaderHandle {
 }
 
 /** @category Rendering */
-export interface Shaders {}
-
-/** @category Rendering */
 export interface MultiTextureShaderInfo {
     handle: ShaderHandle;
     textureCount: number;

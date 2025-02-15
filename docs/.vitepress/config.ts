@@ -3,7 +3,6 @@ import { defineConfig } from 'vitepress';
 
 const REF_RE = /ref\/([^/]+)\/([^#]+)(#.+)?/;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const refLinkPlugin = (md: MarkdownIt) => {
     const link_open = md.renderer.rules.link_open;
 

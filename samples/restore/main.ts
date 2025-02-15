@@ -1,4 +1,3 @@
-/* eslint-disable no-constant-condition */
 import '../assets/styles.css';
 
 import BUNNY_WHITE_TEX_URL from '../assets/bunny-white.png';
