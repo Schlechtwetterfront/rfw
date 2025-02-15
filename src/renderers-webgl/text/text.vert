@@ -17,7 +17,10 @@ flat out int v_textureIndex;
 void main() {
     vec2 pixelPosition = u_cameraProjection * a_position;
 
-    vec2 snapped = vec2(floor(pixelPosition.x + 0.5), floor(pixelPosition.y + 0.5));
+    // TODO: Better snapping? Currently causes uneven baseline.
+    // vec2 snapped = vec2(floor(pixelPosition.x + 0.5), floor(pixelPosition.y + 0.5));
+    // vec2 snapped = vec2(floor(pixelPosition.x), floor(pixelPosition.y));
+    vec2 snapped = vec2(pixelPosition.x, pixelPosition.y);
 
     gl_Position = vec4((u_projection * vec3(snapped.xy, 1.0)).xy, a_position.z, 1.0);
 
