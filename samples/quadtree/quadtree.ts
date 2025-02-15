@@ -5,10 +5,8 @@ import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 import { Color } from '../../src/colors';
 import { vec, Vec2 } from '../../src/math';
 import { Rect } from '../../src/math/shapes';
-import {
-    buildRectPoints,
-    buildSquarePoints,
-} from '../../src/math/shapes/builder';
+
+import { buildRectPoints, buildSquarePoints } from '../../src/math/points';
 import { LineBatcher } from '../../src/renderers/lines';
 import { TextBatcher } from '../../src/renderers/text';
 import { WGLDriver } from '../../src/rendering-webgl';

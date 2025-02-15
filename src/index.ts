@@ -2,6 +2,7 @@ export * from './app';
 export * from './collections';
 export * from './colors';
 export * from './math';
+export * from './math/points';
 export * from './math/shapes';
 export * from './renderers-webgl/lines';
 export * from './renderers-webgl/text';

@@ -429,7 +429,16 @@ export class Rect implements ReadonlyRect, Vec2Like {
         return new Rect(like.x, like.y, like.width, like.height);
     }
 
-    static fromPoint({ x, y }: Vec2Like, width: number, height: number): Rect {
+    static fromPoint(
+        { x, y }: Vec2Like,
+        width: number,
+        height: number,
+        centerOrigin = false,
+    ): Rect {
+        if (centerOrigin) {
+            return new Rect(x - width / 2, y - height / 2, width, height);
+        }
+
         return new Rect(x, y, width, height);
     }
 

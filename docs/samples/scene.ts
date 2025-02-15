@@ -150,13 +150,13 @@ export class SceneApp extends CanvasApp<WGLDriver> {
             const meshObject = new MeshObject({
                 x: distance,
                 mesh: buildTriangulatedMesh(
-                    buildCirclePoints(0, 0, radius, 64).map(p => new Vertex(p)),
+                    buildCirclePoints(0, 0, radius, 4).map(p => new Vertex(p)),
                 ),
                 material: new TexturedMaterial(this.textures.white, so.color),
             });
 
             const lineObject = new LineObject({
-                points: buildCirclePoints(0, 0, distance, 128, true),
+                points: buildCirclePoints(0, 0, distance, 4, 'distance', true),
                 style: {
                     color: new Color(1, 1, 1, 0.1),
                 },
