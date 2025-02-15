@@ -42,6 +42,6 @@ Benchmark inspired by similar benchmarks in e.g., pixi.js. Add some bunnies via 
 </section>
 
 <section class="sample-controls">
-    <input type="text" placeholder="#" :value="count" min="1">
+    <input type="text" placeholder="#" v-model="count" min="1">
     <button @click="add">Add bunnies</button>
 </section>

@@ -28,13 +28,10 @@ const refLinkPlugin = (md: MarkdownIt) => {
             }
         }
 
-        const r =
+        return (
             link_open?.(tokens, idx, options, env, self) ??
-            self.renderToken(tokens, idx, options);
-
-        console.log(r);
-
-        return r;
+            self.renderToken(tokens, idx, options)
+        );
     };
 };
 

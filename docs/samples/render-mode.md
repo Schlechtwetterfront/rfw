@@ -48,7 +48,7 @@ Hover over the rectangles to trigger a change and thus a re-render.
 </section>
 
 <section class="sample-controls">
-    <input type="text" placeholder="#" :value="count" min="1">
+    <input type="text" placeholder="#" v-model="count" min="1">
     <button @click="add">Add rects</button>
     &ndash;
     <button @click="toggle">Toggle render mode</button>

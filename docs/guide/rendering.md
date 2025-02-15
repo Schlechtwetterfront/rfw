@@ -2,10 +2,10 @@
 
 To draw something on the canvas, several systems come into play:
 
--   Scene / scene graph (A)
--   Transforms (B)
--   A batcher (C)
--   A renderer (D)
+- Scene / scene graph (A)
+- Transforms (B)
+- A batcher (C)
+- A renderer (D)
 
 To render a mesh, one would:
 
@@ -76,9 +76,9 @@ So steps 3/4 and 5 are connected in more ways than immediately obvious.
 
 When using `rfw` you will probably encounter three coordinate systems (or spaces),
 
--   "DOM",
--   viewport,
--   and scene.
+- "DOM",
+- viewport,
+- and scene.
 
 The pseudo-space "DOM" includes any coordinates and dimensions you get from interaction with the DOM, e.g., `client*` or `offset*` in events, `getBoundingClientRect`, etc. The DOM's X-axis points right, Y-axis down.
 

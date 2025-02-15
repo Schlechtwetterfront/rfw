@@ -4,7 +4,7 @@
 
 Some fundamental things apply to all of those:
 
--   They are _not_ immutable.
+- They are _not_ immutable.
 
     ```ts
     const v1 = Vec2.zero();
@@ -15,9 +15,9 @@ Some fundamental things apply to all of those:
 
     This behavior is on purpose to prevent frequent allocations. Use the `clone` method present on most math classes to create a copy.
 
--   They are "simple" (or dumb).
+- They are "simple" (or dumb).
 
-    The math classes do not validation of the values set (like `x` and `y` of `Vec2`) and do no calculations on these properties being set.
+    The math classes do no validation of the values set (like `x` and `y` of `Vec2`) and do no calculations on these properties being set.
 
     For example, you can set a `Transform2D`s position or rotation, but its matrix (`Transform2D.matrix`) will only be updated on calling `Transform2D.compose`.
 
@@ -79,9 +79,9 @@ See [`Transform2D`](/ref/classes/Transform2D), [`LocalTransform2D`](/ref/classes
 
 The shapes are:
 
--   `Rect`
--   `Circle`
--   `Poly`
+- `Rect`
+- `Circle`
+- `Poly`
 
 All of these support hit-test via point (`Shape.containsPoint`) and rect intersection (`Shape.intersectsRect`).
 
