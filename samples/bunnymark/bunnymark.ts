@@ -72,10 +72,10 @@ export class BunnyMarkApp extends SampleApp {
             { label: 'bunny white' },
         );
         this.bunnyMesh = buildTriangulatedMesh([
-            new Vertex(new Vec2(12.5, 16), new Vec2(0, 0)),
-            new Vertex(new Vec2(-12.5, 16), new Vec2(1, 0)),
-            new Vertex(new Vec2(-12.5, -16), new Vec2(1, 1)),
-            new Vertex(new Vec2(12.5, -16), new Vec2(0, 1)),
+            new Vertex(new Vec2(12.5, 16), new Vec2(1, 0)),
+            new Vertex(new Vec2(-12.5, 16), new Vec2(0, 0)),
+            new Vertex(new Vec2(-12.5, -16), new Vec2(0, 1)),
+            new Vertex(new Vec2(12.5, -16), new Vec2(1, 1)),
         ]);
         this.bunnyMaterial = new TexturedMaterial(this.bunnyTex);
         this.bunnyMaterialWhite = new TexturedMaterial(this.bunnyTexWhite);

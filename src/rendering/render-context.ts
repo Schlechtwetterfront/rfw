@@ -4,6 +4,8 @@ import { ReadonlyVec2, Vec2, Vec2Like } from '../math';
 export interface RenderContext {
     readonly dimensions: ReadonlyVec2;
 
+    flipY: boolean;
+
     setDimensions(dimensions: Vec2Like): void;
 }
 
@@ -12,6 +14,8 @@ export class DefaultRenderContext implements RenderContext {
     private readonly _dimensions: Vec2;
 
     readonly dimensions: ReadonlyVec2;
+
+    flipY = false;
 
     constructor(dimensions: Vec2Like) {
         this._dimensions = Vec2.from(dimensions);

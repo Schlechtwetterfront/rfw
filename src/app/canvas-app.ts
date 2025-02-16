@@ -42,7 +42,7 @@ export abstract class CanvasApp<G extends RenderDriver> extends App<G> {
         const resized = this.canvasResizer.resize();
 
         if (resized) {
-            this.driver.context.setDimensions(this.canvasResizer.dimensions);
+            this.driver.setCanvasDimensions(this.canvasResizer.dimensions);
 
             this.changeTracker.registerChange();
         }

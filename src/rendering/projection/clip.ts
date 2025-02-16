@@ -7,12 +7,13 @@ import { CAMERA_MAT } from './constants';
 export function makeClipProjection(
     mat: Mat2D,
     dimensions: Vec2Like,
+    flipY: boolean = false,
     centered: boolean = true,
 ): void {
     mat.a = 2 / dimensions.x;
     mat.b = 0;
     mat.c = 0;
-    mat.d = 2 / dimensions.y;
+    mat.d = (flipY ? -1 : 1) * (2 / dimensions.y);
     mat.tx = centered ? 0 : -1;
     mat.ty = centered ? 0 : -1;
 }
@@ -21,10 +22,11 @@ export function makeClipProjection(
 export function makeCameraClipProjection(
     mat: Mat2D,
     dimensions: Vec2Like,
+    flipY: boolean = false,
     centered: boolean = true,
     camera?: Camera2D,
 ): void {
-    makeClipProjection(mat, dimensions, centered);
+    makeClipProjection(mat, dimensions, flipY, centered);
 
     if (camera) {
         makeCameraProjection(CAMERA_MAT, camera);

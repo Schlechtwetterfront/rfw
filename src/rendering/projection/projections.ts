@@ -282,6 +282,7 @@ export class DefaultProjections implements Projections {
         makeCameraClipProjection(
             target,
             this.context.dimensions,
+            this.context.flipY,
             this.options.centered,
             camera,
         );
@@ -292,7 +293,12 @@ export class DefaultProjections implements Projections {
     getViewportClipProjection(target?: Mat2D): Mat2D {
         target ??= Mat2D.identity();
 
-        makeClipProjection(target, this.context.dimensions, false);
+        makeClipProjection(
+            target,
+            this.context.dimensions,
+            this.context.flipY,
+            false,
+        );
 
         return target;
     }

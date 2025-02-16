@@ -1,8 +1,28 @@
 import { RenderContextLifeCycleHandler } from '.';
+import { ReadonlyVec2, Vec2, Vec2Like } from '../math';
 import { RenderDiagnostics } from './diagnostics';
 import { Projections } from './projection/projections';
 import { RenderContext } from './render-context';
 import { DriverTextures } from './textures';
+
+export interface RenderTarget {
+    readonly dimensions: ReadonlyVec2;
+}
+
+export class CanvasRenderTarget implements RenderTarget {
+    private readonly _dimensions: Vec2;
+
+    readonly dimensions: ReadonlyVec2;
+
+    constructor(dimensions: Vec2Like) {
+        this._dimensions = Vec2.from(dimensions);
+        this.dimensions = this._dimensions;
+    }
+
+    setCanvasDimensions(dimensions: Vec2Like): void {
+        this._dimensions.copyFrom(dimensions);
+    }
+}
 
 /**
  * Driver for a concrete rendering backend (e.g., WebGL).
@@ -16,11 +36,17 @@ export interface RenderDriver {
     /** Driver-specific texture manager. */
     readonly textures: DriverTextures;
 
-    /** Projections/ */
+    /** Projections. */
     readonly projections: Projections;
 
     /** Context. */
     readonly context: RenderContext;
+
+    readonly renderTarget: RenderTarget;
+
+    useRenderTarget(renderTarget: RenderTarget | 'canvas'): void;
+
+    setCanvasDimensions(dimensions: Vec2Like): void;
 
     /**
      * Call to prepare rendering a frame.

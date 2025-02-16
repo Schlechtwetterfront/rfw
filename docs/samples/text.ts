@@ -87,7 +87,9 @@ export class TextApp extends CanvasApp<WGLDriver> {
     protected override render(): void {
         super.render();
 
-        this.driver.clearViewport(BACKGROUND_COLOR);
+        this.driver.useRenderTarget('canvas');
+
+        this.driver.clear(BACKGROUND_COLOR);
 
         this.textRenderer.render(this.textBatcher.finalize());
     }

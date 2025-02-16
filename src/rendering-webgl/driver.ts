@@ -2,9 +2,11 @@ import { ColorLike } from '../colors';
 import { Vec2Like } from '../math';
 import {
     CanvasLike,
+    CanvasRenderTarget,
     RenderContextLifeCycleHandler,
     RenderDiagnostics,
     RenderDriver,
+    RenderTarget,
 } from '../rendering';
 import {
     DefaultProjections,
@@ -14,7 +16,9 @@ import {
     DefaultRenderContext,
     RenderContext,
 } from '../rendering/render-context';
+import { TextureHandle } from '../rendering/textures';
 import { WGLShaders } from './shaders';
+import { createDepthTexture } from './textures';
 import { WGLTextures } from './textures/textures';
 
 const DEFAULT_CONTEXT_ATTRS = {
@@ -23,6 +27,18 @@ const DEFAULT_CONTEXT_ATTRS = {
     preserveDrawingBuffer: false,
 } satisfies WebGLContextAttributes;
 
+export class WGLRenderTarget implements RenderTarget {
+    get dimensions() {
+        return this.colorTextureHandle.dimensions;
+    }
+
+    constructor(
+        public readonly framebuffer: WebGLFramebuffer,
+        public readonly depthTexture: WebGLTexture,
+        public readonly colorTextureHandle: TextureHandle,
+    ) {}
+}
+
 /**
  * @category Rendering - WebGL
  */
@@ -30,8 +46,15 @@ export class WGLDriver implements RenderDriver {
     private lifeCycleHandlers = new Set<RenderContextLifeCycleHandler>();
     private contextOK = true;
 
+    private canvasRenderTarget: CanvasRenderTarget;
+    private otherRenderTarget?: RenderTarget;
+
     readonly textures: WGLTextures;
     readonly shaders: WGLShaders;
+
+    get renderTarget() {
+        return this.otherRenderTarget ?? this.canvasRenderTarget;
+    }
 
     constructor(
         canvas: CanvasLike,
@@ -42,6 +65,8 @@ export class WGLDriver implements RenderDriver {
     ) {
         this.textures = new WGLTextures(this);
         this.shaders = new WGLShaders(this);
+
+        this.canvasRenderTarget = new CanvasRenderTarget(context.dimensions);
 
         canvas.addEventListener(
             'webglcontextlost',
@@ -103,12 +128,90 @@ export class WGLDriver implements RenderDriver {
         this.diagnostics.triangles.finish();
     }
 
-    clearViewport(color: ColorLike, dimensions?: Vec2Like): void {
-        dimensions ??= this.context.dimensions;
+    setCanvasDimensions(dimensions: Vec2Like): void {
+        this.canvasRenderTarget.setCanvasDimensions(dimensions);
+    }
 
+    createRenderTarget(textureHandle: TextureHandle): WGLRenderTarget {
         const { gl } = this;
 
-        gl.viewport(0, 0, dimensions.x, dimensions.y);
+        const tex = this.textures.get(textureHandle);
+
+        if (!tex) {
+            throw new Error(`No texture for handle ${textureHandle.label}`);
+        }
+
+        const framebuffer = gl.createFramebuffer();
+
+        const depthTex = createDepthTexture(gl, textureHandle.dimensions);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+
+        gl.framebufferTexture2D(
+            gl.FRAMEBUFFER,
+            gl.COLOR_ATTACHMENT0,
+            gl.TEXTURE_2D,
+            tex,
+            0,
+        );
+
+        gl.framebufferTexture2D(
+            gl.FRAMEBUFFER,
+            gl.DEPTH_ATTACHMENT,
+            gl.TEXTURE_2D,
+            depthTex,
+            0,
+        );
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+        return new WGLRenderTarget(framebuffer, depthTex, textureHandle);
+    }
+
+    useRenderTarget(renderTarget: RenderTarget | 'canvas') {
+        const { gl } = this;
+
+        if (renderTarget === 'canvas') {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            gl.viewport(
+                0,
+                0,
+                this.canvasRenderTarget.dimensions.x,
+                this.canvasRenderTarget.dimensions.y,
+            );
+
+            this.context.flipY = false;
+            this.context.setDimensions(this.canvasRenderTarget.dimensions);
+
+            return;
+        }
+
+        if (renderTarget instanceof CanvasRenderTarget) {
+            throw new Error(
+                "Use 'canvas' as argument to `setRenderTarget` instead of passing a CanvasRenderTarget",
+            );
+        }
+
+        if (!(renderTarget instanceof WGLRenderTarget)) {
+            throw new Error('WebGL drivere only supports `WGLRenderTarget`s');
+        }
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.framebuffer);
+
+        gl.viewport(
+            0,
+            0,
+            renderTarget.colorTextureHandle.dimensions.x,
+            renderTarget.colorTextureHandle.dimensions.y,
+        );
+
+        this.context.flipY = true;
+        this.context.setDimensions(renderTarget.dimensions);
+    }
+
+    clear(color: ColorLike): void {
+        const { gl } = this;
 
         gl.clearColor(color.r, color.g, color.b, color.a);
 

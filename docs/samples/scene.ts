@@ -205,7 +205,9 @@ export class SceneApp extends CanvasApp<WGLDriver> {
     protected override render(): void {
         super.render();
 
-        this.driver.clearViewport(BACKGROUND_COLOR);
+        this.driver.useRenderTarget('canvas');
+
+        this.driver.clear(BACKGROUND_COLOR);
 
         this.lineRenderer.render(this.lineBatches.finalize(), this.camera);
 
