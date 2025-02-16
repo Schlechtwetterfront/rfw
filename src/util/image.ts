@@ -14,7 +14,7 @@ export async function fetchImageBitmap(
     const blob = await result.blob();
 
     return await createImageBitmap(blob, {
-        ...options?.imageBitmapOptions,
         colorSpaceConversion: 'none',
+        ...options?.imageBitmapOptions,
     });
 }

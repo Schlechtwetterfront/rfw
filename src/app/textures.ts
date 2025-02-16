@@ -50,23 +50,6 @@ export class Textures implements RenderContextLifeCycleHandler {
     }
 
     /**
-     * Create a texture from an `ImageBitmapSource`.
-     * @param source - Image bitmap source
-     * @param resourceOptions - Options for the created resource
-     * @param imageBitmapOptions - Options to use when creating the `ImageBitmap`
-     * @returns Promise of the resulting {@link TextureHandle}
-     */
-    async addFromImageBitmapSource(
-        source: ImageBitmapSource,
-        resourceOptions?: ResourceOptions,
-        imageBitmapOptions?: ImageBitmapOptions,
-    ): Promise<TextureHandle> {
-        const imageBitmap = await createImageBitmap(source, imageBitmapOptions);
-
-        return this.addFromImageBitmap(imageBitmap, resourceOptions);
-    }
-
-    /**
      * Create a texture directly from an `ImageBitmap`.
      * @param imageBitmap - Image bitmap
      * @param resourceOptions - Options for the created resource

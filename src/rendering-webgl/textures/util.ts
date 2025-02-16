@@ -1,9 +1,11 @@
+import { vec, Vec2, Vec2Like } from '../../math';
+
 /** @category Rendering - WebGL */
 export interface CombinedFilterParams {
     filter: 'linear' | 'nearest';
 }
 
-const FILTER = 'filter' satisfies keyof CombinedFilterParams;
+export const FILTER = 'filter' satisfies keyof CombinedFilterParams;
 
 /** @category Rendering - WebGL */
 export interface MinMagFilterParams {
@@ -17,8 +19,8 @@ export interface MinMagFilterParams {
     magFilter: 'linear' | 'nearest';
 }
 
-const MIN_FILTER = 'minFilter' satisfies keyof MinMagFilterParams;
-const MAG_FILTER = 'magFilter' satisfies keyof MinMagFilterParams;
+export const MIN_FILTER = 'minFilter' satisfies keyof MinMagFilterParams;
+export const MAG_FILTER = 'magFilter' satisfies keyof MinMagFilterParams;
 
 /** @category Rendering - WebGL */
 export function getMinFilter(
@@ -74,7 +76,7 @@ export interface CombinedWrapParams {
     wrap: 'repeat' | 'mirroredRepeat' | 'clamp';
 }
 
-const WRAP = 'wrap' satisfies keyof CombinedWrapParams;
+export const WRAP = 'wrap' satisfies keyof CombinedWrapParams;
 
 /** @category Rendering - WebGL */
 export interface STWrapParams {
@@ -82,8 +84,8 @@ export interface STWrapParams {
     wrapT: 'repeat' | 'mirroredRepeat' | 'clamp';
 }
 
-const WRAP_S = 'wrapS' satisfies keyof STWrapParams;
-const WRAP_T = 'wrapT' satisfies keyof STWrapParams;
+export const WRAP_S = 'wrapS' satisfies keyof STWrapParams;
+export const WRAP_T = 'wrapT' satisfies keyof STWrapParams;
 
 function getWrap(
     gl: WebGL2RenderingContext,
@@ -298,4 +300,65 @@ export function setSamplerParameters(
     if (params.maxLOD != undefined) {
         gl.samplerParameterf(sampler, gl.TEXTURE_MAX_LOD, params.maxLOD);
     }
+}
+
+/** @category Rendering - WebGL */
+export function getImageSourceDimensions(
+    source: TexImageSource,
+    result?: Vec2,
+): Vec2 {
+    result ??= vec();
+
+    if (source instanceof VideoFrame) {
+        result.set(source.displayWidth, source.displayHeight);
+    } else {
+        result.set(source.width, source.height);
+    }
+
+    return result;
+}
+
+/** @category Rendering - WebGL */
+export function configureTexture(
+    gl: WebGL2RenderingContext,
+    tex: WebGLTexture,
+    configure: (tex: WebGLTexture, gl: WebGL2RenderingContext) => void,
+): void {
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+
+    configure(tex, gl);
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+/** @category Rendering - WebGL */
+export function createDepthTexture(
+    gl: WebGL2RenderingContext,
+    dimensions: Vec2Like,
+): WebGLTexture {
+    const tex = gl.createTexture();
+
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+
+    gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.DEPTH_COMPONENT24,
+        dimensions.x,
+        dimensions.y,
+        0,
+        gl.DEPTH_COMPONENT,
+        gl.UNSIGNED_INT,
+        null,
+    );
+
+    setTextureParameters(gl, {
+        filter: 'nearest',
+        wrap: 'clamp',
+    });
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+
+    return tex;
 }

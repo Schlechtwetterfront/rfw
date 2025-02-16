@@ -1,11 +1,18 @@
+import { vec, Vec2Like } from '../../math';
+import { RenderContextLifeCycleHandler } from '../../rendering';
 import {
-    RenderContextLifeCycleHandler,
-    ResourceOptions,
-} from '../../rendering';
-import { DriverTextures, TextureHandle } from '../../rendering/textures';
+    DriverTextures,
+    TextureHandle,
+    TextureOptions,
+} from '../../rendering/textures';
 import { ManualPromise } from '../../util/promises';
 import { WGLDriver } from '../driver';
-import { setTextureParameters } from './util';
+import {
+    configureTexture,
+    getImageSourceDimensions,
+    setTextureParameters,
+    TextureParams,
+} from './util';
 
 const WHITE_PIXEL = new Uint8Array([255, 255, 255, 255]);
 
@@ -20,7 +27,7 @@ export class WGLTextures
 
     private textures = new WeakMap<TextureHandle, WebGLTexture>();
 
-    readonly white = new TextureHandle('empty');
+    readonly white = new TextureHandle(vec(1, 1), 'empty');
 
     get maxTextureCount() {
         return this._maxTextureCount;
@@ -56,32 +63,47 @@ export class WGLTextures
         return this.textures.get(handle);
     }
 
-    async addFromImageBitmapSource(
-        source: ImageBitmapSource,
-        options?: {
-            imageBitmapOptions?: ImageBitmapOptions;
-            resourceOptions?: ResourceOptions;
-        },
+    addEmpty(
+        dimensions: Vec2Like,
+        options?: TextureOptions,
     ): Promise<TextureHandle> {
-        const imageBitmap = await createImageBitmap(
-            source,
-            options?.imageBitmapOptions,
+        const { gl } = this;
+
+        const tex = this.createTexture(options, () =>
+            gl.texImage2D(
+                gl.TEXTURE_2D,
+                0,
+                gl.RGBA,
+                dimensions.x,
+                dimensions.y,
+                0,
+                gl.RGBA,
+                gl.UNSIGNED_BYTE,
+                null,
+            ),
         );
 
-        return this.addFromImageBitmap(imageBitmap, options?.resourceOptions);
+        const handle = new TextureHandle(dimensions, options?.label);
+
+        this.textures.set(handle, tex);
+
+        return Promise.resolve(handle);
     }
 
     addFromImageBitmap(
         imageBitmap: ImageBitmap,
-        options?: ResourceOptions,
+        options?: TextureOptions,
     ): Promise<TextureHandle> {
-        const tex = this.createTexture(false);
+        const tex = this.createTexture(options);
 
-        this.uploadImageSource(tex, imageBitmap);
-
-        const handle = new TextureHandle(options?.label);
+        const handle = new TextureHandle(
+            getImageSourceDimensions(imageBitmap),
+            options?.label,
+        );
 
         this.textures.set(handle, tex);
+
+        this.uploadImageSource(handle, imageBitmap);
 
         return Promise.resolve(handle);
     }
@@ -89,73 +111,90 @@ export class WGLTextures
     setFromImageBitmap(
         handle: TextureHandle,
         imageBitmap: ImageBitmap,
+        options?: TextureParams,
     ): Promise<void> {
-        const tex = this.createTexture(false);
-
-        this.uploadImageSource(tex, imageBitmap);
+        const tex = this.createTexture(options);
 
         this.textures.set(handle, tex);
+
+        this.uploadImageSource(handle, imageBitmap);
 
         return Promise.resolve();
     }
 
-    uploadImageSource(tex: WebGLTexture, source: TexImageSource): void {
+    uploadImageSource(handle: TextureHandle, source: TexImageSource): void {
         const { gl } = this;
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, tex);
-        gl.texImage2D(
-            gl.TEXTURE_2D,
-            0,
-            gl.RGBA,
-            gl.RGBA,
-            gl.UNSIGNED_BYTE,
-            source,
-        );
-        gl.bindTexture(gl.TEXTURE_2D, null);
-    }
+        getImageSourceDimensions(source, handle.dimensions);
 
-    createTexture(fillWithDefaults = false): WebGLTexture {
-        const { gl } = this;
-
-        const tex = gl.createTexture();
+        const tex = this.get(handle);
 
         if (!tex) {
-            throw new Error('Failed to create texture');
+            throw new Error(`No texture for handle ${handle.label}`);
         }
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, tex);
-
-        if (fillWithDefaults) {
+        configureTexture(gl, tex, () =>
             gl.texImage2D(
                 gl.TEXTURE_2D,
                 0,
                 gl.RGBA,
-                1,
-                1,
-                0,
                 gl.RGBA,
                 gl.UNSIGNED_BYTE,
-                WHITE_PIXEL,
-            );
-        }
+                source,
+            ),
+        );
+    }
 
-        setTextureParameters(gl, {
-            filter: 'linear',
-            wrap: 'clamp',
+    createTexture(
+        params?: TextureParams,
+        configure?: (tex: WebGLTexture) => void,
+    ): WebGLTexture {
+        const { gl } = this;
+
+        const tex = gl.createTexture();
+
+        configureTexture(gl, tex, () => {
+            setTextureParameters(gl, {
+                filter: 'linear',
+                wrap: 'clamp',
+                ...params,
+            });
+
+            configure?.(tex);
         });
-
-        gl.bindTexture(gl.TEXTURE_2D, null);
 
         return tex;
     }
 
     private init() {
+        const { gl } = this;
+
         this._maxTextureCount = this.gl.getParameter(
-            this.gl.MAX_TEXTURE_IMAGE_UNITS,
+            gl.MAX_TEXTURE_IMAGE_UNITS,
         ) as number;
 
-        this.textures.set(this.white, this.createTexture(true));
+        // Default tex
+        {
+            const tex = this.createTexture({
+                filter: 'linear',
+                wrap: 'clamp',
+            });
+
+            this.textures.set(this.white, tex);
+
+            configureTexture(gl, tex, () =>
+                gl.texImage2D(
+                    gl.TEXTURE_2D,
+                    0,
+                    gl.RGBA,
+                    1,
+                    1,
+                    0,
+                    gl.RGBA,
+                    gl.UNSIGNED_BYTE,
+                    WHITE_PIXEL,
+                ),
+            );
+        }
     }
 }

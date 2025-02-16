@@ -1,9 +1,20 @@
 import { ResourceOptions } from '.';
+import { Vec2, Vec2Like } from '../math';
+import { TextureParams } from '../rendering-webgl/textures';
 
 /** @category Rendering */
 export class TextureHandle {
-    constructor(public readonly label?: string) {}
+    public readonly dimensions: Vec2;
+
+    constructor(
+        dimensions: Vec2Like,
+        public readonly label?: string,
+    ) {
+        this.dimensions = Vec2.from(dimensions);
+    }
 }
+
+export type TextureOptions = ResourceOptions & TextureParams;
 
 /** @category Rendering */
 export interface DriverTextures {
@@ -11,22 +22,20 @@ export interface DriverTextures {
 
     readonly initialized: Promise<void>;
 
-    addFromImageBitmapSource(
-        source: ImageBitmapSource,
-        options?: {
-            imageBitmapOptions?: ImageBitmapOptions;
-            resourceOptions?: ResourceOptions;
-        },
+    addEmpty(
+        dimensions: Vec2Like,
+        options?: TextureOptions,
     ): Promise<TextureHandle>;
 
     addFromImageBitmap(
         imageBitmap: ImageBitmap,
-        options?: ResourceOptions,
+        options?: TextureOptions,
     ): Promise<TextureHandle>;
 
     setFromImageBitmap(
         handle: TextureHandle,
         imageBitmap: ImageBitmap,
+        options?: TextureParams,
     ): Promise<void>;
 }
 
