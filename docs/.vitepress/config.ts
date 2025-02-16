@@ -97,6 +97,10 @@ export default defineConfig({
                         { text: 'Bunnymark', link: '/samples/bunnymark' },
                         { text: 'Quad Tree', link: '/samples/quadtree' },
                         { text: 'Render Mode', link: '/samples/render-mode' },
+                        {
+                            text: 'Render to Texture',
+                            link: '/samples/render-to-texture',
+                        },
                     ],
                 },
             ],
