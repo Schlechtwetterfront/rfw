@@ -11,7 +11,8 @@ export abstract class App<G extends RenderDriver> {
     private initialized = false;
     private _renderMode: RenderMode;
 
-    private animationFrameID?: number;
+    protected animationFrameID?: number;
+    protected lastAnimationFrameTimestamp?: number;
 
     get renderMode() {
         return this._renderMode;
@@ -60,35 +61,43 @@ export abstract class App<G extends RenderDriver> {
             throw new Error('App is not initialized');
         }
 
-        let lastTimestamp: number | undefined;
+        this.animationFrameID = window.requestAnimationFrame(
+            this.onAnimationFrame.bind(this),
+        );
+    }
 
-        const tick = (timestamp: number) => {
-            this.tickers.tick(timestamp);
+    /**
+     * Called for every animation frame.
+     * @param timestamp - `requestAnimationFrame` timestamp
+     * @remarks
+     * Must request another animation frame.
+     */
+    protected onAnimationFrame(timestamp: number) {
+        this.tickers.tick(timestamp);
 
-            let elapsed = 0;
+        let elapsed = 0;
 
-            if (lastTimestamp !== undefined) {
-                elapsed = timestamp - lastTimestamp;
+        if (this.lastAnimationFrameTimestamp !== undefined) {
+            elapsed = timestamp - this.lastAnimationFrameTimestamp;
+        }
+
+        this.tick(elapsed);
+
+        const render =
+            this.changeTracker.changed || this.renderMode === 'always';
+
+        if (render) {
+            if (this.driver.prepareFrame()) {
+                this.render();
+                this.driver.finalizeFrame();
             }
 
-            this.tick(elapsed);
+            this.changeTracker.reset();
+        }
 
-            const render =
-                this.changeTracker.changed || this.renderMode === 'always';
-
-            if (render) {
-                if (this.driver.prepareFrame()) {
-                    this.render();
-                    this.driver.finalizeFrame();
-                }
-
-                this.changeTracker.reset();
-            }
-
-            this.animationFrameID = window.requestAnimationFrame(tick);
-        };
-
-        this.animationFrameID = window.requestAnimationFrame(tick);
+        this.animationFrameID = window.requestAnimationFrame(
+            this.onAnimationFrame.bind(this),
+        );
     }
 
     /**
