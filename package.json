@@ -41,14 +41,14 @@
         "reference:build": "typedoc src/index.ts --out docs/.vitepress/dist/reference/"
     },
     "devDependencies": {
-        "@vitejs/plugin-vue": "^5",
+        "@vitejs/plugin-vue": "^6",
         "eslint": "^9",
         "markdown-it": "^14",
         "prettier": "^3",
-        "typedoc": "^0.27",
-        "typescript": "^5",
+        "typedoc": "^0.28",
+        "typescript": "^5.9.2",
         "typescript-eslint": "^8",
-        "vite": "^6",
+        "vite": "^5",
         "vite-plugin-dts": "^4",
         "vitepress": "^1",
         "vitest": "^3",
