@@ -27,6 +27,7 @@ const DEFAULT_CONTEXT_ATTRS = {
     preserveDrawingBuffer: false,
 } satisfies WebGLContextAttributes;
 
+/** @category Rendering - WebGL */
 export class WGLRenderTarget implements RenderTarget {
     get dimensions() {
         return this.colorTextureHandle.dimensions;

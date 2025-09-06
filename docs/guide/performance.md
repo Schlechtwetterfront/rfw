@@ -4,7 +4,7 @@
 
 Check out the [benchmarks](/benchmarks/) that some of these decisions are based on.
 
--   **`for`-loop iteration is a lot faster than iterator-based iteration (`for ... of`) or methods like `forEach`.**
+- **`for`-loop iteration can be a lot faster than iterator-based iteration (`for ... of`) or methods like `forEach`.**
 
     For arrays: Iterate arrays with a simple `for`-loop.
 
@@ -29,11 +29,11 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
     }
     ```
 
-    See [`ArraySet`](/ref/classes/ArraySet), [`ArrayMap`](/ref/classes/ArrayMap), [`SparseSet`](/ref/classes/SparseSet){target="\_self"}.
+    See [`ArraySet`](/ref/classes/ArraySet), [`ArrayMap`](/ref/classes/ArrayMap), [`SparseSet`](/ref/classes/SparseSet).
 
--   **Disregard array order on mutations if not necessary.**
+- **Disregard array order on mutations if not necessary.**
 
-    Especially `Array.splice` to remove elements from arrays is very inefficient. If the order of the array is irrelevant, consider doing a swap-delete.
+    `Array.splice` can be very inefficient to only remove elements from an array. If the order of the array is irrelevant, consider doing a swap-delete.
 
     ```ts
     const a = [1, 2, 3, 4];
@@ -50,7 +50,7 @@ Check out the [benchmarks](/benchmarks/) that some of these decisions are based 
 
     See [`swapDelete`](/ref/functions/swapDelete), [`swapDeleteAt`](/ref/functions/swapDeleteAt).
 
--   **Use object pools.**
+- **Use object pools.**
 
     When many short-lived objects of a kind are needed an object pool might come in useful.
 

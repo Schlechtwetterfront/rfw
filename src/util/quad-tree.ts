@@ -136,8 +136,8 @@ export class QuadTree<E extends QuadTreeEntry> {
      * @returns `true` if the entry is present after this operation
      *
      * @remarks
-     * Combines both {@link QuadTree.add} and {@link QuadTree.delete} into one operation which
-     * removes the need to traverse part of the tree again in {@link QuadTree.add}.
+     * Combines both {@link QuadTree#add} and {@link QuadTree#delete} into one operation which
+     * removes the need to traverse part of the tree again in {@link QuadTree#add}.
      */
     update(entry: E, merge = false): boolean {
         const update = this._update(this.root, entry, true, merge);
@@ -253,7 +253,7 @@ export class QuadTree<E extends QuadTreeEntry> {
      *
      * @remarks
      * Traverses the whole tree to ensure the entry is deleted. If the entry's position and size has
-     * not changed, use {@link QuadTree.deleteSpatial} for a delete that uses the quad tree's fast
+     * not changed, use {@link QuadTree#deleteSpatial} for a delete that uses the quad tree's fast
      * spatial query.
      */
     delete(entry: E, merge = false): boolean {
@@ -315,7 +315,7 @@ export class QuadTree<E extends QuadTreeEntry> {
      * @returns `true` if `entry` was deleted
      *
      * @remarks
-     * If the entry's position or shape has changed, use {@link QuadTree.delete} to ensure its deletion.
+     * If the entry's position or shape has changed, use {@link QuadTree#delete} to ensure its deletion.
      */
     deleteSpatial(entry: E, merge = false): boolean {
         if (this.tryDeleteSpatial(this.root, entry, merge)) {

@@ -4,7 +4,7 @@ import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util/sizes';
 export * from './text-batching';
 export * from './text-buffer-manager';
 
-/** @category Rendering */
+/** @category Rendering - Text */
 export interface TextLike {
     readonly style: TextStyle;
     readonly font: Font;
@@ -13,10 +13,10 @@ export interface TextLike {
     readonly transform: ReadonlyLocalTransform2D;
 }
 
-/** @category Rendering */
+/** @category Rendering - Text */
 export const MAX_GLYPHS_PER_BATCH = 32_000;
 
-/** @category Rendering */
+/** @category Rendering - Text */
 export const BYTES_PER_GLYPH_VERTEX =
     FLOAT_SIZE * 3 + // Position
     FLOAT_SIZE * 2 + // UV
@@ -24,10 +24,10 @@ export const BYTES_PER_GLYPH_VERTEX =
     FLOAT_SIZE + // Screen pixel range
     INT_32_SIZE; // Texture ID
 
-/** @category Rendering */
+/** @category Rendering - Text */
 export const BYTES_PER_GLYPH = BYTES_PER_GLYPH_VERTEX * 6;
 
-/** @category Rendering */
+/** @category Rendering - Text */
 export interface FontTextureIndexProvider {
     getTextureIndex(font: Font): number | undefined;
 }

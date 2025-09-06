@@ -6,20 +6,20 @@ export * from './mesh-batching';
 export * from './mesh-buffer-manager';
 export * from './textured-material';
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export const BYTES_PER_VERTEX_POSITION = 3 * FLOAT_SIZE;
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export const BYTES_PER_VERTEX_VISUAL =
     2 * FLOAT_SIZE + // UVs
     4 * BYTE_SIZE + // Color
-    1 * INT_32_SIZE; // Texture index;
+    1 * INT_32_SIZE; // Texture index
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export const BYTES_PER_VERTEX =
     BYTES_PER_VERTEX_POSITION + BYTES_PER_VERTEX_VISUAL;
 
-/** @category Rendering */
+/** @category Rendering - Textured Mesh */
 export interface TexturedMeshLike {
     readonly mesh: Mesh;
     readonly material: TexturedMaterial;
