@@ -1,31 +1,30 @@
 import BUNNY_WHITE_TEX_URL from '../assets/bunny-white.png';
 import BUNNY_TEX_URL from '../assets/bunny.png';
 
-import { Vec2 } from '../../src/math';
-import { Rect } from '../../src/math/shapes';
-import { lerp } from '../../src/math/util';
 import {
+    buildTriangulatedMesh,
+    Group,
+    Mesh,
+    MeshBatchEntry,
     MeshBatcher,
+    MeshObject,
+    MeshOptions,
+    Rect,
     TexturedMaterial,
-} from '../../src/renderers/textured-mesh';
-import { WGLDriver } from '../../src/rendering-webgl';
-import { Mesh, Vertex } from '../../src/rendering/mesh';
-import { buildTriangulatedMesh } from '../../src/rendering/mesh/earcut';
-import { TextureHandle } from '../../src/rendering/textures';
-import { Group, MeshObject, MeshOptions } from '../../src/scene';
+    TextureHandle,
+    Vec2,
+    Vertex,
+    WGLDriver,
+} from '../../src';
 import { SampleApp } from '../shared';
 
-const GRAVITY = 50;
+const GRAVITY = 90;
 const BUNNY_DEQUEUE_PER_SECOND = 10_000;
-const SQUISH_DURATION = 0.66;
-const SQUISH_SCALE = 0.5;
 
 class BunnyObject extends MeshObject {
     readonly movementPerSecond: Vec2;
-    readonly remainingSquishDuration = new Vec2(
-        SQUISH_DURATION,
-        SQUISH_DURATION,
-    );
+
+    entry?: MeshBatchEntry;
 
     constructor(options: MeshOptions) {
         super(options);
@@ -38,10 +37,7 @@ class BunnyObject extends MeshObject {
 }
 
 export class BunnyMarkApp extends SampleApp {
-    private meshBatches = new MeshBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-    });
+    private meshBatcher = new MeshBatcher(this.changeTracker);
 
     private bunnyTex!: TextureHandle;
     private bunnyTexWhite!: TextureHandle;
@@ -63,6 +59,8 @@ export class BunnyMarkApp extends SampleApp {
 
     override async initialize() {
         await super.initialize();
+
+        this.meshBatcher.setMaximums(this.driver.textures.maxTextureCount);
 
         this.bunnyTex = await this.textures.addFromURL(BUNNY_TEX_URL, {
             label: 'bunny',
@@ -92,7 +90,7 @@ export class BunnyMarkApp extends SampleApp {
 
                 this.bunnies.push(bunny);
                 this.bunnyGroup.add(bunny);
-                this.meshBatches.add(bunny);
+                bunny.entry = this.meshBatcher.add(bunny);
             }
 
             // Move bunnies
@@ -103,50 +101,24 @@ export class BunnyMarkApp extends SampleApp {
             for (let i = 0; i < bunnyCount; i++) {
                 const bunny = bunnies[i]!;
 
-                const { movementPerSecond, remainingSquishDuration } = bunny;
-                const { position, scale } = bunny.transform;
+                const { movementPerSecond } = bunny;
+                const { position } = bunny.transform;
 
                 position.x -= movementPerSecond.x * seconds;
                 position.y -= movementPerSecond.y * seconds;
                 movementPerSecond.y += GRAVITY * seconds;
 
-                remainingSquishDuration
-                    .subtract(seconds)
-                    .clamp(0, SQUISH_DURATION);
-
-                scale.x = lerp(
-                    SQUISH_SCALE,
-                    1,
-                    (SQUISH_DURATION - remainingSquishDuration.x) /
-                        SQUISH_DURATION,
-                );
-                scale.y = lerp(
-                    SQUISH_SCALE,
-                    1,
-                    (SQUISH_DURATION - remainingSquishDuration.y) /
-                        SQUISH_DURATION,
-                );
-
                 if (position.x < this.bounds.x) {
                     movementPerSecond.x *= -1;
                     position.x = this.bounds.x;
-
-                    remainingSquishDuration.x = SQUISH_DURATION;
-                    scale.x = SQUISH_SCALE;
                 } else if (position.x > this.bounds.right) {
                     movementPerSecond.x *= -1;
                     position.x = this.bounds.right;
-
-                    remainingSquishDuration.x = SQUISH_DURATION;
-                    scale.x = SQUISH_SCALE;
                 }
 
                 if (position.y > this.bounds.top) {
                     movementPerSecond.y = 0;
                     position.y = this.bounds.top;
-
-                    remainingSquishDuration.y = SQUISH_DURATION;
-                    scale.y = SQUISH_SCALE;
                 } else if (position.y < this.bounds.y) {
                     movementPerSecond.y *= -0.85;
                     position.y = this.bounds.y;
@@ -154,12 +126,9 @@ export class BunnyMarkApp extends SampleApp {
                     if (Math.random() > 0.5) {
                         movementPerSecond.y -= Math.random() * 80;
                     }
-
-                    remainingSquishDuration.y = SQUISH_DURATION;
-                    scale.y = SQUISH_SCALE;
                 }
 
-                this.meshBatches.change(bunny);
+                this.meshBatcher.change(bunny.entry!);
             }
 
             this.transforms.change(this.bunnyGroup);
@@ -187,6 +156,6 @@ export class BunnyMarkApp extends SampleApp {
     override render(): void {
         super.render();
 
-        this.renderers.mesh.render(this.meshBatches.finalize(), this.camera);
+        this.renderers.mesh.render(this.meshBatcher.finalize(), this.camera);
     }
 }

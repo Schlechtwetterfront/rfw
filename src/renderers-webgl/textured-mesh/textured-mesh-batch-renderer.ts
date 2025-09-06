@@ -1,7 +1,16 @@
 import { Mat2D } from '../../math';
 import { roundUpPowerOfTwo } from '../../math/util';
-import { BYTES_PER_VERTEX } from '../../renderers/textured-mesh';
-import { WGLBatchedRenderer } from '../../rendering-webgl/batched-renderer';
+import {
+    BYTES_PER_VERTEX,
+    MeshBatchBuffers,
+} from '../../renderers/textured-mesh';
+import { RenderContextLifeCycleHandler } from '../../rendering';
+import {
+    createVAOAndBuffers,
+    uploadByteBuffer,
+    VAOWithBuffers,
+    WGLBatchIterator,
+} from '../../rendering-webgl';
 import { WGLDriver } from '../../rendering-webgl/driver';
 import {
     bindMultiTexture,
@@ -9,19 +18,20 @@ import {
     getUniformLocations,
 } from '../../rendering-webgl/shaders';
 import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
-import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
-import { TextureHandle, getMaxTextures } from '../../rendering/textures';
+import { getMaxTextures, TextureHandle } from '../../rendering/textures';
 import { assert } from '../../util/assert';
 import FRAG_TEMPLATE from './textured-mesh-batch.template.frag?raw';
 import VERT_SRC from './textured-mesh-batch.vert?raw';
 
 /** @category Rendering - Textured Mesh - WebGL */
-export interface TexturedMeshRenderBatch extends RenderBatch {
+export interface WGLTexturedMeshRenderBatch {
     readonly vertexCount: number;
 
     readonly textureCount: number;
     readonly textures: readonly TextureHandle[];
+
+    readonly storage?: MeshBatchBuffers;
 }
 
 /** @category Rendering - Textured Mesh - WebGL */
@@ -36,16 +46,26 @@ const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
 /** @category Rendering - Textured Mesh - WebGL */
-export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMeshRenderBatch> {
+export class WGLTexturedMeshBatchRenderer
+    implements RenderContextLifeCycleHandler
+{
+    protected readonly gl: WebGL2RenderingContext;
+
+    protected readonly batchIterator: WGLBatchIterator<
+        WGLTexturedMeshRenderBatch,
+        VAOWithBuffers<MeshBatchBuffers>
+    >;
+
     protected programs: WGLTexturedMeshBatchRendererProgramData[] = [];
 
-    constructor(driver: WGLDriver) {
-        super(driver);
+    constructor(protected readonly driver: WGLDriver) {
+        this.gl = driver.gl;
+        this.batchIterator = new WGLBatchIterator(this.gl);
+
+        driver.addLifeCycleHandler(this);
     }
 
-    override async initialize() {
-        await super.initialize();
-
+    async initialize() {
         const { gl } = this;
 
         const shaderInfos = await buildMultiTextureSamplingShaders(
@@ -73,21 +93,50 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
         });
     }
 
-    override async uninitialize(): Promise<void> {
-        await super.uninitialize();
-
+    uninitialize(): Promise<void> {
         this.programs.length = 0;
+        this.batchIterator.clear();
+
+        return Promise.resolve();
     }
 
-    render(batches: readonly TexturedMeshRenderBatch[], camera?: Camera2D) {
-        const { gl } = this;
+    render(batches: readonly WGLTexturedMeshRenderBatch[], camera?: Camera2D) {
+        const { gl, batchIterator } = this;
 
         const textureCount = roundUpPowerOfTwo(getMaxTextures(batches));
 
         this.prepareRenderPass(textureCount, camera);
         this.prepareShader(textureCount, camera);
 
-        this.upload(batches, batch => {
+        batchIterator.restart(batches);
+
+        const handle = batchIterator.getHandle();
+
+        while (batchIterator.next(handle)) {
+            const batch = handle.batch;
+
+            if (!batch.storage) {
+                throw new Error('No batch storage');
+            }
+
+            if (!handle.vaoAndBuffers) {
+                handle.setVAOAndBuffers(
+                    createVAOAndBuffers(gl, { buffer: batch.storage.buffer }),
+                );
+            }
+
+            if (handle.initializeAttributes) {
+                this.initializeAttributes(handle.vaoAndBuffers!.buffer);
+            }
+
+            if (handle.upload) {
+                uploadByteBuffer(
+                    gl,
+                    batch.storage.buffer,
+                    handle.vaoAndBuffers!.buffer,
+                );
+            }
+
             bindMultiTexture(
                 gl,
                 this.driver.textures,
@@ -99,7 +148,7 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
 
             this.driver.diagnostics.triangles.count(batch.vertexCount / 3);
             this.driver.diagnostics.drawCalls.count();
-        });
+        }
     }
 
     protected prepareRenderPass(textureCount: number, camera?: Camera2D) {
@@ -135,12 +184,10 @@ export class WGLTexturedMeshBatchRenderer extends WGLBatchedRenderer<TexturedMes
         gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
     }
 
-    protected override initializeAttributes(buffers: WebGLBuffer[]) {
-        assert(buffers.length === 1, 'Batched mesh renderer takes one buffer');
-
+    protected initializeAttributes(buffer: WebGLBuffer) {
         const { gl } = this;
 
-        gl.bindBuffer(this.gl.ARRAY_BUFFER, buffers[0]!);
+        gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
 
         setVertexAttributes(
             gl,

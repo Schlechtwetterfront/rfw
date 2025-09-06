@@ -1,52 +1,46 @@
-import { BYTES_PER_VERTEX, TexturedMeshLike } from '.';
 import { Color } from '../../colors';
 import { Vec2 } from '../../math';
 import { zToDepth } from '../../rendering';
-import {
-    ElementByteBufferManager,
-    ElementByteBuffersManager,
-} from '../../rendering/buffers';
-import { FLOAT_SIZE } from '../../util/sizes';
-
+import { ByteBuffer, ElementByteBufferManager } from '../../rendering/buffers';
 import { TextureIndexProvider } from '../../rendering/textures';
-import { MeshBatchEntry, MeshBatchStorageFactory } from './mesh-batching';
-
-/** @category Rendering - Textured Mesh */
-export const buildMeshBatchStorage: MeshBatchStorageFactory<
-    TexturedMeshLike
-> = maxSize => new MeshBufferManager(maxSize);
+import { FLOAT_SIZE } from '../../util';
+import { BYTES_PER_VERTEX, TexturedMeshLike } from '../textured-mesh';
+import { MeshBatchEntry } from './mesh-batcher-base';
 
 const TEMP_VEC = Vec2.zero();
 const TEMP_COLOR = Color.white();
 
 /** @category Rendering - Textured Mesh */
-export class MeshBufferManager<
-    O extends TexturedMeshLike,
-> extends ElementByteBuffersManager<MeshBatchEntry<O>> {
-    private buffer: ElementByteBufferManager;
+export interface MeshBatchBuffers {
+    readonly buffer: ByteBuffer;
+}
 
-    private readonly f32View: Float32Array;
-    private readonly i32View: Int32Array;
+/** @category Rendering - Textured Mesh */
+export class MeshBatchStorage<O extends TexturedMeshLike> {
+    private readonly float32View: Float32Array;
+    private readonly int32View: Int32Array;
 
-    textureIndexProvider?: TextureIndexProvider;
+    readonly buffer: ElementByteBufferManager;
 
-    constructor(maxSize: number) {
-        const buffer = new ElementByteBufferManager(maxSize, BYTES_PER_VERTEX);
+    constructor(
+        maxElementCount: number,
+        private readonly textureIndexProvider: TextureIndexProvider,
+    ) {
+        this.buffer = new ElementByteBufferManager(
+            maxElementCount,
+            BYTES_PER_VERTEX,
+        );
 
-        super([buffer]);
-
-        this.buffer = buffer;
-
-        this.f32View = new Float32Array(buffer.arrayBuffer);
-        this.i32View = new Int32Array(buffer.arrayBuffer);
+        this.float32View = new Float32Array(this.buffer.arrayBuffer);
+        this.int32View = new Int32Array(this.buffer.arrayBuffer);
     }
 
     update(entry: MeshBatchEntry<O>, vertexOffset: number): void {
         const {
-            f32View,
-            i32View,
+            float32View,
+            int32View,
             buffer,
-            buffer: { u8View },
+            buffer: { uint8View },
         } = this;
 
         const object = entry.object!;
@@ -85,16 +79,16 @@ export class MeshBufferManager<
 
             posVec.copyFrom(position).multiplyMat(world);
 
-            f32View[offset32++] = posVec.x;
-            f32View[offset32++] = posVec.y;
-            f32View[offset32++] = z;
+            float32View[offset32++] = posVec.x;
+            float32View[offset32++] = posVec.y;
+            float32View[offset32++] = z;
 
-            f32View[offset32++] = uv.x;
-            f32View[offset32++] = uv.y;
+            float32View[offset32++] = uv.x;
+            float32View[offset32++] = uv.y;
 
-            TEMP_COLOR.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
+            TEMP_COLOR.copyToRGBA(uint8View, offset32++ * FLOAT_SIZE);
 
-            i32View[offset32++] = texIndex;
+            int32View[offset32++] = texIndex;
         }
     }
 }

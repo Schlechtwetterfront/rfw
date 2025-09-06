@@ -1,24 +1,25 @@
 import {
+    BatchEntry,
     CanvasApp,
     Color,
     LineBatcher,
+    LineLike,
     LineObject,
     vec,
     Vec2,
     WGLDriver,
-    WGLLineRenderer,
+    WGLLineBatchRenderer,
 } from '../../src';
 
 const BACKGROUND_COLOR = Color.white();
 
 export class LinesApp extends CanvasApp<WGLDriver> {
-    private readonly lineRenderer = new WGLLineRenderer(this.driver);
+    private readonly lineRenderer = new WGLLineBatchRenderer(this.driver);
 
-    private readonly lineBatches = new LineBatcher({
-        changeTracker: this.changeTracker,
-    });
+    private readonly lineBatches = new LineBatcher(this.changeTracker);
 
     private line!: LineObject;
+    private lineEntry!: BatchEntry<LineLike>;
 
     override async initialize(): Promise<void> {
         await super.initialize();
@@ -34,7 +35,7 @@ export class LinesApp extends CanvasApp<WGLDriver> {
         });
 
         this.transforms.change(this.line);
-        this.lineBatches.add(this.line);
+        this.lineEntry = this.lineBatches.add(this.line);
     }
 
     protected override render(): void {
@@ -57,6 +58,6 @@ export class LinesApp extends CanvasApp<WGLDriver> {
         );
         this.line.style = { alignment, thickness };
 
-        this.lineBatches.change(this.line);
+        this.lineBatches.change(this.lineEntry);
     }
 }

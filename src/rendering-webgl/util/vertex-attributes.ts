@@ -136,6 +136,15 @@ export function setVertexAttributes(
 
         index++;
     }
+
+    if (
+        typeof options?.stride === 'number' &&
+        options.stride !== offsetInStride
+    ) {
+        throw new Error(
+            `Calculated stride ${offsetInStride} does not match specified total stride of ${options.stride}`,
+        );
+    }
 }
 
 /**

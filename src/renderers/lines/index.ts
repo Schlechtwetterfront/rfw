@@ -2,8 +2,9 @@ import { ReadonlyLocalTransform2D } from '../../math';
 import { SizedObject } from '../../scene';
 import { LineSegment, LineStyle } from '../../scene/line';
 import { BYTE_SIZE, FLOAT_SIZE } from '../../util/sizes';
-export * from './line-batching';
-export * from './line-buffer-manager';
+
+export * from './line-batch-storage';
+export * from './line-batcher';
 
 /** @category Rendering - Lines */
 export const BYTES_PER_LINE_SEGMENT =

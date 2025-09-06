@@ -1,5 +1,4 @@
-import { ElementByteBuffers, WriteElementByteBuffer } from './element-buffers';
-import { ObjectStorage } from './storage';
+import { WriteElementByteBuffer } from './element-buffers';
 
 /**
  * Manages a byte buffer of element size.
@@ -24,7 +23,7 @@ export class ElementByteBufferManager implements WriteElementByteBuffer {
 
     readonly arrayBuffer: ArrayBuffer;
 
-    readonly u8View: Uint8Array;
+    readonly uint8View: Uint8Array;
 
     readonly arrayBufferView: ArrayBufferView;
 
@@ -39,7 +38,9 @@ export class ElementByteBufferManager implements WriteElementByteBuffer {
     ) {
         this.arrayBuffer = new ArrayBuffer(maxElementCount * elementByteLength);
 
-        this.arrayBufferView = this.u8View = new Uint8Array(this.arrayBuffer);
+        this.arrayBufferView = this.uint8View = new Uint8Array(
+            this.arrayBuffer,
+        );
     }
 
     clearChange(): void {
@@ -70,61 +71,17 @@ export class ElementByteBufferManager implements WriteElementByteBuffer {
             Math.max(end * this.elementByteLength, currentEnd) -
             this._changedFromByte;
     }
-}
 
-/**
- * Manages multiple element byte buffers. Useful when one object is written into multiple buffers (
- * e.g., index and vertex buffer).
- *
- * @category Rendering - Buffers
- */
-export abstract class ElementByteBuffersManager<O>
-    implements ElementByteBuffers, ObjectStorage<O>
-{
-    constructor(readonly buffers: readonly WriteElementByteBuffer[]) {}
+    copyWithin(target: number, start: number, end?: number): void {
+        end ??= this.uint8View.length;
 
-    clearChange(): void {
-        for (let i = 0; i < this.buffers.length; i++) {
-            const buffer = this.buffers[i]!;
+        this.uint8View.copyWithin(target, start, end);
 
-            buffer.clearChange();
-        }
-    }
+        const length = end - start;
 
-    setChanged(start: number, end: number): void {
-        for (let i = 0; i < this.buffers.length; i++) {
-            const buffer = this.buffers[i]!;
-
-            buffer.setChanged(start, end);
-        }
-    }
-
-    markChanged(start: number, end: number): void {
-        for (let i = 0; i < this.buffers.length; i++) {
-            const buffer = this.buffers[i]!;
-
-            buffer.markChanged(start, end);
-        }
-    }
-
-    abstract update(object: O, offset: number): void;
-
-    copyWithin(target: number, start: number, end: number): void {
-        for (let i = 0; i < this.buffers.length; i++) {
-            const buffer = this.buffers[i]!;
-
-            const length = end - start;
-
-            buffer.markChanged(
-                Math.min(start, target),
-                Math.max(start + length, target + length),
-            );
-
-            buffer.u8View.copyWithin(
-                target * buffer.elementByteLength,
-                start * buffer.elementByteLength,
-                end * buffer.elementByteLength,
-            );
-        }
+        this.markChanged(
+            Math.min(start, target),
+            Math.max(start + length, target + length),
+        );
     }
 }

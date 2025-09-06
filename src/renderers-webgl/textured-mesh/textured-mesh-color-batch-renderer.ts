@@ -1,58 +1,54 @@
-import { Mat2D } from '../../math';
-import { roundUpPowerOfTwo } from '../../math/util';
-import { BYTES_PER_GLYPH_VERTEX, TextBatchBuffers } from '../../renderers/text';
+import { Mat2D, roundUpPowerOfTwo } from '../../math';
+import {
+    MESH_COLOR_SIZES,
+    MeshColorBatchBuffers,
+} from '../../renderers/textured-mesh-color';
+import { RenderContextLifeCycleHandler } from '../../rendering';
 import {
     createVAOAndBuffers,
+    setVertexAttributes,
     uploadByteBuffer,
     VAOWithBuffers,
     WGLBatchIterator,
+    WGLDriver,
 } from '../../rendering-webgl';
-import { WGLDriver } from '../../rendering-webgl/driver';
 import {
-    bindMultiTextureOneSampler,
-    buildMultiTextureSamplingAndSizeShaders,
+    bindMultiTexture,
+    buildMultiTextureSamplingShaders,
     getUniformLocations,
 } from '../../rendering-webgl/shaders';
-import { setSamplerParameters } from '../../rendering-webgl/textures';
-import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { Camera2D } from '../../rendering/camera2d';
 import { getMaxTextures, TextureHandle } from '../../rendering/textures';
-import FRAG_TEMPLATE from './text.template.frag?raw';
-import VERT_SRC from './text.vert?raw';
+import { assert } from '../../util';
+import { WGLTexturedMeshBatchRendererProgramData } from './textured-mesh-batch-renderer';
+import FRAG_TEMPLATE from './textured-mesh-batch.template.frag?raw';
+import VERT_SRC from './textured-mesh-batch.vert?raw';
 
-/** @category Rendering - Text - WebGL */
-export interface WGLTextRenderBatch {
-    readonly glyphCount: number;
+/** @category Rendering - Textured Mesh - WebGL */
+export interface WGLTexturedMeshColorRenderBatch {
+    readonly vertexCount: number;
 
     readonly textureCount: number;
     readonly textures: readonly TextureHandle[];
 
-    readonly storage?: TextBatchBuffers;
-}
-
-/** @category Rendering - Text - WebGL */
-export interface WGLTextRendererProgramData {
-    program: WebGLProgram;
-    projectionLocation: WebGLUniformLocation;
-    cameraProjectionLocation: WebGLUniformLocation;
-    samplerLocation: WebGLUniformLocation;
-    samplerUnits: Int32Array;
+    readonly storage?: MeshColorBatchBuffers;
 }
 
 const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
-/** @category Rendering - Text - WebGL */
-export class WGLTextRenderer {
+/** @category Rendering - Textured Mesh - WebGL */
+export class WGLTexturedMeshColorBatchRenderer
+    implements RenderContextLifeCycleHandler
+{
     protected readonly gl: WebGL2RenderingContext;
 
     protected readonly batchIterator: WGLBatchIterator<
-        WGLTextRenderBatch,
-        VAOWithBuffers<TextBatchBuffers>
+        WGLTexturedMeshColorRenderBatch,
+        VAOWithBuffers<MeshColorBatchBuffers>
     >;
 
-    protected programs: WGLTextRendererProgramData[] = [];
-    protected sampler?: WebGLSampler;
+    protected programs: WGLTexturedMeshBatchRendererProgramData[] = [];
 
     constructor(protected readonly driver: WGLDriver) {
         this.gl = driver.gl;
@@ -64,9 +60,9 @@ export class WGLTextRenderer {
     async initialize() {
         const { gl } = this;
 
-        const shaderInfos = await buildMultiTextureSamplingAndSizeShaders(
+        const shaderInfos = await buildMultiTextureSamplingShaders(
             this.driver.shaders,
-            'text',
+            'mesh',
             VERT_SRC,
             FRAG_TEMPLATE,
             this.driver.textures.maxTextureCount,
@@ -82,38 +78,24 @@ export class WGLTextRenderer {
                 program,
                 ...getUniformLocations(gl, program, {
                     projectionLocation: 'u_projection',
-                    cameraProjectionLocation: 'u_cameraProjection',
                     samplerLocation: 'u_sampler',
                 }),
                 samplerUnits,
             };
         });
-
-        this.sampler = gl.createSampler()!;
-
-        setSamplerParameters(gl, this.sampler, {
-            wrap: 'clamp',
-            filter: 'linear',
-        });
     }
 
     uninitialize(): Promise<void> {
-        const { gl } = this;
-
         this.programs.length = 0;
-
-        if (this.sampler) {
-            gl.deleteSampler(this.sampler);
-
-            this.sampler = undefined;
-        }
-
         this.batchIterator.clear();
 
         return Promise.resolve();
     }
 
-    render(batches: readonly WGLTextRenderBatch[], camera?: Camera2D) {
+    render(
+        batches: readonly WGLTexturedMeshColorRenderBatch[],
+        camera?: Camera2D,
+    ) {
         const { gl, batchIterator } = this;
 
         const textureCount = roundUpPowerOfTwo(getMaxTextures(batches));
@@ -134,12 +116,18 @@ export class WGLTextRenderer {
 
             if (!handle.vaoAndBuffers) {
                 handle.setVAOAndBuffers(
-                    createVAOAndBuffers(gl, { buffer: batch.storage.buffer }),
+                    createVAOAndBuffers(gl, {
+                        buffer: batch.storage.buffer,
+                        colorBuffer: batch.storage.colorBuffer,
+                    }),
                 );
             }
 
             if (handle.initializeAttributes) {
-                this.initializeAttributes(handle.vaoAndBuffers!.buffer);
+                this.initializeAttributes(
+                    handle.vaoAndBuffers!.buffer,
+                    handle.vaoAndBuffers!.colorBuffer,
+                );
             }
 
             if (handle.upload) {
@@ -148,19 +136,24 @@ export class WGLTextRenderer {
                     batch.storage.buffer,
                     handle.vaoAndBuffers!.buffer,
                 );
+
+                uploadByteBuffer(
+                    gl,
+                    batch.storage.colorBuffer,
+                    handle.vaoAndBuffers!.colorBuffer,
+                );
             }
 
-            bindMultiTextureOneSampler(
+            bindMultiTexture(
                 gl,
                 this.driver.textures,
                 textureCount,
                 batch.textures,
-                this.sampler!,
             );
 
-            gl.drawArrays(gl.TRIANGLES, 0, batch.glyphCount * 6);
+            gl.drawArrays(gl.TRIANGLES, 0, batch.vertexCount);
 
-            this.driver.diagnostics.triangles.count(batch.glyphCount * 2);
+            this.driver.diagnostics.triangles.count(batch.vertexCount / 3);
             this.driver.diagnostics.drawCalls.count();
         }
     }
@@ -177,87 +170,74 @@ export class WGLTextRenderer {
     }
 
     protected prepareShader(textureCount: number, camera?: Camera2D) {
-        if (!this.sampler || !this.programs.length) {
-            throw new Error('Renderer not initialized');
-        }
+        assert(this.programs.length > 0, 'Renderer not initialized');
 
         const { gl } = this;
 
-        const {
-            program,
-            projectionLocation,
-            cameraProjectionLocation,
-            samplerLocation,
-            samplerUnits,
-        } = this.programs[Math.log2(textureCount)]!;
+        const { program, projectionLocation, samplerLocation, samplerUnits } =
+            this.programs[Math.log2(textureCount)]!;
 
         gl.useProgram(program);
         gl.uniform1iv(samplerLocation, samplerUnits);
 
-        // Clip
-        {
+        if (camera) {
+            this.driver.projections.getClipProjection(camera, PROJECTION_MAT);
+        } else {
             this.driver.projections.getViewportClipProjection(PROJECTION_MAT);
-
-            PROJECTION_MAT.copyTo3x2(PROJECTION_ARRAY);
-
-            gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
         }
 
-        // Camera
-        {
-            if (camera)
-                this.driver.projections.getCameraProjection(
-                    camera,
-                    PROJECTION_MAT,
-                );
-            else PROJECTION_MAT.makeIdentity();
+        PROJECTION_MAT.copyTo3x2(PROJECTION_ARRAY);
 
-            PROJECTION_MAT.copyTo3x2(PROJECTION_ARRAY);
-
-            gl.uniformMatrix3x2fv(
-                cameraProjectionLocation,
-                false,
-                PROJECTION_ARRAY,
-            );
-        }
+        gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
     }
 
-    protected initializeAttributes(buffer: WebGLBuffer): void {
+    protected initializeAttributes(
+        buffer: WebGLBuffer,
+        colorBuffer: WebGLBuffer,
+    ) {
         const { gl } = this;
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
 
         setVertexAttributes(
             gl,
             [
                 // Pos
                 {
+                    index: 0,
                     size: 3,
                     type: 'float',
                 },
                 // UV
                 {
+                    index: 1,
                     size: 2,
-                    type: 'float',
-                },
-                // Color
-                {
-                    size: 4,
-                    type: 'unsignedByte',
-                    normalize: true,
-                },
-                // Screen pixel range
-                {
-                    size: 1,
                     type: 'float',
                 },
                 // Texture ID
                 {
+                    index: 3,
                     size: 1,
                     type: 'int',
                 },
             ],
-            { stride: BYTES_PER_GLYPH_VERTEX },
+            { stride: MESH_COLOR_SIZES.BYTES_PER_VERTEX_MAIN_BUFFER },
+        );
+
+        gl.bindBuffer(this.gl.ARRAY_BUFFER, colorBuffer);
+
+        setVertexAttributes(
+            gl,
+            [
+                // Color
+                {
+                    index: 2,
+                    size: 4,
+                    type: 'unsignedByte',
+                    normalize: true,
+                },
+            ],
+            { stride: MESH_COLOR_SIZES.BYTES_PER_VERTEX_COLOR_BUFFER },
         );
     }
 }

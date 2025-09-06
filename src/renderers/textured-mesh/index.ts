@@ -1,9 +1,11 @@
 import { ReadonlyLocalTransform2D } from '../../math';
 import { Mesh } from '../../rendering/mesh';
-import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util/sizes';
+import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util';
 import { TexturedMaterial } from './textured-material';
-export * from './mesh-batching';
-export * from './mesh-buffer-manager';
+
+export * from './mesh-batch-storage';
+export * from './mesh-batcher';
+export * from './mesh-batcher-base';
 export * from './textured-material';
 
 /** @category Rendering - Textured Mesh */

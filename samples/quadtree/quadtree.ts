@@ -2,45 +2,49 @@
 import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
-import { Color } from '../../src/colors';
-import { vec, Vec2 } from '../../src/math';
-import { Rect } from '../../src/math/shapes';
-
-import { buildRectPoints, buildSquarePoints } from '../../src/math/points';
-import { LineBatcher } from '../../src/renderers/lines';
-import { TextBatcher } from '../../src/renderers/text';
-import { WGLDriver } from '../../src/rendering-webgl';
-import { LineObject } from '../../src/scene/line';
-import { TextObject } from '../../src/scene/text';
-import { Font } from '../../src/text';
-import { BMFont, createFontFromBMFont } from '../../src/text/bmfont';
-import { TimeSampler } from '../../src/util/measuring';
-import { QuadTree } from '../../src/util/quad-tree';
+import {
+    BatchEntry,
+    BMFont,
+    buildRectPoints,
+    buildSquarePoints,
+    Color,
+    createFontFromBMFont,
+    Font,
+    LineBatcher,
+    LineLike,
+    LineObject,
+    QuadTree,
+    Rect,
+    TextBatcher,
+    TextObject,
+    TimeSampler,
+    vec,
+    Vec2,
+    WGLDriver,
+} from '../../src';
 import { SampleApp } from '../shared';
 
 const TEMP_VEC = Vec2.zero();
 const RECT_COLOR = new Color(1, 1, 1);
 const RECT_COLOR_INTERSECTED = new Color(0, 1, 0);
 
-export class QuadTreeApp extends SampleApp {
-    private readonly textBatches = new TextBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-    });
+interface Entity {
+    line: LineObject;
+    entry?: BatchEntry<LineLike>;
+}
 
-    private readonly lineBatches = new LineBatcher({
-        changeTracker: this.changeTracker,
-    });
-    private readonly globalLineBatches = new LineBatcher({
-        changeTracker: this.changeTracker,
-    });
+export class QuadTreeApp extends SampleApp {
+    private readonly textBatcher = new TextBatcher(this.changeTracker);
+
+    private readonly lineBatcher = new LineBatcher(this.changeTracker);
+    private readonly globalLineBatcher = new LineBatcher(this.changeTracker);
 
     private font!: Font;
 
-    private quadTreeEntries = new Map<Rect, LineObject>();
-    private quadEntities: LineObject[] = [];
+    private quadTreeEntries = new Map<Rect, Entity>();
+    private quadEntities: Entity[] = [];
     private quadTree: QuadTree<Rect>;
-    private cursor!: LineObject;
+    private cursor!: Entity;
 
     private viewportMouse = new Rect(0, 0, 24, 24);
     private sceneMouse = Rect.zero();
@@ -78,14 +82,14 @@ export class QuadTreeApp extends SampleApp {
                     this.sceneMouse,
                 );
 
-                for (const entry of intersections.values) {
-                    this.quadTree.delete(entry, true);
+                for (const intersection of intersections.values) {
+                    this.quadTree.delete(intersection, true);
 
-                    const line = this.quadTreeEntries.get(entry);
+                    const entity = this.quadTreeEntries.get(intersection);
 
-                    if (line) {
-                        this.quadTreeEntries.delete(entry);
-                        this.lineBatches.delete(line);
+                    if (entity) {
+                        this.quadTreeEntries.delete(intersection);
+                        this.lineBatcher.delete(entity.entry!);
                     }
                 }
             } else if (e.ctrlKey && e.altKey) {
@@ -95,14 +99,14 @@ export class QuadTreeApp extends SampleApp {
                     this.sceneMouse,
                 );
 
-                for (const entry of intersections.values) {
-                    this.quadTree.deleteSpatial(entry, true);
+                for (const intersection of intersections.values) {
+                    this.quadTree.deleteSpatial(intersection, true);
 
-                    const line = this.quadTreeEntries.get(entry);
+                    const entity = this.quadTreeEntries.get(intersection);
 
-                    if (line) {
-                        this.quadTreeEntries.delete(entry);
-                        this.lineBatches.delete(line);
+                    if (entity) {
+                        this.quadTreeEntries.delete(intersection);
+                        this.lineBatcher.delete(entity.entry!);
                     }
                 }
             }
@@ -133,16 +137,22 @@ export class QuadTreeApp extends SampleApp {
     override async initialize() {
         await super.initialize();
 
+        this.textBatcher.setMaximums(this.driver.textures.maxTextureCount);
+        this.lineBatcher.setMaximums(64_000);
+        this.globalLineBatcher.setMaximums(64_000);
+
         const fontTex = await this.textures.addFromURL(FONT_TEX_URL);
 
         this.font = createFontFromBMFont(FONT_DATA as BMFont, [fontTex]);
 
-        this.cursor = new LineObject({
-            points: buildSquarePoints(0, 0, 24),
-            closed: true,
-            style: { color: new Color(1, 1, 0), thickness: 2 },
-        });
-        this.globalLineBatches.add(this.cursor);
+        this.cursor = {
+            line: new LineObject({
+                points: buildSquarePoints(0, 0, 24),
+                closed: true,
+                style: { color: new Color(1, 1, 0), thickness: 2 },
+            }),
+        };
+        this.cursor.entry = this.globalLineBatcher.add(this.cursor.line);
 
         if (this.text) {
             const title = new TextObject({
@@ -152,10 +162,8 @@ export class QuadTreeApp extends SampleApp {
                 position: vec(this.bounds.x, this.bounds.top),
                 anchor: vec(0, 1),
             });
-
-            this.textBatches.add(title);
+            this.textBatcher.add(title);
             this.transforms.change(title);
-
             const subtitle = new TextObject({
                 font: this.font,
                 style: { size: 16 },
@@ -163,8 +171,7 @@ export class QuadTreeApp extends SampleApp {
                 position: vec(-600 + title.layout.width + 24, 400),
                 anchor: vec(0, 1),
             });
-
-            this.textBatches.add(subtitle);
+            this.textBatcher.add(subtitle);
             this.transforms.change(subtitle);
         }
     }
@@ -179,36 +186,40 @@ export class QuadTreeApp extends SampleApp {
     protected override tick(elapsed: number): void {
         super.tick(elapsed);
 
-        this.quadEntities.forEach(o => this.lineBatches.delete(o));
+        this.quadEntities.forEach(o => this.lineBatcher.delete(o.entry!));
         this.quadEntities.length = 0;
 
         for (const quad of this.quadTree.quads()) {
             const pos = TEMP_VEC.copyFrom(quad.bounds);
 
-            const object = new LineObject({
-                points: buildRectPoints(
-                    pos.x,
-                    pos.y,
-                    quad.bounds.width,
-                    quad.bounds.height,
-                ),
-                closed: true,
-            });
+            const entity = {
+                line: new LineObject({
+                    points: buildRectPoints(
+                        pos.x,
+                        pos.y,
+                        quad.bounds.width,
+                        quad.bounds.height,
+                    ),
+                    closed: true,
+                }),
+            } as Entity;
 
-            this.quadEntities.push(object);
+            this.quadEntities.push(entity);
 
-            this.lineBatches.add(object);
+            entity.entry = this.lineBatcher.add(entity.line);
 
-            this.transforms.change(object);
+            this.transforms.change(entity.line);
         }
 
         if (true) {
-            this.quadTreeEntries.forEach(l => {
+            this.quadTreeEntries.forEach(e => {
                 if (
-                    l.style.color.equalsColorWithAlpha(RECT_COLOR_INTERSECTED)
+                    e.line.style.color.equalsColorWithAlpha(
+                        RECT_COLOR_INTERSECTED,
+                    )
                 ) {
-                    l.style.color.copyFrom(RECT_COLOR);
-                    this.lineBatches.change(l);
+                    e.line.style.color.copyFrom(RECT_COLOR);
+                    this.lineBatcher.change(e.entry!);
                 }
             });
 
@@ -217,23 +228,23 @@ export class QuadTreeApp extends SampleApp {
             this.intersectionTime.finish();
 
             intersects.values.forEach(r => {
-                const line = this.quadTreeEntries.get(r)!;
-                line.style.color.copyFrom(RECT_COLOR_INTERSECTED);
-                this.lineBatches.change(line);
+                const entity = this.quadTreeEntries.get(r)!;
+                entity.line.style.color.copyFrom(RECT_COLOR_INTERSECTED);
+                this.lineBatcher.change(entity.entry!);
             });
         }
 
-        this.cursor.transform.position.copyFrom(this.viewportMouse);
-        this.transforms.change(this.cursor);
-        this.globalLineBatches.change(this.cursor);
+        this.cursor.line.transform.position.copyFrom(this.viewportMouse);
+        this.transforms.change(this.cursor.line);
+        this.globalLineBatcher.change(this.cursor.entry!);
     }
 
     override render(): void {
         super.render();
 
-        this.renderers.line.render(this.lineBatches.finalize(), this.camera);
-        this.renderers.line.render(this.globalLineBatches.finalize());
-        this.renderers.text.render(this.textBatches.finalize(), this.camera);
+        this.renderers.line.render(this.lineBatcher.finalize(), this.camera);
+        this.renderers.line.render(this.globalLineBatcher.finalize());
+        this.renderers.text.render(this.textBatcher.finalize(), this.camera);
     }
 
     addRects(count: number): void {
@@ -257,16 +268,18 @@ export class QuadTreeApp extends SampleApp {
         const rect = Rect.fromPoint(pos, 2 * d, 2 * d);
         this.quadTree.add(rect);
 
-        const quad = new LineObject({
-            points: buildSquarePoints(0, 0, 2 * d),
-            closed: true,
-            position: pos,
-            style: { thickness: 2 },
-        });
+        const entity = {
+            line: new LineObject({
+                points: buildSquarePoints(0, 0, 2 * d),
+                closed: true,
+                position: pos,
+                style: { thickness: 2 },
+            }),
+        } as Entity;
 
-        this.quadTreeEntries.set(rect, quad);
+        this.quadTreeEntries.set(rect, entity);
 
-        this.transforms.change(quad);
-        this.lineBatches.add(quad);
+        this.transforms.change(entity.line);
+        entity.entry = this.lineBatcher.add(entity.line);
     }
 }

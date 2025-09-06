@@ -3,21 +3,22 @@ import '../assets/styles.css';
 import BUNNY_WHITE_TEX_URL from '../assets/bunny-white.png';
 import BUNNY_TEX_URL from '../assets/bunny.png';
 
-import { Vec2 } from '../../src/math';
 import {
+    buildTriangulatedMesh,
+    Mesh,
     MeshBatcher,
+    MeshObject,
     TexturedMaterial,
-} from '../../src/renderers/textured-mesh';
-import { WGLDriver } from '../../src/rendering-webgl';
-import { Mesh, Vertex } from '../../src/rendering/mesh';
-import { buildTriangulatedMesh } from '../../src/rendering/mesh/earcut';
-import { TextureHandle } from '../../src/rendering/textures';
-import { MeshObject } from '../../src/scene/mesh';
+    TextureHandle,
+    Vec2,
+    Vertex,
+    WGLDriver,
+} from '../../src';
 import { usePanAndZoom } from '../interaction';
 import { SampleApp, setupWGL } from '../shared';
 
 export class RestoreApp extends SampleApp {
-    private readonly batches: MeshBatcher<MeshObject>;
+    private readonly batcher: MeshBatcher<MeshObject>;
 
     private contextExtension?: WEBGL_lose_context;
 
@@ -30,14 +31,13 @@ export class RestoreApp extends SampleApp {
     constructor(canvas: HTMLCanvasElement, driver: WGLDriver) {
         super(canvas, driver);
 
-        this.batches = new MeshBatcher<MeshObject>({
-            maxTextureCount: this.driver.textures.maxTextureCount,
-            changeTracker: this.changeTracker,
-        });
+        this.batcher = new MeshBatcher<MeshObject>(this.changeTracker);
     }
 
     override async initialize(): Promise<void> {
         await super.initialize();
+
+        this.batcher.setMaximums(this.driver.textures.maxTextureCount);
 
         this.bunnyTex = await this.textures.addFromURL(BUNNY_TEX_URL);
         this.bunnyTexWhite =
@@ -58,7 +58,7 @@ export class RestoreApp extends SampleApp {
             });
 
             this.bunnies.push(b1);
-            this.batches.add(b1);
+            this.batcher.add(b1);
             this.transforms.change(b1);
         }
 
@@ -71,7 +71,7 @@ export class RestoreApp extends SampleApp {
             });
 
             this.bunnies.push(b2);
-            this.batches.add(b2);
+            this.batcher.add(b2);
             this.transforms.change(b2);
         }
     }
@@ -79,7 +79,7 @@ export class RestoreApp extends SampleApp {
     protected override render(): void {
         super.render();
 
-        this.renderers.mesh.render(this.batches.finalize(), this.camera);
+        this.renderers.mesh.render(this.batcher.finalize(), this.camera);
     }
 
     loseContext() {

@@ -21,10 +21,7 @@ const BACKGROUND_COLOR = Color.fromHexString('#fefefa');
 
 export class TextApp extends CanvasApp<WGLDriver> {
     private readonly textRenderer = new WGLTextRenderer(this.driver);
-    private readonly textBatcher = new TextBatcher({
-        changeTracker: this.changeTracker,
-        maxTextureCount: this.driver.textures.maxTextureCount,
-    });
+    private readonly textBatcher = new TextBatcher(this.changeTracker);
 
     private serifFont!: Font;
     private sansFont!: Font;
@@ -34,6 +31,8 @@ export class TextApp extends CanvasApp<WGLDriver> {
 
     override async initialize(): Promise<void> {
         await super.initialize();
+
+        this.textBatcher.setMaximums(this.driver.textures.maxTextureCount);
 
         // #region Loading
         const [serifTexture, sansTexture] = await Promise.all([

@@ -4,6 +4,7 @@ import {
     Group,
     LineBatcher,
     LineObject,
+    MeshBatchEntry,
     MeshBatcher,
     MeshObject,
     PI_2,
@@ -11,7 +12,7 @@ import {
     TexturedMaterial,
     Vertex,
     WGLDriver,
-    WGLLineRenderer,
+    WGLLineBatchRenderer,
     WGLTexturedMeshBatchRenderer,
     buildCirclePoints,
     buildTriangulatedMesh,
@@ -106,6 +107,7 @@ function pixelDiameter(d: number) {
 interface RenderSpaceObject {
     root: SceneGraphObject;
     meshObject: MeshObject;
+    meshEntry: MeshBatchEntry;
     lineObject: LineObject;
     spaceObject: SpaceObject;
     angle: number;
@@ -118,22 +120,20 @@ export class SceneApp extends CanvasApp<WGLDriver> {
     private readonly meshRenderer = new WGLTexturedMeshBatchRenderer(
         this.driver,
     );
-    private readonly lineRenderer = new WGLLineRenderer(this.driver);
+    private readonly lineRenderer = new WGLLineBatchRenderer(this.driver);
 
     // #region mesh-batcher
-    private readonly meshBatches = new MeshBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-    });
+    private readonly meshBatches = new MeshBatcher(this.changeTracker);
     // #endregion mesh-batcher
-    private readonly lineBatches = new LineBatcher({
-        changeTracker: this.changeTracker,
-    });
+    private readonly lineBatches = new LineBatcher(this.changeTracker);
 
     private readonly objects: RenderSpaceObject[] = [];
 
     override async initialize(): Promise<void> {
         await super.initialize();
+
+        this.meshBatches.setMaximums(this.driver.textures.maxTextureCount);
+        this.lineBatches.setMaximums(64_000);
 
         let distance = 0;
         let last: RenderSpaceObject | undefined;
@@ -171,12 +171,13 @@ export class SceneApp extends CanvasApp<WGLDriver> {
             this.transforms.change(root);
 
             // #region add-to-mesh-batcher
-            this.meshBatches.add(meshObject);
+            const meshEntry = this.meshBatches.add(meshObject);
             // #endregion add-to-mesh-batcher
             this.lineBatches.add(lineObject);
 
             this.objects.push({
                 meshObject,
+                meshEntry,
                 lineObject,
                 root,
                 spaceObject: so,
@@ -197,7 +198,7 @@ export class SceneApp extends CanvasApp<WGLDriver> {
                 }
 
                 this.transforms.change(so.root);
-                this.meshBatches.change(so.meshObject);
+                this.meshBatches.change(so.meshEntry);
             }
         });
     }

@@ -38,6 +38,15 @@ export class RefCounts<O> {
     }
 
     /**
+     * Get index of `o` in the backing array. Can be used to index {@link RefCounts.refs}.
+     * @param o - Ref-counted object
+     * @returns Index or `undefined`
+     */
+    indexOf(o: O): number | undefined {
+        return this._refs.indexOf(o);
+    }
+
+    /**
      * Get the ref-count of `o`
      * @param o - Object
      * @returns Ref-count, 0 also if the

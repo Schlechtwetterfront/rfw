@@ -15,13 +15,3 @@ export interface ByteBuffer {
     /** Buffer view. */
     readonly arrayBufferView: ArrayBufferView;
 }
-
-/**
- * Collection of byte buffers.
- *
- * @category Rendering - Buffers
- */
-export interface ByteBuffers {
-    /** Buffers. */
-    readonly buffers: readonly ByteBuffer[];
-}

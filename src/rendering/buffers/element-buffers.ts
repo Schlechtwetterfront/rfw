@@ -1,5 +1,5 @@
+import { ChangeTrackedBuffer } from './buffers';
 import { ByteBuffer } from './byte-buffers';
-import { ChangeTrackedStorage } from './storage';
 
 /**
  * An element buffer with change tracking.
@@ -35,16 +35,7 @@ export interface ElementByteBuffer extends ByteBuffer {
  */
 export interface WriteElementByteBuffer
     extends ElementByteBuffer,
-        ChangeTrackedStorage {
+        ChangeTrackedBuffer {
     readonly arrayBuffer: ArrayBuffer;
-    readonly u8View: Uint8Array;
-}
-
-/**
- * Collection of element byte buffers.
- *
- * @category Rendering - Buffers
- */
-export interface ElementByteBuffers {
-    readonly buffers: readonly ElementByteBuffer[];
+    readonly uint8View: Uint8Array;
 }

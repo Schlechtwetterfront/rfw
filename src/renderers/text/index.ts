@@ -1,8 +1,9 @@
 import { ReadonlyLocalTransform2D, ReadonlyVec2 } from '../../math';
 import { Font, TextLayout, TextStyle } from '../../text';
 import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util/sizes';
-export * from './text-batching';
-export * from './text-buffer-manager';
+
+export * from './text-batch-storage';
+export * from './text-batcher';
 
 /** @category Rendering - Text */
 export interface TextLike {

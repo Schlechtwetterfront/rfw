@@ -1,33 +1,36 @@
 /* eslint-disable no-constant-condition */
 import '../assets/styles.css';
 
-import { Color } from '../../src/colors';
 import {
+    Color,
+    MeshBatchEntry,
     MeshBatcher,
+    MeshObject,
     TexturedMaterial,
-} from '../../src/renderers/textured-mesh';
-import { WGLDriver } from '../../src/rendering-webgl';
-import { MeshObject } from '../../src/scene/mesh';
+    WGLDriver,
+} from '../../src';
 import { spawnInGrid } from '../generation';
 import { usePanAndZoom } from '../interaction';
 import { SampleApp, buildAMesh, setupWGL } from '../shared';
 
+interface MeshEntity {
+    mesh: MeshObject;
+    entry?: MeshBatchEntry;
+}
+
 export class MeshApp extends SampleApp {
-    private readonly batches: MeshBatcher<MeshObject>;
+    private readonly batcher = new MeshBatcher(this.changeTracker);
 
     constructor(canvas: HTMLCanvasElement, driver: WGLDriver) {
         super(canvas, driver);
-
-        this.batches = new MeshBatcher<MeshObject>({
-            maxTextureCount: this.driver.textures.maxTextureCount,
-            changeTracker: this.changeTracker,
-        });
     }
 
     override async initialize(): Promise<void> {
         await super.initialize();
 
-        const meshEntities: MeshObject[] = [];
+        this.batcher.setMaximums(this.driver.textures.maxTextureCount);
+
+        const meshEntities: MeshEntity[] = [];
 
         const mesh = buildAMesh();
 
@@ -36,43 +39,45 @@ export class MeshApp extends SampleApp {
             const total = spawnInGrid(20, 20, 1200, 800, (i, x, y, tt) => {
                 const hue = (i / tt) * 360;
 
-                const ms = new MeshObject({
-                    mesh,
-                    material: new TexturedMaterial(
-                        this.driver.textures.white,
-                        Color.fromHSV(hue),
-                    ),
-                    x: x - 600,
-                    y: 800 - y - 400,
-                });
+                const ms = {
+                    mesh: new MeshObject({
+                        mesh,
+                        material: new TexturedMaterial(
+                            this.driver.textures.white,
+                            Color.fromHSV(hue),
+                        ),
+                        x: x - 600,
+                        y: 800 - y - 400,
+                    }),
+                };
 
                 meshEntities.push(ms);
             });
 
             meshEntities.forEach(t => {
-                this.batches.add(t);
-                this.transforms.change(t);
+                t.entry = this.batcher.add(t.mesh);
+                this.transforms.change(t.mesh);
             });
 
             this.tickers.add(() => {
                 const index = Math.floor(Math.random() * total);
 
-                const m = meshEntities[index]!;
+                const { mesh, entry } = meshEntities[index]!;
 
-                if (m.transform.scale.y < 0) {
-                    m.transform.scale.y = 1;
-                    m.material.color.setHSV((index / total) * 360, 1, 1);
+                if (mesh.transform.scale.y < 0) {
+                    mesh.transform.scale.y = 1;
+                    mesh.material.color.setHSV((index / total) * 360, 1, 1);
                 } else {
-                    m.transform.scale.y = -1;
-                    m.material.color.setHSV(
+                    mesh.transform.scale.y = -1;
+                    mesh.material.color.setHSV(
                         ((total - index) / total) * 360,
                         1,
                         1,
                     );
                 }
 
-                this.transforms.change(m);
-                this.batches.change(m);
+                this.transforms.change(mesh);
+                this.batcher.change(entry!);
             });
         }
     }
@@ -80,7 +85,7 @@ export class MeshApp extends SampleApp {
     override render(): void {
         super.render();
 
-        this.renderers.mesh.render(this.batches.finalize(), this.camera);
+        this.renderers.mesh.render(this.batcher.finalize(), this.camera);
     }
 }
 

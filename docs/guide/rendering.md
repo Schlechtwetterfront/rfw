@@ -43,14 +43,12 @@ To render a mesh, one would:
 4. Add the mesh object to a matching batcher. (C)
 
     ```ts
-    const batcher = new MeshBatcher({
-        /* ... */
-    });
+    const batcher = new MeshBatcher(/* ... */);
 
-    batcher.add(o);
+    const entry = batcher.add(o);
 
     // Or, when something changes later:
-    batcher.change(o);
+    batcher.change(entry);
     ```
 
 5. Have a matching renderer render all batches. (D)

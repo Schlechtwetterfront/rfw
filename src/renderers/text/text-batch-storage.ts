@@ -1,47 +1,48 @@
-import { BYTES_PER_GLYPH, FontTextureIndexProvider } from '.';
+import {
+    BYTES_PER_GLYPH,
+    BYTES_PER_GLYPH_VERTEX,
+    FontTextureIndexProvider,
+} from '.';
 import { Vec2 } from '../../math';
 import { zToDepth } from '../../rendering';
-import {
-    ElementByteBufferManager,
-    ElementByteBuffersManager,
-} from '../../rendering/buffers';
-import { FLOAT_SIZE } from '../../util/sizes';
-import { TextBatchEntry, TextBatchStorageFactory } from './text-batching';
-
-/** @category Rendering - Text */
-export function getTextBatchStorageFactory(): TextBatchStorageFactory {
-    return maxSize => new TextBufferManager(maxSize);
-}
+import { ByteBuffer, ElementByteBufferManager } from '../../rendering/buffers';
+import { FLOAT_SIZE } from '../../util';
+import { TextBatchEntry } from './text-batcher';
 
 const TEMP_VEC = Vec2.zero();
 const TEMP_VEC2 = Vec2.zero();
 
 /** @category Rendering - Text */
-export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry> {
-    private buffer: ElementByteBufferManager;
+export interface TextBatchBuffers {
+    readonly buffer: ByteBuffer;
+}
 
-    private readonly f32View: Float32Array;
-    private readonly i32View: Int32Array;
+/** @category Rendering - Text */
+export class TextBatchStorage {
+    private readonly float32View: Float32Array;
+    private readonly int32View: Int32Array;
 
-    textureIndexProvider?: FontTextureIndexProvider;
+    readonly buffer: ElementByteBufferManager;
 
-    constructor(maxSize: number) {
-        const buffer = new ElementByteBufferManager(maxSize, BYTES_PER_GLYPH);
+    constructor(
+        maxElementCount: number,
+        private readonly textureIndexProvider: FontTextureIndexProvider,
+    ) {
+        this.buffer = new ElementByteBufferManager(
+            maxElementCount,
+            BYTES_PER_GLYPH_VERTEX,
+        );
 
-        super([buffer]);
-
-        this.buffer = buffer;
-
-        this.f32View = new Float32Array(buffer.arrayBuffer);
-        this.i32View = new Int32Array(buffer.arrayBuffer);
+        this.float32View = new Float32Array(this.buffer.arrayBuffer);
+        this.int32View = new Int32Array(this.buffer.arrayBuffer);
     }
 
     update(entry: TextBatchEntry, glyphOffset: number): void {
         const {
-            f32View,
+            float32View,
             buffer,
-            buffer: { u8View },
-            i32View,
+            buffer: { uint8View: u8View },
+            int32View,
         } = this;
 
         const object = entry.object!;
@@ -142,17 +143,17 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = posVec.x;
-                    f32View[offset32++] = posVec.y;
-                    f32View[offset32++] = z;
+                    float32View[offset32++] = posVec.x;
+                    float32View[offset32++] = posVec.y;
+                    float32View[offset32++] = z;
 
-                    f32View[offset32++] = uvLeft;
-                    f32View[offset32++] = uvBottom;
+                    float32View[offset32++] = uvLeft;
+                    float32View[offset32++] = uvBottom;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 
-                    f32View[offset32++] = distanceFieldRange;
-                    i32View[offset32++] = glyph.page + pageOffset;
+                    float32View[offset32++] = distanceFieldRange;
+                    int32View[offset32++] = glyph.page + pageOffset;
                 }
 
                 // 3
@@ -161,17 +162,17 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY + scaledHeight;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = posVec.x;
-                    f32View[offset32++] = posVec.y;
-                    f32View[offset32++] = z;
+                    float32View[offset32++] = posVec.x;
+                    float32View[offset32++] = posVec.y;
+                    float32View[offset32++] = z;
 
-                    f32View[offset32++] = uvLeft;
-                    f32View[offset32++] = uvTop;
+                    float32View[offset32++] = uvLeft;
+                    float32View[offset32++] = uvTop;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 
-                    f32View[offset32++] = distanceFieldRange;
-                    i32View[offset32++] = glyph.page + pageOffset;
+                    float32View[offset32++] = distanceFieldRange;
+                    int32View[offset32++] = glyph.page + pageOffset;
                 }
 
                 // 1
@@ -180,17 +181,17 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = posVec.x;
-                    f32View[offset32++] = posVec.y;
-                    f32View[offset32++] = z;
+                    float32View[offset32++] = posVec.x;
+                    float32View[offset32++] = posVec.y;
+                    float32View[offset32++] = z;
 
-                    f32View[offset32++] = uvRight;
-                    f32View[offset32++] = uvBottom;
+                    float32View[offset32++] = uvRight;
+                    float32View[offset32++] = uvBottom;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 
-                    f32View[offset32++] = distanceFieldRange;
-                    i32View[offset32++] = glyph.page + pageOffset;
+                    float32View[offset32++] = distanceFieldRange;
+                    int32View[offset32++] = glyph.page + pageOffset;
                 }
 
                 // 3
@@ -199,17 +200,17 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY + scaledHeight;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = posVec.x;
-                    f32View[offset32++] = posVec.y;
-                    f32View[offset32++] = z;
+                    float32View[offset32++] = posVec.x;
+                    float32View[offset32++] = posVec.y;
+                    float32View[offset32++] = z;
 
-                    f32View[offset32++] = uvLeft;
-                    f32View[offset32++] = uvTop;
+                    float32View[offset32++] = uvLeft;
+                    float32View[offset32++] = uvTop;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 
-                    f32View[offset32++] = distanceFieldRange;
-                    i32View[offset32++] = glyph.page + pageOffset;
+                    float32View[offset32++] = distanceFieldRange;
+                    int32View[offset32++] = glyph.page + pageOffset;
                 }
 
                 // 1
@@ -218,17 +219,17 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = posVec.x;
-                    f32View[offset32++] = posVec.y;
-                    f32View[offset32++] = z;
+                    float32View[offset32++] = posVec.x;
+                    float32View[offset32++] = posVec.y;
+                    float32View[offset32++] = z;
 
-                    f32View[offset32++] = uvRight;
-                    f32View[offset32++] = uvBottom;
+                    float32View[offset32++] = uvRight;
+                    float32View[offset32++] = uvBottom;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 
-                    f32View[offset32++] = distanceFieldRange;
-                    i32View[offset32++] = glyph.page + pageOffset;
+                    float32View[offset32++] = distanceFieldRange;
+                    int32View[offset32++] = glyph.page + pageOffset;
                 }
 
                 // 2
@@ -237,17 +238,17 @@ export class TextBufferManager extends ElementByteBuffersManager<TextBatchEntry>
                     posVec.y = glyphY + scaledHeight;
                     posVec.multiplyMat(world);
 
-                    f32View[offset32++] = posVec.x;
-                    f32View[offset32++] = posVec.y;
-                    f32View[offset32++] = z;
+                    float32View[offset32++] = posVec.x;
+                    float32View[offset32++] = posVec.y;
+                    float32View[offset32++] = z;
 
-                    f32View[offset32++] = uvRight;
-                    f32View[offset32++] = uvTop;
+                    float32View[offset32++] = uvRight;
+                    float32View[offset32++] = uvTop;
 
                     color.copyToRGBA(u8View, offset32++ * FLOAT_SIZE);
 
-                    f32View[offset32++] = distanceFieldRange;
-                    i32View[offset32++] = glyph.page + pageOffset;
+                    float32View[offset32++] = distanceFieldRange;
+                    int32View[offset32++] = glyph.page + pageOffset;
                 }
 
                 x += glyph.xAdvance * fontScale;

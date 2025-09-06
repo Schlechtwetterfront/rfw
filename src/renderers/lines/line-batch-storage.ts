@@ -1,30 +1,22 @@
 import { BYTES_PER_LINE_SEGMENT, LineLike } from '.';
 import { Vec2 } from '../../math';
 import { zToDepth } from '../../rendering';
-import { BatchEntry, BatchStorageFactory } from '../../rendering/batching';
-import {
-    ElementByteBufferManager,
-    ElementByteBuffersManager,
-} from '../../rendering/buffers';
+import { BatchEntry } from '../../rendering/batching';
+import { ByteBuffer, ElementByteBufferManager } from '../../rendering/buffers';
 import { FLOAT_SIZE } from '../../util/sizes';
 
 /** @category Rendering - Lines */
-export const buildLineBatchStorage: BatchStorageFactory<
-    BatchEntry<LineLike>,
-    LineBufferManager
-> = (maxSize: number) => {
-    return new LineBufferManager(maxSize);
-};
+export interface LineBatchBuffers {
+    readonly buffer: ByteBuffer;
+}
 
 const TEMP_VEC = Vec2.zero();
 
 /** @category Rendering - Lines */
-export class LineBufferManager extends ElementByteBuffersManager<
-    BatchEntry<LineLike>
-> {
-    private buffer: ElementByteBufferManager;
+export class LineBatchStorage {
+    private readonly float32View: Float32Array;
 
-    private readonly f32View: Float32Array;
+    readonly buffer: ElementByteBufferManager;
 
     constructor(maxSize: number) {
         const buffer = new ElementByteBufferManager(
@@ -32,18 +24,16 @@ export class LineBufferManager extends ElementByteBuffersManager<
             BYTES_PER_LINE_SEGMENT,
         );
 
-        super([buffer]);
-
         this.buffer = buffer;
 
-        this.f32View = new Float32Array(buffer.arrayBuffer);
+        this.float32View = new Float32Array(buffer.arrayBuffer);
     }
 
-    override update(entry: BatchEntry<LineLike>, segmentOffset: number): void {
+    update(entry: BatchEntry<LineLike>, segmentOffset: number): void {
         const {
-            f32View,
+            float32View: f32View,
             buffer,
-            buffer: { u8View },
+            buffer: { uint8View: u8View },
         } = this;
 
         const object = entry.object!;

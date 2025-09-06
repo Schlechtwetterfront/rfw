@@ -1,22 +1,18 @@
 /* eslint-disable no-constant-condition */
 import '../assets/styles.css';
 
-import { Color } from '../../src/colors';
-
-import { Vec2 } from '../../src/math';
-import { LineBatcher } from '../../src/renderers/lines';
-import { LineObject } from '../../src/scene/line';
+import { Color, LineBatcher, LineObject, Vec2 } from '../../src';
 import { getSinePoints, spawnInGrid } from '../generation';
 import { usePanAndZoom } from '../interaction';
 import { SampleApp, setupWGL } from '../shared';
 
 export class LinesApp extends SampleApp {
-    private readonly batches = new LineBatcher({
-        changeTracker: this.changeTracker,
-    });
+    private readonly batcher = new LineBatcher(this.changeTracker);
 
     override async initialize(): Promise<void> {
         await super.initialize();
+
+        this.batcher.setMaximums(24_000);
 
         const lines: LineObject[] = [];
 
@@ -113,7 +109,7 @@ export class LinesApp extends SampleApp {
         }
 
         lines.forEach(l => {
-            this.batches.add(l);
+            this.batcher.add(l);
             this.transforms.change(l);
         });
     }
@@ -121,7 +117,7 @@ export class LinesApp extends SampleApp {
     override render(): void {
         super.render();
 
-        this.renderers.line.render(this.batches.finalize(), this.camera);
+        this.renderers.line.render(this.batcher.finalize(), this.camera);
     }
 }
 

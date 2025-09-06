@@ -1,14 +1,28 @@
 import { Mat2D } from '../../math';
-import { BYTES_PER_LINE_SEGMENT } from '../../renderers/lines';
-import { WGLBatchedRenderer } from '../../rendering-webgl/batched-renderer';
+import {
+    BYTES_PER_LINE_SEGMENT,
+    LineBatchBuffers,
+} from '../../renderers/lines';
+import {
+    createVAOAndBuffers,
+    uploadByteBuffer,
+    VAOWithBuffers,
+    WGLBatchIterator,
+} from '../../rendering-webgl';
 import { WGLDriver } from '../../rendering-webgl/driver';
 import { getUniformLocations } from '../../rendering-webgl/shaders';
 import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
-import { RenderBatch } from '../../rendering/batching';
 import { Camera2D } from '../../rendering/camera2d';
-import { assert, assertDefined } from '../../util/assert';
+import { assertDefined } from '../../util/assert';
 import FRAG_SRC from './lines.frag?raw';
 import VERT_SRC from './lines.vert?raw';
+
+/** @category Rendering - Lines - WebGL */
+export interface WGLLineRenderBatch {
+    readonly size: number;
+
+    readonly storage?: LineBatchBuffers;
+}
 
 /** @category Rendering - Lines - WebGL */
 export interface WGLLineRendererProgramData {
@@ -21,17 +35,25 @@ const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
 /** @category Rendering - Lines - WebGL */
-export class WGLLineRenderer extends WGLBatchedRenderer {
+export class WGLLineBatchRenderer {
+    protected readonly gl: WebGL2RenderingContext;
+
+    protected readonly batchIterator: WGLBatchIterator<
+        WGLLineRenderBatch,
+        VAOWithBuffers<LineBatchBuffers>
+    >;
+
     protected program?: WGLLineRendererProgramData;
     protected meshData?: { buffer: WebGLBuffer };
 
-    constructor(driver: WGLDriver) {
-        super(driver);
+    constructor(protected readonly driver: WGLDriver) {
+        this.gl = driver.gl;
+        this.batchIterator = new WGLBatchIterator(this.gl);
+
+        driver.addLifeCycleHandler(this);
     }
 
-    override async initialize() {
-        await super.initialize();
-
+    async initialize() {
         const { gl } = this;
 
         const [_, program] = await this.driver.shaders.loadProgram(
@@ -60,9 +82,7 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
         );
     }
 
-    override async uninitialize(): Promise<void> {
-        await super.uninitialize();
-
+    uninitialize(): Promise<void> {
         const { gl } = this;
 
         this.program = undefined;
@@ -72,20 +92,52 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
 
             this.meshData = undefined;
         }
+
+        this.batchIterator.clear();
+
+        return Promise.resolve();
     }
 
-    render(batches: readonly RenderBatch[], camera?: Camera2D) {
-        const { gl } = this;
+    render(batches: readonly WGLLineRenderBatch[], camera?: Camera2D) {
+        const { gl, batchIterator } = this;
 
         this.prepareRenderPass(camera);
         this.prepareShader(camera);
 
-        this.upload(batches, batch => {
+        batchIterator.restart(batches);
+
+        const handle = batchIterator.getHandle();
+
+        while (batchIterator.next(handle)) {
+            const batch = handle.batch;
+
+            if (!batch.storage) {
+                throw new Error('No batch storage');
+            }
+
+            if (!handle.vaoAndBuffers) {
+                handle.setVAOAndBuffers(
+                    createVAOAndBuffers(gl, { buffer: batch.storage.buffer }),
+                );
+            }
+
+            if (handle.initializeAttributes) {
+                this.initializeAttributes(handle.vaoAndBuffers!.buffer);
+            }
+
+            if (handle.upload) {
+                uploadByteBuffer(
+                    gl,
+                    batch.storage.buffer,
+                    handle.vaoAndBuffers!.buffer,
+                );
+            }
+
             gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, batch.size);
 
             this.driver.diagnostics.triangles.count(batch.size * 2);
             this.driver.diagnostics.drawCalls.count();
-        });
+        }
     }
 
     protected prepareRenderPass(camera?: Camera2D): void {
@@ -122,20 +174,15 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
         gl.uniform1f(cameraScaleLocation, 1 / (camera?.transform.scale.x ?? 1));
     }
 
-    protected override initializeAttributes(buffers: WebGLBuffer[]) {
-        assert(
-            buffers.length === 1,
-            'Line renderer takes one per-instance buffer',
-        );
-
+    protected initializeAttributes(buffer: WebGLBuffer) {
         this.initializeMeshAttributes();
-        this.initializeInstanceAttributes(buffers[0]!);
+        this.initializeInstanceAttributes(buffer);
     }
 
     protected initializeMeshAttributes() {
         const { gl } = this;
 
-        gl.bindBuffer(this.gl.ARRAY_BUFFER, this.meshData!.buffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.meshData!.buffer);
 
         // Pos
         gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
@@ -145,7 +192,7 @@ export class WGLLineRenderer extends WGLBatchedRenderer {
     protected initializeInstanceAttributes(buffer: WebGLBuffer) {
         const { gl } = this;
 
-        gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
         setVertexAttributes(
             gl,

@@ -1,23 +1,30 @@
 import FONT_DATA from '../assets/NotoSans-Regular.json';
 import FONT_TEX_URL from '../assets/NotoSans-Regular.png';
 
-import { Color } from '../../src/colors';
-import { vec, Vec2, Vec2Like } from '../../src/math';
-import { Rect, RectLike } from '../../src/math/shapes';
-import { LineBatcher } from '../../src/renderers/lines';
-import { TextBatcher } from '../../src/renderers/text';
 import {
+    BMFont,
+    buildTriangulatedMesh,
+    Color,
+    createFontFromBMFont,
+    Font,
+    LineBatcher,
+    MeshBatchEntry,
     MeshBatcher,
+    MeshObject,
+    MeshOptions,
+    QuadTree,
+    QuadTreeEntry,
+    Rect,
+    RectLike,
+    TextBatcher,
+    TextObject,
     TexturedMaterial,
-} from '../../src/renderers/textured-mesh';
-import { WGLDriver } from '../../src/rendering-webgl';
-import { Vertex } from '../../src/rendering/mesh';
-import { buildTriangulatedMesh } from '../../src/rendering/mesh/earcut';
-import { MeshObject, MeshOptions } from '../../src/scene';
-import { TextObject } from '../../src/scene/text';
-import { Font } from '../../src/text';
-import { BMFont, createFontFromBMFont } from '../../src/text/bmfont';
-import { QuadTree, QuadTreeEntry } from '../../src/util/quad-tree';
+    vec,
+    Vec2,
+    Vec2Like,
+    Vertex,
+    WGLDriver,
+} from '../../src';
 import { SampleApp } from '../shared';
 
 const RECT_COLOR = new Color(1, 1, 1, 0.5);
@@ -42,6 +49,8 @@ class RenderModeObject extends MeshObject implements QuadTreeEntry {
         this.material.color.copyFrom(v ? RECT_COLOR_INTERSECTED : RECT_COLOR);
     }
 
+    entry?: MeshBatchEntry;
+
     constructor(
         public bounds: Rect,
         options: MeshOptions,
@@ -59,23 +68,13 @@ class RenderModeObject extends MeshObject implements QuadTreeEntry {
 }
 
 export class RenderModeApp extends SampleApp {
-    private readonly textBatches = new TextBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-    });
-
-    private readonly lineBatches = new LineBatcher({
-        changeTracker: this.changeTracker,
-    });
-
-    private readonly meshBatches = new MeshBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-    });
+    private readonly textBatcher = new TextBatcher(this.changeTracker);
+    private readonly lineBatcher = new LineBatcher(this.changeTracker);
+    private readonly meshBatcher = new MeshBatcher(this.changeTracker);
 
     private quadTree: QuadTree<RenderModeObject>;
 
-    private entries: RenderModeObject[] = [];
+    private entities: RenderModeObject[] = [];
 
     private font!: Font;
 
@@ -119,6 +118,10 @@ export class RenderModeApp extends SampleApp {
     override async initialize() {
         await super.initialize();
 
+        this.textBatcher.setMaximums(this.driver.textures.maxTextureCount);
+        this.lineBatcher.setMaximums(64_000);
+        this.meshBatcher.setMaximums(this.driver.textures.maxTextureCount);
+
         const fontTex = await this.textures.addFromURL(FONT_TEX_URL);
 
         this.font = createFontFromBMFont(FONT_DATA as BMFont, [fontTex]);
@@ -133,7 +136,7 @@ export class RenderModeApp extends SampleApp {
                 z: 10,
             });
 
-            this.textBatches.add(title);
+            this.textBatcher.add(title);
             this.transforms.change(title);
 
             const subtitle = new TextObject({
@@ -145,7 +148,7 @@ export class RenderModeApp extends SampleApp {
                 z: 10,
             });
 
-            this.textBatches.add(subtitle);
+            this.textBatcher.add(subtitle);
             this.transforms.change(subtitle);
         }
 
@@ -155,13 +158,13 @@ export class RenderModeApp extends SampleApp {
                 r => r.containsPoint(this.sceneMouse),
             );
 
-            for (let i = 0; i < this.entries.length; i++) {
-                const entry = this.entries[i]!;
+            for (let i = 0; i < this.entities.length; i++) {
+                const entity = this.entities[i]!;
 
-                if (entry.highlighted !== overlaps.has(entry)) {
-                    entry.highlighted = overlaps.has(entry);
+                if (entity.highlighted !== overlaps.has(entity)) {
+                    entity.highlighted = overlaps.has(entity);
 
-                    this.meshBatches.change(entry);
+                    this.meshBatcher.change(entity.entry!);
                 }
             }
         });
@@ -178,9 +181,9 @@ export class RenderModeApp extends SampleApp {
 
         super.render();
 
-        this.renderers.line.render(this.lineBatches.finalize(), this.camera);
-        this.renderers.mesh.render(this.meshBatches.finalize(), this.camera);
-        this.renderers.text.render(this.textBatches.finalize(), this.camera);
+        this.renderers.line.render(this.lineBatcher.finalize(), this.camera);
+        this.renderers.mesh.render(this.meshBatcher.finalize(), this.camera);
+        this.renderers.text.render(this.textBatcher.finalize(), this.camera);
     }
 
     addMultiple(count: number): void {
@@ -203,7 +206,7 @@ export class RenderModeApp extends SampleApp {
 
         const rect = Rect.fromPoint(pos, 2 * d, 2 * d);
 
-        const obj = new RenderModeObject(rect, {
+        const entity = new RenderModeObject(rect, {
             mesh: MESH,
             material: new TexturedMaterial(
                 this.textures.white,
@@ -213,10 +216,10 @@ export class RenderModeApp extends SampleApp {
             scale: 2 * d,
         });
 
-        this.quadTree.add(obj);
-        this.entries.push(obj);
+        this.quadTree.add(entity);
+        this.entities.push(entity);
 
-        this.transforms.change(obj);
-        this.meshBatches.add(obj);
+        this.transforms.change(entity);
+        entity.entry = this.meshBatcher.add(entity);
     }
 }

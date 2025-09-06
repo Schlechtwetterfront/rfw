@@ -1,9 +1,11 @@
 import {
     arcAtDegrees,
+    BatchEntry,
     buildTriangulatedMesh,
     CanvasApp,
     Color,
     LineBatcher,
+    LineLike,
     LineObject,
     linePath,
     MeshBatcher,
@@ -14,9 +16,9 @@ import {
     vec,
     Vertex,
     WGLDriver,
-    WGLLineRenderer,
+    WGLLineBatchRenderer,
     WGLRenderTarget,
-    WGLTexturedMeshBatchRenderer,
+    WGLSpriteBatchRenderer,
 } from '../../src';
 
 const BACKGROUND_COLOR = Color.fromHexString('#111');
@@ -37,18 +39,11 @@ const LINE_PATH = linePath(
 ).build();
 
 export class RenderToTextureApp extends CanvasApp<WGLDriver> {
-    private readonly meshRenderer = new WGLTexturedMeshBatchRenderer(
-        this.driver,
-    );
-    private readonly lineRenderer = new WGLLineRenderer(this.driver);
+    private readonly meshRenderer = new WGLSpriteBatchRenderer(this.driver);
+    private readonly lineRenderer = new WGLLineBatchRenderer(this.driver);
 
-    private readonly meshBatches = new MeshBatcher({
-        maxTextureCount: this.driver.textures.maxTextureCount,
-        changeTracker: this.changeTracker,
-    });
-    private readonly lineBatches = new LineBatcher({
-        changeTracker: this.changeTracker,
-    });
+    private readonly meshBatches = new MeshBatcher(this.changeTracker);
+    private readonly lineBatches = new LineBatcher(this.changeTracker);
 
     private readonly lineObject = new LineObject({
         points: LINE_PATH,
@@ -57,6 +52,7 @@ export class RenderToTextureApp extends CanvasApp<WGLDriver> {
             thickness: 2,
         },
     });
+    private lineEntry?: BatchEntry<LineLike>;
 
     private targetTexture!: TextureHandle;
 
@@ -75,12 +71,15 @@ export class RenderToTextureApp extends CanvasApp<WGLDriver> {
             this.lineObject.transform.radians = p.radians;
 
             this.transforms.change(this.lineObject);
-            this.lineBatches.change(this.lineObject);
+            this.lineBatches.change(this.lineEntry!);
         });
     }
 
     override async initialize(): Promise<void> {
         await super.initialize();
+
+        this.meshBatches.setMaximums(this.driver.textures.maxTextureCount);
+        this.lineBatches.setMaximums(64_000);
 
         this.targetTexture = await this.driver.textures.addEmpty(DIMENSIONS, {
             filter: 'linear',
@@ -97,7 +96,7 @@ export class RenderToTextureApp extends CanvasApp<WGLDriver> {
         this.transforms.change(this.targetObject);
 
         this.meshBatches.add(this.targetObject);
-        this.lineBatches.add(this.lineObject);
+        this.lineEntry = this.lineBatches.add(this.lineObject);
 
         this.renderTarget = this.driver.createRenderTarget(this.targetTexture);
     }
