@@ -101,6 +101,10 @@ export default defineConfig({
                             text: 'Render to Texture',
                             link: '/samples/render-to-texture',
                         },
+                        {
+                            text: 'Multiple Buffers',
+                            link: '/samples/multiple-buffers',
+                        },
                     ],
                 },
             ],
