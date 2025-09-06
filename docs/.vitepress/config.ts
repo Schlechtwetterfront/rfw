@@ -65,6 +65,7 @@ export default defineConfig({
                     text: 'Drawing',
                     items: [
                         { text: 'Meshes', link: '/guide/meshes' },
+                        { text: 'Sprites', link: '/guide/sprites' },
                         { text: 'Text', link: '/guide/text' },
                         { text: 'Lines', link: '/guide/lines' },
                     ],
@@ -95,6 +96,10 @@ export default defineConfig({
                         },
                         { text: 'On Drawing', link: '/samples/text' },
                         { text: 'Bunnymark', link: '/samples/bunnymark' },
+                        {
+                            text: 'Bunnymark (sprites)',
+                            link: '/samples/bunnymark-sprites',
+                        },
                         { text: 'Quad Tree', link: '/samples/quadtree' },
                         { text: 'Render Mode', link: '/samples/render-mode' },
                         {
