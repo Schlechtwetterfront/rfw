@@ -24,6 +24,9 @@ enum QuadTreeUpdate {
     Added,
 }
 
+const TEMP_MERGE_ARRAY: unknown[] = [];
+const TEMP_MERGE_SET = new Set<unknown>();
+
 /**
  * Quad tree.
  *
@@ -414,19 +417,47 @@ export class QuadTree<E extends QuadTreeEntry> {
             return;
         }
 
-        const entryCount =
-            quad.topLeft.entries.length +
-            quad.topRight.entries.length +
-            quad.bottomLeft.entries.length +
-            quad.bottomRight.entries.length;
+        const topLeftEntryCount = quad.topLeft.entries.length;
+        const topRightEntryCount = quad.topRight.entries.length;
+        const bottomLeftEntryCount = quad.bottomLeft.entries.length;
+        const bottomRightEntryCount = quad.bottomRight.entries.length;
 
-        if (entryCount <= this.maxEntriesPerQuad) {
-            quad.entries = [
-                ...quad.topLeft.entries,
-                ...quad.topRight.entries,
-                ...quad.bottomLeft.entries,
-                ...quad.bottomRight.entries,
-            ];
+        const totalEntryCount =
+            topLeftEntryCount +
+            topRightEntryCount +
+            bottomLeftEntryCount +
+            bottomRightEntryCount;
+
+        TEMP_MERGE_ARRAY.length = 0;
+        TEMP_MERGE_SET.clear();
+
+        const topRightTotal = topLeftEntryCount + topRightEntryCount;
+        const bottomLeftTotal = topRightTotal + bottomLeftEntryCount;
+
+        for (let i = 0; i < totalEntryCount; i++) {
+            let entry: unknown;
+
+            if (i < topLeftEntryCount) {
+                entry = quad.topLeft.entries[i];
+            } else if (i < topRightTotal) {
+                entry = quad.topRight.entries[i - topLeftEntryCount];
+            } else if (i < bottomLeftTotal) {
+                entry = quad.bottomLeft.entries[i - topRightTotal];
+            } else {
+                entry = quad.bottomRight.entries[i - bottomLeftTotal];
+            }
+
+            if (TEMP_MERGE_SET.has(entry)) {
+                continue;
+            }
+
+            TEMP_MERGE_SET.add(entry);
+            TEMP_MERGE_ARRAY.push(entry);
+        }
+
+        if (TEMP_MERGE_ARRAY.length <= this.maxEntriesPerQuad) {
+            quad.entries = TEMP_MERGE_ARRAY.slice() as E[];
+            TEMP_MERGE_ARRAY.length = 0;
 
             const mergedQuad = quad as _Quad<E>;
 

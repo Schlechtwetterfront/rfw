@@ -295,4 +295,45 @@ describe('quad tree', () => {
         expect(intersections4.has(e1)).toBe(true);
         expect(intersections4.has(e2)).toBe(false);
     });
+
+    test('only merges unique items', () => {
+        const t = new QuadTree({ x: 0, y: 0, width: 10, height: 10 }, 2);
+
+        const r1 = new RectEntry(1, 1);
+        const r2 = new RectEntry(7, 1);
+        const r3 = new RectEntry(4, 2);
+
+        expect([...t.quads()].length).toBe(1);
+
+        t.add(r1);
+        t.add(r2);
+
+        expect([...t.quads()].length).toBe(1);
+
+        // Subdivides.
+        t.add(r3);
+
+        let quads = [...t.quads()];
+
+        expect(quads.length).toBe(5);
+
+        // Root has none.
+        expect(quads[0]!.entryCount).toBe(0);
+        // r3 overlaps all, and r1/r2 each in one.
+        expect(quads[1]!.entryCount).toBe(2);
+        expect(quads[2]!.entryCount).toBe(1);
+        expect(quads[3]!.entryCount).toBe(1);
+        expect(quads[4]!.entryCount).toBe(2);
+
+        // Removing one merges.
+        t.delete(r1, true);
+
+        quads = [...t.quads()];
+
+        // Only root left.
+        expect(quads.length).toBe(1);
+
+        // Overlapping item is not added multiple times.
+        expect(quads[0]!.entryCount).toBe(2);
+    });
 });
