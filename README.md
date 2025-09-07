@@ -10,14 +10,14 @@
 
 2D rendering library for WebGL.
 
--   Get started easily with apps, providing a default "bundle" of systems to create your application from
--   Tickers: run logic in a manner similar to ECS systems
--   Scene (graphs)
--   Low abstraction render tooling
--   Math utility modules
--   Change tracking
--   Performance in mind
--   Minimal dependencies
+- Get started easily with apps, providing canvas context handling, resizing, etc.
+- Fast, batched out-of-the-box renderers (textured mesh, lines, text, sprites)
+- Scene (graphs)
+- Low abstraction render tooling
+- Change tracking: only render when you need to and save battery
+- Performance in mind with batching, special data structures, and performance helpers
+- Math utility modules
+- Minimal dependencies
 
 ## Getting Started
 
@@ -33,7 +33,7 @@ And import from `rfw2d`:
 import { Vec2 } from 'rfw2d';
 ```
 
-For more instructions and samples, check out the [Guide](https://schlechtwetterfront.github.io/rfw/guide/).
+For more instructions and samples, check out the [guide](https://schlechtwetterfront.github.io/rfw/guide/).
 
 ## Contribute
 
