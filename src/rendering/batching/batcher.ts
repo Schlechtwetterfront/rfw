@@ -12,6 +12,14 @@ export type EntryFn<O, E extends BatchEntry<O>, B extends Batch<O, E>> = (
 ) => void;
 
 /**
+ * Get entry of a batcher.
+ *
+ * @category Rendering - Batching
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type EntryOf<Br> = Br extends Batcher<any, infer E, any> ? E : never;
+
+/**
  * Manages a collection of objects and distributes them into a set of batches, based on batcher-specific
  * criteria (like size, number of textures, ...).
  *
