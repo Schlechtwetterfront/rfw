@@ -5,7 +5,7 @@ import {
     setArcPoints,
     setArcToPoints,
 } from '.';
-import { TO_RADIANS, Vec2 } from '..';
+import { PI_2, TO_RADIANS, Vec2 } from '..';
 import { Pool } from '../../util';
 
 /** @category Math - Paths */
@@ -151,8 +151,8 @@ export function arcAtRadians(
     cx: number,
     cy: number,
     radius: number,
-    startRadians: number,
-    endRadians: number,
+    startRadians = 0,
+    endRadians = PI_2,
     options?: ArcAtOptions,
 ): LinePathlet {
     return (points, sliceStart, globalOptions) => {
@@ -166,7 +166,7 @@ export function arcAtRadians(
             startRadians,
             endRadians,
             options?.clockwise,
-            options?.interval ?? globalOptions?.interval ?? 10,
+            options?.interval ?? globalOptions?.interval ?? 8,
             options?.intervalKind ?? globalOptions?.intervalKind ?? 'distance',
             points,
             undefined,
@@ -190,8 +190,8 @@ export function arcAtDegrees(
     cx: number,
     cy: number,
     radius: number,
-    startDegrees: number,
-    endDegrees: number,
+    startDegrees = 0,
+    endDegrees = 360,
     options?: ArcAtOptions,
 ) {
     return arcAtRadians(
@@ -241,7 +241,7 @@ export function arcTo(
             toX,
             toY,
             radius,
-            options?.interval ?? globalOptions?.interval ?? 10,
+            options?.interval ?? globalOptions?.interval ?? 8,
             options?.intervalKind ?? globalOptions?.intervalKind ?? 'distance',
             points,
             ENSURE_POINTS_OPTIONS,
@@ -286,7 +286,7 @@ export function arc(
             last.x + toX,
             last.y + toY,
             radius,
-            options?.interval ?? globalOptions?.interval ?? 10,
+            options?.interval ?? globalOptions?.interval ?? 8,
             options?.intervalKind ?? globalOptions?.intervalKind ?? 'distance',
             points,
             ENSURE_POINTS_OPTIONS,
