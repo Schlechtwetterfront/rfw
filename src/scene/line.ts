@@ -79,11 +79,7 @@ export class LineObject extends SceneObject implements SizedObject {
     }
 
     get segmentCount() {
-        if (!this._points.length) {
-            return 0;
-        }
-
-        return this._closed ? this.points.length : this.points.length - 1;
+        return this._segments.length;
     }
 
     get size() {
@@ -114,7 +110,11 @@ export class LineObject extends SceneObject implements SizedObject {
     buildLineSegments(segments?: LineSegment[]): LineSegment[] {
         const { _points: points } = this;
         const pointCount = points.length;
-        const segmentCount = this._closed ? pointCount : pointCount - 1;
+
+        const firstAndLastEqual = points[0]!.equalsVec(points[pointCount - 1]!);
+
+        const segmentCount =
+            this._closed && !firstAndLastEqual ? pointCount : pointCount - 1;
 
         segments ??= [];
 
@@ -124,10 +124,12 @@ export class LineObject extends SceneObject implements SizedObject {
 
         if (this._closed) {
             for (let i = 0; i < pointCount - 1; i++) {
-                const before = points[i - 1] ?? points.at(-1)!;
+                const before =
+                    points[i - 1] ?? points.at(firstAndLastEqual ? -2 : -1)!;
                 const start = points[i]!;
                 const end = points[i + 1]!;
-                const after = points[i + 2] ?? points[0]!;
+                const after =
+                    points[i + 2] ?? points[firstAndLastEqual ? 1 : 0]!;
 
                 const diffX = end.x - start.x;
                 const diffY = end.y - start.y;
@@ -153,32 +155,34 @@ export class LineObject extends SceneObject implements SizedObject {
                 }
             }
 
-            const before = points[pointCount - 2]!;
-            const start = points[pointCount - 1]!;
-            const end = points[0]!;
-            const after = points[1]!;
+            if (!firstAndLastEqual) {
+                const before = points[pointCount - 2]!;
+                const start = points[pointCount - 1]!;
+                const end = points[0]!;
+                const after = points[1]!;
 
-            const diffX = end.x - start.x;
-            const diffY = end.y - start.y;
+                const diffX = end.x - start.x;
+                const diffY = end.y - start.y;
 
-            const length = Math.sqrt(diffX ** 2 + diffY ** 2);
+                const length = Math.sqrt(diffX ** 2 + diffY ** 2);
 
-            const segment = segments[pointCount - 1];
+                const segment = segments[pointCount - 1];
 
-            if (!segment) {
-                segments[pointCount - 1] = new LineSegment(
-                    before,
-                    start,
-                    end,
-                    after,
-                    length,
-                );
-            } else {
-                segment.before = before;
-                segment.start = start;
-                segment.end = end;
-                segment.after = after;
-                segment.length = length;
+                if (!segment) {
+                    segments[pointCount - 1] = new LineSegment(
+                        before,
+                        start,
+                        end,
+                        after,
+                        length,
+                    );
+                } else {
+                    segment.before = before;
+                    segment.start = start;
+                    segment.end = end;
+                    segment.after = after;
+                    segment.length = length;
+                }
             }
         } else {
             for (let i = 0; i < pointCount - 1; i++) {
