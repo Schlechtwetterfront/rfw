@@ -12,7 +12,7 @@ export class TransformPropagator {
 
     /**
      * Mark an object's tree as changed. Transforms for the full tree will be composed and
-     * propagated on the next call of {@link TransformPropagator.propagate}.
+     * propagated on the next call of {@link TransformPropagator#propagate}.
      * @param o - Scene graph object
      */
     change(o: SceneGraphObject): void {
