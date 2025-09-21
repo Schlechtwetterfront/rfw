@@ -3,7 +3,7 @@
 A simple scene of our solar system (distances not to scale).
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onUnmounted } from 'vue';
 import { SceneApp } from './scene';
 import { WGLDriver } from '../../src';
 
@@ -24,6 +24,8 @@ watchEffect(async () => {
 
     await app.initializeAndStart();
 })
+
+onUnmounted(() => app?.stop());
 </script>
 
 <section>

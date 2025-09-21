@@ -1,7 +1,7 @@
 # Bunnymark (sprites)
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onUnmounted } from 'vue';
 import { SpriteBunnyMarkApp } from './bunnymark-sprites';
 import { WGLDriver } from '../../src';
 
@@ -27,6 +27,8 @@ watchEffect(async () => {
 
     await app.initializeAndStart();
 })
+
+onUnmounted(() => app?.stop());
 
 function add() {
     app?.addBunnies(count.value)

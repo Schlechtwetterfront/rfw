@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onUnmounted } from 'vue';
 import { TextApp } from './text';
 import { Rect, WGLDriver } from '../../src';
 
@@ -20,6 +20,8 @@ watchEffect(async () => {
 
     await app.initializeAndStart();
 })
+
+onUnmounted(() => app?.stop());
 </script>
 
 # On Drawing

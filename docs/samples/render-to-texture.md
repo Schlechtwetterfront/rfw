@@ -3,7 +3,7 @@
 Renders the clock once to a texture, then renders it again and the texture at a higher zoom level.
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onUnmounted } from 'vue';
 import { RenderToTextureApp } from './render-to-texture';
 import { Rect, WGLDriver } from '../../src';
 
@@ -24,6 +24,8 @@ watchEffect(async () => {
 
     await app.initializeAndStart();
 })
+
+onUnmounted(() => app?.stop());
 </script>
 
 <section>

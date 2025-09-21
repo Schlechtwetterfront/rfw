@@ -5,7 +5,7 @@ stores color info in a separate buffer. Because only the color of the meshes is 
 color buffer is updated and uploaded to the GPU.
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onUnmounted } from 'vue';
 import { MultipleBuffersApp } from './multiple-buffers';
 import { WGLDriver } from '../../src';
 
@@ -26,6 +26,8 @@ watchEffect(async () => {
 
     await app.initializeAndStart();
 })
+
+onUnmounted(() => app?.stop());
 </script>
 
 <section>

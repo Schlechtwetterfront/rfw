@@ -1,7 +1,7 @@
 # Quad Tree
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onUnmounted } from 'vue';
 import { RenderModeApp } from '../../samples/renderMode/render-mode';
 import { Rect, WGLDriver } from '../../src';
 
@@ -27,6 +27,8 @@ watchEffect(async () => {
 
     await app.initializeAndStart();
 })
+
+onUnmounted(() => app?.stop());
 
 function add() {
     app?.addMultiple(count.value)
