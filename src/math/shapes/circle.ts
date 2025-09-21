@@ -147,6 +147,13 @@ export class Circle implements ReadonlyCircle, Vec2Like {
         return this;
     }
 
+    copyCenterFrom({ x, y }: Vec2Like): this {
+        this.x = x;
+        this.y = y;
+
+        return this;
+    }
+
     clone(): Circle {
         return new Circle(this.x, this.y, this.radius);
     }
