@@ -19,7 +19,7 @@ const refLinkPlugin = (md: MarkdownIt) => {
                     'href',
                     href.replace(
                         REF_RE,
-                        `reference/${match[1]}/${match[2]}.html${match[3] ?? ''}`,
+                        `ref/${match[1]}/${match[2]}.html${match[3] ?? ''}`,
                     ),
                 );
 
@@ -41,7 +41,7 @@ export default defineConfig({
             md.use(refLinkPlugin);
         },
     },
-    ignoreDeadLinks: [/^\/reference\//],
+    ignoreDeadLinks: [/^\/ref\//],
     title: 'rfw',
     description: 'A WebGL2-powered 2D rendering library.',
     base: '/rfw/',
@@ -95,6 +95,7 @@ export default defineConfig({
                             link: '/samples/scene',
                         },
                         { text: 'On Drawing', link: '/samples/text' },
+                        { text: 'Lines', link: '/samples/lines' },
                         { text: 'Bunnymark', link: '/samples/bunnymark' },
                         {
                             text: 'Bunnymark (sprites)',

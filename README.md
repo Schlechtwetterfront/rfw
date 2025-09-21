@@ -5,7 +5,7 @@
     ·
     <a href="https://schlechtwetterfront.github.io/rfw/samples/">Samples</a>
     ·
-    <a href="https://schlechtwetterfront.github.io/rfw/reference/">Reference</a>
+    <a href="https://schlechtwetterfront.github.io/rfw/ref/">Reference</a>
 </p>
 
 2D rendering library for WebGL.

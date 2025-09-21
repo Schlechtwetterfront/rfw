@@ -13,7 +13,7 @@ hero:
           link: /samples/
         - theme: alt
           text: API Reference
-          link: /reference/
+          link: /ref/
           target: _self
 
 features:
