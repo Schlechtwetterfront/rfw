@@ -17,7 +17,10 @@ layout(location = 12) in vec4 a_color;
 uniform mat3x2 u_projection;
 uniform float u_cameraScale;
 
-out float v_distanceAlongLine;
+out vec2 v_start;
+out vec2 v_end;
+out vec2 v_pos;
+out float v_distanceStart;
 out float v_dashSize;
 out float v_gapSize;
 out vec4 v_color;
@@ -52,7 +55,10 @@ void main() {
 
     gl_Position = vec4((u_projection * vec3(pos, 1.0)).xy, a_z, 1.0);
 
-    v_distanceAlongLine = (a_distanceStart + a_distanceEnd * a_position.x) / u_cameraScale;
+    v_start = a_start;
+    v_end = a_end;
+    v_pos = pos;
+    v_distanceStart = a_distanceStart / u_cameraScale;
     v_dashSize = a_dashSize;
     v_gapSize = a_gapSize;
     v_color = a_color;
