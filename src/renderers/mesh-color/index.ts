@@ -3,7 +3,7 @@ import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util';
 export * from './mesh-color-batch-storage';
 export * from './mesh-color-batcher';
 
-/** @category Rendering - Textured Mesh */
+/** @category Rendering - Mesh */
 export const MESH_COLOR_SIZES = {
     BYTES_PER_VERTEX_MAIN_BUFFER:
         3 * FLOAT_SIZE + // Position

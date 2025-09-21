@@ -1,22 +1,22 @@
+import { BYTES_PER_VERTEX, MeshLike } from '.';
 import { Color } from '../../colors';
 import { Vec2 } from '../../math';
 import { zToDepth } from '../../rendering';
 import { ByteBuffer, ElementByteBufferManager } from '../../rendering/buffers';
 import { TextureIndexProvider } from '../../rendering/textures';
 import { FLOAT_SIZE } from '../../util';
-import { BYTES_PER_VERTEX, TexturedMeshLike } from '../textured-mesh';
 import { MeshBatchEntry } from './mesh-batcher-base';
 
 const TEMP_VEC = Vec2.zero();
-const TEMP_COLOR = Color.white();
+const TEMP_COLOR = Color.WHITE;
 
-/** @category Rendering - Textured Mesh */
+/** @category Rendering - Mesh */
 export interface MeshBatchBuffers {
     readonly buffer: ByteBuffer;
 }
 
-/** @category Rendering - Textured Mesh */
-export class MeshBatchStorage<O extends TexturedMeshLike> {
+/** @category Rendering - Mesh */
+export class MeshBatchStorage<O extends MeshLike> {
     private readonly float32View: Float32Array;
     private readonly int32View: Int32Array;
 

@@ -1,62 +1,54 @@
-import { Mat2D } from '../../math';
-import { roundUpPowerOfTwo } from '../../math/util';
+import { Mat2D, roundUpPowerOfTwo } from '../../math';
 import {
-    BYTES_PER_VERTEX,
-    MeshBatchBuffers,
-} from '../../renderers/textured-mesh';
+    MESH_COLOR_SIZES,
+    MeshColorBatchBuffers,
+} from '../../renderers/mesh-color';
 import { RenderContextLifeCycleHandler } from '../../rendering';
 import {
     createVAOAndBuffers,
+    setVertexAttributes,
     uploadByteBuffer,
     VAOWithBuffers,
     WGLBatchIterator,
+    WGLDriver,
 } from '../../rendering-webgl';
-import { WGLDriver } from '../../rendering-webgl/driver';
 import {
     bindMultiTexture,
     buildMultiTextureSamplingShaders,
     getUniformLocations,
 } from '../../rendering-webgl/shaders';
-import { setVertexAttributes } from '../../rendering-webgl/util/vertex-attributes';
 import { Camera2D } from '../../rendering/camera2d';
 import { getMaxTextures, TextureHandle } from '../../rendering/textures';
-import { assert } from '../../util/assert';
-import FRAG_TEMPLATE from './textured-mesh-batch.template.frag?raw';
-import VERT_SRC from './textured-mesh-batch.vert?raw';
+import { assert } from '../../util';
+import { WGLMeshBatchRendererProgramData } from './mesh-batch-renderer';
+import FRAG_TEMPLATE from './mesh-batch.template.frag?raw';
+import VERT_SRC from './mesh-batch.vert?raw';
 
-/** @category Rendering - Textured Mesh - WebGL */
-export interface WGLTexturedMeshRenderBatch {
+/** @category Rendering - Mesh - WebGL */
+export interface WGLMeshColorRenderBatch {
     readonly vertexCount: number;
 
     readonly textureCount: number;
     readonly textures: readonly TextureHandle[];
 
-    readonly storage?: MeshBatchBuffers;
-}
-
-/** @category Rendering - Textured Mesh - WebGL */
-export interface WGLTexturedMeshBatchRendererProgramData {
-    program: WebGLProgram;
-    projectionLocation: WebGLUniformLocation;
-    samplerLocation: WebGLUniformLocation;
-    samplerUnits: Int32Array;
+    readonly storage?: MeshColorBatchBuffers;
 }
 
 const PROJECTION_MAT = Mat2D.identity();
 const PROJECTION_ARRAY = new Float32Array(6);
 
-/** @category Rendering - Textured Mesh - WebGL */
-export class WGLTexturedMeshBatchRenderer
+/** @category Rendering - Mesh - WebGL */
+export class WGLMeshColorBatchRenderer
     implements RenderContextLifeCycleHandler
 {
     protected readonly gl: WebGL2RenderingContext;
 
     protected readonly batchIterator: WGLBatchIterator<
-        WGLTexturedMeshRenderBatch,
-        VAOWithBuffers<MeshBatchBuffers>
+        WGLMeshColorRenderBatch,
+        VAOWithBuffers<MeshColorBatchBuffers>
     >;
 
-    protected programs: WGLTexturedMeshBatchRendererProgramData[] = [];
+    protected programs: WGLMeshBatchRendererProgramData[] = [];
 
     constructor(protected readonly driver: WGLDriver) {
         this.gl = driver.gl;
@@ -100,7 +92,7 @@ export class WGLTexturedMeshBatchRenderer
         return Promise.resolve();
     }
 
-    render(batches: readonly WGLTexturedMeshRenderBatch[], camera?: Camera2D) {
+    render(batches: readonly WGLMeshColorRenderBatch[], camera?: Camera2D) {
         const { gl, batchIterator } = this;
 
         const textureCount = roundUpPowerOfTwo(getMaxTextures(batches));
@@ -121,12 +113,18 @@ export class WGLTexturedMeshBatchRenderer
 
             if (!handle.vaoAndBuffers) {
                 handle.setVAOAndBuffers(
-                    createVAOAndBuffers(gl, { buffer: batch.storage.buffer }),
+                    createVAOAndBuffers(gl, {
+                        buffer: batch.storage.buffer,
+                        colorBuffer: batch.storage.colorBuffer,
+                    }),
                 );
             }
 
             if (handle.initializeAttributes) {
-                this.initializeAttributes(handle.vaoAndBuffers!.buffer);
+                this.initializeAttributes(
+                    handle.vaoAndBuffers!.buffer,
+                    handle.vaoAndBuffers!.colorBuffer,
+                );
             }
 
             if (handle.upload) {
@@ -134,6 +132,12 @@ export class WGLTexturedMeshBatchRenderer
                     gl,
                     batch.storage.buffer,
                     handle.vaoAndBuffers!.buffer,
+                );
+
+                uploadByteBuffer(
+                    gl,
+                    batch.storage.colorBuffer,
+                    handle.vaoAndBuffers!.colorBuffer,
                 );
             }
 
@@ -184,7 +188,10 @@ export class WGLTexturedMeshBatchRenderer
         gl.uniformMatrix3x2fv(projectionLocation, false, PROJECTION_ARRAY);
     }
 
-    protected initializeAttributes(buffer: WebGLBuffer) {
+    protected initializeAttributes(
+        buffer: WebGLBuffer,
+        colorBuffer: WebGLBuffer,
+    ) {
         const { gl } = this;
 
         gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
@@ -194,27 +201,40 @@ export class WGLTexturedMeshBatchRenderer
             [
                 // Pos
                 {
+                    index: 0,
                     size: 3,
                     type: 'float',
                 },
                 // UV
                 {
+                    index: 1,
                     size: 2,
                     type: 'float',
                 },
-                // Color
-                {
-                    size: 4,
-                    type: 'unsignedByte',
-                    normalize: true,
-                },
                 // Texture ID
                 {
+                    index: 3,
                     size: 1,
                     type: 'int',
                 },
             ],
-            { stride: BYTES_PER_VERTEX },
+            { stride: MESH_COLOR_SIZES.BYTES_PER_VERTEX_MAIN_BUFFER },
+        );
+
+        gl.bindBuffer(this.gl.ARRAY_BUFFER, colorBuffer);
+
+        setVertexAttributes(
+            gl,
+            [
+                // Color
+                {
+                    index: 2,
+                    size: 4,
+                    type: 'unsignedByte',
+                    normalize: true,
+                },
+            ],
+            { stride: MESH_COLOR_SIZES.BYTES_PER_VERTEX_COLOR_BUFFER },
         );
     }
 }

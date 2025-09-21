@@ -4,7 +4,7 @@ import { zToDepth } from '../../rendering';
 import { ByteBuffer, ElementByteBufferManager } from '../../rendering/buffers';
 import { TextureIndexProvider } from '../../rendering/textures';
 import { FLOAT_SIZE } from '../../util';
-import { MeshBatchEntry } from '../textured-mesh';
+import { MeshBatchEntry } from '../mesh';
 
 /** @category Rendering - Sprites */
 export interface SpriteBatchBuffers {

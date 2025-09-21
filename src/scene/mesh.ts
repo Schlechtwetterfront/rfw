@@ -1,17 +1,17 @@
-import { TexturedMaterial } from '../renderers/textured-mesh';
+import { Material } from '../renderers/mesh';
 import { Mesh } from '../rendering/mesh';
 import { ObjectOptions, SceneObject } from './graph';
 
 /** @category Scene */
 export interface MeshOptions extends ObjectOptions {
     mesh: Mesh;
-    material: TexturedMaterial;
+    material: Material;
 }
 
 /** @category Scene */
 export class MeshObject extends SceneObject {
     mesh: Mesh;
-    material: TexturedMaterial;
+    material: Material;
 
     get [Symbol.toStringTag]() {
         return `Mesh ${this.label}`;

@@ -8,6 +8,7 @@ import {
     createFontFromBMFont,
     Font,
     LineBatcher,
+    Material,
     MeshBatchEntry,
     MeshBatcher,
     MeshObject,
@@ -18,7 +19,6 @@ import {
     RectLike,
     TextBatcher,
     TextObject,
-    TexturedMaterial,
     vec,
     Vec2,
     Vec2Like,
@@ -208,10 +208,7 @@ export class RenderModeApp extends SampleApp {
 
         const entity = new RenderModeObject(rect, {
             mesh: MESH,
-            material: new TexturedMaterial(
-                this.textures.white,
-                RECT_COLOR.clone(),
-            ),
+            material: new Material(this.textures.white, RECT_COLOR.clone()),
             position: pos,
             scale: 2 * d,
         });

@@ -3,12 +3,12 @@ import { buildAMesh } from '../../samples/shared';
 import {
     CanvasApp,
     Color,
+    Material,
     MeshColorBatchEntry,
     MeshColorBatcher,
     MeshObject,
-    TexturedMaterial,
     WGLDriver,
-    WGLTexturedMeshColorBatchRenderer,
+    WGLMeshColorBatchRenderer,
 } from '../../src';
 
 const BACKGROUND_COLOR = Color.fromHexString('#111');
@@ -19,9 +19,7 @@ interface Entity {
 }
 
 export class MultipleBuffersApp extends CanvasApp<WGLDriver> {
-    private readonly meshRenderer = new WGLTexturedMeshColorBatchRenderer(
-        this.driver,
-    );
+    private readonly meshRenderer = new WGLMeshColorBatchRenderer(this.driver);
 
     private readonly meshBatcher = new MeshColorBatcher(this.changeTracker);
 
@@ -42,7 +40,7 @@ export class MultipleBuffersApp extends CanvasApp<WGLDriver> {
             const ms = {
                 mesh: new MeshObject({
                     mesh,
-                    material: new TexturedMaterial(
+                    material: new Material(
                         this.driver.textures.white,
                         new Color(0.8, 0.8, 0.8),
                     ),

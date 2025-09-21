@@ -1,5 +1,7 @@
 # Render to Texture
 
+Renders the clock once to a texture, then renders it again and the texture at a higher zoom level.
+
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 import { RenderToTextureApp } from './render-to-texture';

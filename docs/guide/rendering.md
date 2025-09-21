@@ -54,7 +54,7 @@ To render a mesh, one would:
 5. Have a matching renderer render all batches. (D)
 
     ```ts
-    const renderer = new WGLTexturedMeshRenderer(/* ... */);
+    const renderer = new WGLMeshBatchRenderer(/* ... */);
 
     const batches = batcher.finalize();
 

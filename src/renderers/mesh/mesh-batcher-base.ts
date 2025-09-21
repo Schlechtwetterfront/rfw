@@ -1,10 +1,10 @@
+import { MeshLike } from '.';
 import { BatchEntry, Batcher } from '../../rendering/batching';
 import { TextureHandle } from '../../rendering/textures';
 import { TexturedBatch, TexturedBatchEntry } from '../textured';
-import { TexturedMeshLike } from '../textured-mesh';
 
-/** @category Rendering - Textured Mesh */
-export class MeshBatchEntry<O = TexturedMeshLike>
+/** @category Rendering - Mesh */
+export class MeshBatchEntry<O = MeshLike>
     extends BatchEntry<O>
     implements TexturedBatchEntry<O>
 {
@@ -17,9 +17,9 @@ export class MeshBatchEntry<O = TexturedMeshLike>
     }
 }
 
-/** @category Rendering - Textured Mesh */
+/** @category Rendering - Mesh */
 export abstract class MeshBatchBase<
-    O extends TexturedMeshLike = TexturedMeshLike,
+    O extends MeshLike = MeshLike,
     E extends MeshBatchEntry<O> = MeshBatchEntry<O>,
 > extends TexturedBatch<O, E> {
     get vertexCount() {
@@ -32,7 +32,7 @@ export const DEFAULT_MAX_VERTEX_COUNT = 64_000;
 
 /** @category Rendering */
 export abstract class MeshBatcherBase<
-    O extends TexturedMeshLike = TexturedMeshLike,
+    O extends MeshLike = MeshLike,
     E extends MeshBatchEntry<O> = MeshBatchEntry<O>,
     B extends MeshBatchBase<O, E> = MeshBatchBase<O, E>,
 > extends Batcher<O, E, B> {

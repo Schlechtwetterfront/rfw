@@ -4,16 +4,16 @@ import {
     Group,
     LineBatcher,
     LineObject,
+    Material,
     MeshBatchEntry,
     MeshBatcher,
     MeshObject,
     PI_2,
     SceneGraphObject,
-    TexturedMaterial,
     Vertex,
     WGLDriver,
     WGLLineBatchRenderer,
-    WGLTexturedMeshBatchRenderer,
+    WGLMeshBatchRenderer,
     buildCirclePoints,
     buildTriangulatedMesh,
 } from '../../src';
@@ -117,9 +117,7 @@ interface RenderSpaceObject {
 const BACKGROUND_COLOR = Color.fromHexString('#111');
 
 export class SceneApp extends CanvasApp<WGLDriver> {
-    private readonly meshRenderer = new WGLTexturedMeshBatchRenderer(
-        this.driver,
-    );
+    private readonly meshRenderer = new WGLMeshBatchRenderer(this.driver);
     private readonly lineRenderer = new WGLLineBatchRenderer(this.driver);
 
     // #region mesh-batcher
@@ -152,7 +150,7 @@ export class SceneApp extends CanvasApp<WGLDriver> {
                 mesh: buildTriangulatedMesh(
                     buildCirclePoints(0, 0, radius, 4).map(p => new Vertex(p)),
                 ),
-                material: new TexturedMaterial(this.textures.white, so.color),
+                material: new Material(this.textures.white, so.color),
             });
 
             const lineObject = new LineObject({

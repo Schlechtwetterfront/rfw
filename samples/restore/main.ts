@@ -5,10 +5,10 @@ import BUNNY_TEX_URL from '../assets/bunny.png';
 
 import {
     buildTriangulatedMesh,
+    Material,
     Mesh,
     MeshBatcher,
     MeshObject,
-    TexturedMaterial,
     TextureHandle,
     Vec2,
     Vertex,
@@ -52,7 +52,7 @@ export class RestoreApp extends SampleApp {
         {
             const b1 = new MeshObject({
                 mesh: this.bunnyMesh,
-                material: new TexturedMaterial(this.bunnyTex),
+                material: new Material(this.bunnyTex),
                 x: -120,
                 scale: 10,
             });
@@ -65,7 +65,7 @@ export class RestoreApp extends SampleApp {
         {
             const b2 = new MeshObject({
                 mesh: this.bunnyMesh,
-                material: new TexturedMaterial(this.bunnyTexWhite),
+                material: new Material(this.bunnyTexWhite),
                 x: 120,
                 scale: 10,
             });

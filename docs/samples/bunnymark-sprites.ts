@@ -4,10 +4,10 @@ import BUNNY_TEX_URL from '../../samples/assets/bunny.png';
 import { SampleApp } from '../../samples/shared';
 import {
     Group,
+    Material,
     Rect,
     SpriteBatchEntry,
     SpriteBatcher,
-    TexturedMaterial,
     TextureHandle,
     Vec2,
     WGLDriver,
@@ -40,8 +40,8 @@ export class SpriteBunnyMarkApp extends SampleApp {
 
     private bunnyTex!: TextureHandle;
     private bunnyTexWhite!: TextureHandle;
-    private bunnyMaterial!: TexturedMaterial;
-    private bunnyMaterialWhite!: TexturedMaterial;
+    private bunnyMaterial!: Material;
+    private bunnyMaterialWhite!: Material;
 
     private bunnyGroup = new Group();
     private bunnyQueue: BunnyObject[] = [];
@@ -68,8 +68,8 @@ export class SpriteBunnyMarkApp extends SampleApp {
             BUNNY_WHITE_TEX_URL,
             { label: 'bunny white' },
         );
-        this.bunnyMaterial = new TexturedMaterial(this.bunnyTex);
-        this.bunnyMaterialWhite = new TexturedMaterial(this.bunnyTexWhite);
+        this.bunnyMaterial = new Material(this.bunnyTex);
+        this.bunnyMaterialWhite = new Material(this.bunnyTexWhite);
 
         this.tickers.add(({ elapsedSeconds: seconds }) => {
             // Dequeue bunnies

@@ -5,20 +5,20 @@ import { zToDepth } from '../../rendering';
 import { ByteBuffer, ElementByteBufferManager } from '../../rendering/buffers';
 import { TextureIndexProvider } from '../../rendering/textures';
 import { FLOAT_SIZE } from '../../util';
-import { TexturedMeshLike } from '../textured-mesh';
+import { MeshLike } from '../mesh';
 import { MeshColorBatchEntry } from './mesh-color-batcher';
 
-/** @category Rendering - Textured Mesh */
+/** @category Rendering - Mesh */
 export interface MeshColorBatchBuffers {
     readonly buffer: ByteBuffer;
     readonly colorBuffer: ByteBuffer;
 }
 
 const TEMP_VEC = Vec2.zero();
-const TEMP_COLOR = Color.white();
+const TEMP_COLOR = Color.WHITE;
 
-/** @category Rendering - Textured Mesh */
-export class MeshColorBatchStorage<O extends TexturedMeshLike> {
+/** @category Rendering - Mesh */
+export class MeshColorBatchStorage<O extends MeshLike> {
     private readonly float32View: Float32Array;
     private readonly int32View: Int32Array;
 

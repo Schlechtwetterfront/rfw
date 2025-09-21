@@ -4,13 +4,13 @@ import BUNNY_TEX_URL from '../assets/bunny.png';
 import {
     buildTriangulatedMesh,
     Group,
+    Material,
     Mesh,
     MeshBatchEntry,
     MeshBatcher,
     MeshObject,
     MeshOptions,
     Rect,
-    TexturedMaterial,
     TextureHandle,
     Vec2,
     Vertex,
@@ -42,8 +42,8 @@ export class BunnyMarkApp extends SampleApp {
     private bunnyTex!: TextureHandle;
     private bunnyTexWhite!: TextureHandle;
     private bunnyMesh!: Mesh;
-    private bunnyMaterial!: TexturedMaterial;
-    private bunnyMaterialWhite!: TexturedMaterial;
+    private bunnyMaterial!: Material;
+    private bunnyMaterialWhite!: Material;
 
     private bunnyGroup = new Group();
     private bunnyQueue: BunnyObject[] = [];
@@ -75,8 +75,8 @@ export class BunnyMarkApp extends SampleApp {
             new Vertex(new Vec2(-12.5, -16), new Vec2(0, 1)),
             new Vertex(new Vec2(12.5, -16), new Vec2(1, 1)),
         ]);
-        this.bunnyMaterial = new TexturedMaterial(this.bunnyTex);
-        this.bunnyMaterialWhite = new TexturedMaterial(this.bunnyTexWhite);
+        this.bunnyMaterial = new Material(this.bunnyTex);
+        this.bunnyMaterialWhite = new Material(this.bunnyTexWhite);
 
         this.tickers.add(({ elapsedSeconds: seconds }) => {
             // Dequeue bunnies

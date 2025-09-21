@@ -3,10 +3,10 @@ import '../assets/styles.css';
 
 import {
     Color,
+    Material,
     MeshBatchEntry,
     MeshBatcher,
     MeshObject,
-    TexturedMaterial,
     WGLDriver,
 } from '../../src';
 import { spawnInGrid } from '../generation';
@@ -42,7 +42,7 @@ export class MeshApp extends SampleApp {
                 const ms = {
                     mesh: new MeshObject({
                         mesh,
-                        material: new TexturedMaterial(
+                        material: new Material(
                             this.driver.textures.white,
                             Color.fromHSV(hue),
                         ),

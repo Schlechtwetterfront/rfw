@@ -1,49 +1,36 @@
+import { MeshLike } from '.';
 import { Pool } from '../../util';
+import { MeshBatchStorage } from './mesh-batch-storage';
 import {
     MeshBatchBase,
     MeshBatchEntry,
     MeshBatcherBase,
-    TexturedMeshLike,
-} from '../textured-mesh';
-import { MeshColorBatchStorage } from './mesh-color-batch-storage';
+} from './mesh-batcher-base';
 
-/** @category Rendering - Textured Mesh */
-export class MeshColorBatchEntry<
-    O extends TexturedMeshLike = TexturedMeshLike,
-> extends MeshBatchEntry<O> {
-    changed = false;
-    colorChanged = false;
-
-    override reset(): void {
-        super.reset();
-
-        this.changed = false;
-        this.colorChanged = false;
-    }
-}
-
-/** @category Rendering - Textured Mesh */
-export class MeshColorBatch<
-    O extends TexturedMeshLike = TexturedMeshLike,
-    E extends MeshColorBatchEntry<O> = MeshColorBatchEntry<O>,
+/** @category Rendering - Mesh */
+export class MeshBatch<
+    O extends MeshLike = MeshLike,
+    E extends MeshBatchEntry<O> = MeshBatchEntry<O>,
 > extends MeshBatchBase<O, E> {
-    storage?: MeshColorBatchStorage<O>;
+    storage?: MeshBatchStorage<O>;
 }
 
-type E<O extends TexturedMeshLike> = MeshColorBatchEntry<O>;
-type B<O extends TexturedMeshLike> = MeshColorBatch<O, E<O>>;
+type E<O extends MeshLike> = MeshBatchEntry<O>;
+type B<O extends MeshLike> = MeshBatch<O, E<O>>;
 
-/** @category Rendering - Textured Mesh */
-export class MeshColorBatcher<
-    O extends TexturedMeshLike = TexturedMeshLike,
-> extends MeshBatcherBase<O, E<O>, B<O>> {
+/** @category Rendering - Mesh */
+export class MeshBatcher<O extends MeshLike = MeshLike> extends MeshBatcherBase<
+    O,
+    E<O>,
+    B<O>
+> {
     protected readonly entryPool = new Pool({
-        create: () => new MeshColorBatchEntry<O>(),
+        create: () => new MeshBatchEntry<O>(),
         reset: e => e.reset(),
     });
 
     protected readonly batchPool = new Pool({
-        create: () => new MeshColorBatch<O, E<O>>(),
+        create: () => new MeshBatch<O, E<O>>(),
     });
 
     protected override applyBatchChanges(batch: B<O>): void {
@@ -70,7 +57,6 @@ export class MeshColorBatcher<
         entry.object = object;
         entry.size = entry.newSize = object.mesh.triangulatedVertexCount;
         entry.texture = object.material.texture;
-        entry.changed = true;
 
         return entry;
     }
@@ -87,9 +73,6 @@ export class MeshColorBatcher<
         this.ensureBatchStorage(batch);
 
         batch.storage!.update(entry, offset);
-
-        entry.changed = false;
-        entry.colorChanged = false;
 
         super.applyEntryChange(entry, batch, offset);
     }
@@ -114,7 +97,7 @@ export class MeshColorBatcher<
             throw new Error('Thresholds must be initialized.');
         }
 
-        batch.storage = new MeshColorBatchStorage(
+        batch.storage = new MeshBatchStorage(
             this.maximums.maxVertexCount,
             batch,
         );

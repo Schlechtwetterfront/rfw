@@ -1,7 +1,7 @@
 import { ReadonlyLocalTransform2D } from '../../math';
 import { ReadonlyRect } from '../../math/shapes';
 import { BYTE_SIZE, FLOAT_SIZE, INT_32_SIZE } from '../../util';
-import { TexturedMaterial } from '../textured-mesh';
+import { Material } from '../mesh';
 
 export * from './sprite-batch-storage';
 export * from './sprite-batcher';
@@ -20,7 +20,7 @@ export const SPRITE_SIZES = {
 
 /** @category Rendering - Sprites */
 export interface SpriteLike {
-    readonly material: TexturedMaterial;
+    readonly material: Material;
     readonly transform: ReadonlyLocalTransform2D;
     readonly textureRegion: ReadonlyRect;
 }
