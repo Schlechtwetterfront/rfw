@@ -14,7 +14,7 @@ export abstract class SampleApp extends CanvasApp<WGLDriver> {
     constructor(
         canvas: HTMLCanvasElement,
         driver: WGLDriver,
-        renderMode: RenderMode = 'always',
+        renderMode: RenderMode = 'onChange',
     ) {
         super(canvas, driver, renderMode);
 

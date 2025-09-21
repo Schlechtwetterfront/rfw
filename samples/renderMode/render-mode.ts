@@ -27,8 +27,7 @@ import {
 } from '../../src';
 import { SampleApp } from '../shared';
 
-const RECT_COLOR = new Color(1, 1, 1, 0.5);
-const RECT_COLOR_INTERSECTED = new Color(0, 1, 0, 0.5);
+const RECT_COLOR = Color.fromHexString('#efefef');
 
 const MESH = buildTriangulatedMesh([
     Vertex.fromCoordinates(0, 0),
@@ -46,7 +45,15 @@ class RenderModeObject extends MeshObject implements QuadTreeEntry {
     set highlighted(v: boolean) {
         this._highlighted = v;
 
-        this.material.color.copyFrom(v ? RECT_COLOR_INTERSECTED : RECT_COLOR);
+        if (v) {
+            this.material.color.setHSV(
+                Math.random() * 360,
+                1 - Math.random() * 0.5,
+                1 - Math.random() * 0.5,
+            );
+        } else {
+            this.material.color.copyFrom(RECT_COLOR);
+        }
     }
 
     entry?: MeshBatchEntry;

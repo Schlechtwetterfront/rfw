@@ -2,13 +2,13 @@
 
 <script setup lang="ts">
 import { ref, watchEffect, onUnmounted } from 'vue';
-import { QuadTreeApp } from '../../samples/quadtree/quadtree';
+import { QuadTreeApp } from './quadtree';
 import { Rect, WGLDriver } from '../../src';
 
 const canvas = ref<HTMLCanvasElement>();
 const diag = ref<HTMLElement>();
 
-const count = ref(100);
+const count = ref(40);
 
 let app: QuadTreeApp | undefined;
 
@@ -22,8 +22,7 @@ watchEffect(async () => {
 
     const driver = await WGLDriver.fromCanvas(c);
 
-    app = new QuadTreeApp(new Rect(-300, -150, 600, 300), false, c, driver);
-    app.addDiagTicker(d)
+    app = new QuadTreeApp(c, driver);
 
     await app.initializeAndStart();
 })
@@ -47,3 +46,9 @@ Showcases quad tree. Use <kbd>CTRL+Click</kbd> to add a rect, <kbd>ALT+Click</kb
     <input type="text" placeholder="#" v-model="count" min="1">
     <button @click="add">Add rects</button>
 </section>
+
+::: details Code
+
+<<< ./quadtree.ts
+
+:::

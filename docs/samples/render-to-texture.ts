@@ -75,7 +75,7 @@ export class RenderToTextureApp extends CanvasApp<WGLDriver> {
     private readonly zoomedCamera = new Camera2D();
 
     constructor(canvas: HTMLCanvasElement, driver: WGLDriver) {
-        super(canvas, driver, 'always');
+        super(canvas, driver);
 
         canvas.addEventListener('mousemove', e => {
             const p = vec(e.offsetX, e.offsetY);
