@@ -39,6 +39,21 @@ export abstract class Batcher<
     /** New entries are queued until all changes are applied to a batch. */
     protected readonly queuedEntries: E[] = [];
 
+    /** Entries across all batches. Does not respect queued adds/deletes. */
+    get size() {
+        const { batches } = this;
+
+        let size = 0;
+
+        for (let i = 0; i < batches.length; i++) {
+            const batch = batches[i]!;
+
+            size += batch.entries.length;
+        }
+
+        return size;
+    }
+
     /**
      * Create a new instance.
      * @param changeTracker - Changes to objects will be propagated to the change tracker
