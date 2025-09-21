@@ -11,7 +11,7 @@ import {
     WGLLineBatchRenderer,
 } from '../../src';
 
-const BACKGROUND_COLOR = Color.white();
+const BACKGROUND_COLOR = Color.WHITE;
 
 export class LinesApp extends CanvasApp<WGLDriver> {
     private readonly lineRenderer = new WGLLineBatchRenderer(this.driver);
@@ -28,7 +28,7 @@ export class LinesApp extends CanvasApp<WGLDriver> {
             points: [vec(), vec(), vec(), vec()],
             style: {
                 thickness: 2,
-                color: Color.black(),
+                color: Color.BLACK,
                 dashSize: 4,
                 gapSize: 8,
             },

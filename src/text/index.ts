@@ -40,7 +40,7 @@ export interface TextStyle {
 /** @category Text */
 export function textStyleOrDefaults(style?: Partial<TextStyle>): TextStyle {
     return {
-        color: Color.white(),
+        color: Color.WHITE,
         size: 16,
         lineHeight: new LineHeight(1),
         align: 'start',

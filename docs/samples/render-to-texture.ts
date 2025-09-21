@@ -21,8 +21,8 @@ import {
     WGLSpriteBatchRenderer,
 } from '../../src';
 
-const BACKGROUND_COLOR = Color.fromHexString('#111');
-const TARGET_BACKGROUND_COLOR = Color.fromHexString('#444');
+const BACKGROUND_COLOR = Color.WHITE;
+const TARGET_BACKGROUND_COLOR = Color.WHITE;
 
 const DIMENSIONS = vec(420, 420);
 

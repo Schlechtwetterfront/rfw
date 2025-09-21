@@ -58,31 +58,31 @@ test('color from', () => {
 });
 
 test('color', () => {
-    expect(Color.white().equalsWithAlpha(1, 1, 1, 1)).toEqual(true);
-    expect(Color.white().equalsWithAlpha(1.5, 1, 1, 1, 0.6)).toEqual(true);
-    expect(Color.white().equalsColor(new Color(1, 1, 1, 1))).toEqual(true);
-    expect(Color.white().equalsColor({ r: 1, g: 1, b: 1, a: 1 })).toEqual(true);
+    expect(Color.WHITE.equalsWithAlpha(1, 1, 1, 1)).toEqual(true);
+    expect(Color.WHITE.equalsWithAlpha(1.5, 1, 1, 1, 0.6)).toEqual(true);
+    expect(Color.WHITE.equalsColor(new Color(1, 1, 1, 1))).toEqual(true);
+    expect(Color.WHITE.equalsColor({ r: 1, g: 1, b: 1, a: 1 })).toEqual(true);
     expect(
-        Color.white().equalsColorWithAlpha({ r: 1.5, g: 1, b: 1, a: 1 }, 0.6),
+        Color.WHITE.equalsColorWithAlpha({ r: 1.5, g: 1, b: 1, a: 1 }, 0.6),
     ).toEqual(true);
 
-    const c = Color.white();
+    const c = Color.WHITE;
     expect(c.clone()).not.toBe(c);
-    expect(
-        Color.white().copyFrom(Color.black()).equalsColor(Color.black()),
-    ).toEqual(true);
+    expect(Color.WHITE.copyFrom(Color.BLACK).equalsColor(Color.BLACK)).toEqual(
+        true,
+    );
 });
 
 test('color toCssString', () => {
-    expect(Color.transparent().toCSSString()).toEqual('#00000000');
-    expect(Color.black().toCSSString()).toEqual('#000000ff');
-    expect(Color.white().toCSSString()).toEqual('#ffffffff');
+    expect(Color.TRANSPARENT.toCSSString()).toEqual('#00000000');
+    expect(Color.BLACK.toCSSString()).toEqual('#000000ff');
+    expect(Color.WHITE.toCSSString()).toEqual('#ffffffff');
 });
 
 test('color RGB to HSL', () => {
-    expect(Color.red().toHSL()).toEqual({ h: 0, s: 1, l: 0.5 });
-    expect(Color.white().toHSL()).toEqual({ h: 0, s: 0, l: 1 });
-    expect(Color.black().toHSL()).toEqual({ h: 0, s: 0, l: 0 });
+    expect(Color.RED.toHSL()).toEqual({ h: 0, s: 1, l: 0.5 });
+    expect(Color.WHITE.toHSL()).toEqual({ h: 0, s: 0, l: 1 });
+    expect(Color.BLACK.toHSL()).toEqual({ h: 0, s: 0, l: 0 });
     expect(new Color(0.5, 0.5, 0.5).toHSL()).toEqual({
         h: 0,
         s: 0,
@@ -90,7 +90,7 @@ test('color RGB to HSL', () => {
     });
 
     const o = { h: 0, s: 0, l: 0 };
-    Color.red().toHSL(o);
+    Color.RED.toHSL(o);
     expect(o).toEqual({ h: 0, s: 1, l: 0.5 });
 
     const oa = { h: 0, s: 0, l: 0, a: 0 };
@@ -99,7 +99,7 @@ test('color RGB to HSL', () => {
 });
 
 test('color HSL to RGB', () => {
-    const c = Color.white().setHSL(50, 1, 0.5);
+    const c = Color.WHITE.setHSL(50, 1, 0.5);
     expect(c.r).toBeCloseTo(1);
     expect(c.g).toBeCloseTo(0.83);
     expect(c.b).toBeCloseTo(0);
@@ -128,9 +128,9 @@ test('color HSL to RGB', () => {
 });
 
 test('color RGB to HSV', () => {
-    expect(Color.red().toHSV()).toEqual({ h: 0, s: 1, v: 1 });
-    expect(Color.white().toHSV()).toEqual({ h: 0, s: 0, v: 1 });
-    expect(Color.black().toHSV()).toEqual({ h: 0, s: 0, v: 0 });
+    expect(Color.RED.toHSV()).toEqual({ h: 0, s: 1, v: 1 });
+    expect(Color.WHITE.toHSV()).toEqual({ h: 0, s: 0, v: 1 });
+    expect(Color.BLACK.toHSV()).toEqual({ h: 0, s: 0, v: 0 });
     expect(new Color(0.5, 0.5, 0.5).toHSV()).toEqual({
         h: 0,
         s: 0,
@@ -138,7 +138,7 @@ test('color RGB to HSV', () => {
     });
 
     const o = { h: 0, s: 0, v: 0 };
-    Color.red().toHSV(o);
+    Color.RED.toHSV(o);
     expect(o).toEqual({ h: 0, s: 1, v: 1 });
 
     const oa = { h: 0, s: 0, v: 0, a: 0 };
@@ -147,7 +147,7 @@ test('color RGB to HSV', () => {
 });
 
 test('color HSV to RGB', () => {
-    const c = Color.white().setHSV(50, 1, 0.5);
+    const c = Color.WHITE.setHSV(50, 1, 0.5);
     expect(c.r).toBeCloseTo(0.5);
     expect(c.g).toBeCloseTo(0.415);
     expect(c.b).toBeCloseTo(0);

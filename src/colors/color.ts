@@ -479,7 +479,7 @@ export class Color implements ReadonlyColor, RGBA {
     }
 
     static fromHSV(h: number, s = 1, v = 1, a?: number) {
-        const color = Color.white();
+        const color = Color.WHITE;
 
         color.setHSV(h, s, v, a);
 
@@ -487,34 +487,34 @@ export class Color implements ReadonlyColor, RGBA {
     }
 
     static fromHSL(h: number, s = 1, l = 1, a?: number) {
-        const color = Color.white();
+        const color = Color.WHITE;
 
         color.setHSL(h, s, l, a);
 
         return color;
     }
 
-    static black() {
+    static get BLACK() {
         return new Color(0, 0, 0, 1);
     }
 
-    static white() {
+    static get WHITE() {
         return new Color(1, 1, 1, 1);
     }
 
-    static transparent() {
+    static get TRANSPARENT() {
         return new Color(0, 0, 0, 0);
     }
 
-    static red() {
+    static get RED() {
         return new Color(1, 0, 0, 1);
     }
 
-    static green() {
+    static get GREEN() {
         return new Color(0, 1, 0, 1);
     }
 
-    static blue() {
+    static get BLUE() {
         return new Color(0, 0, 1, 1);
     }
 }

@@ -11,7 +11,7 @@ export interface SpriteBatchBuffers {
     readonly buffer: ByteBuffer;
 }
 
-const TEMP_COLOR = Color.white();
+const TEMP_COLOR = Color.WHITE;
 
 /** @category Rendering - Sprites */
 export class SpriteBatchStorage<O extends SpriteLike> {
