@@ -51,29 +51,7 @@ export class MeshColorBatchStorage<O extends TexturedMeshLike> {
 
         const object = entry.object!;
 
-        if (entry.onlyColorChanged) {
-            const indices = object.mesh.indices;
-
-            const triangleVertexCount = indices.length;
-
-            colorBuffer.markChanged(
-                vertexOffset,
-                vertexOffset + triangleVertexCount,
-            );
-
-            for (let i = 0; i < triangleVertexCount; i++) {
-                const index = indices[i]!;
-                const { color: vertexColor } = object.mesh.vertices[index]!;
-
-                TEMP_COLOR.copyFrom(vertexColor ?? object.material.color);
-
-                TEMP_COLOR.copyToRGBA(
-                    colorUint8View,
-                    (vertexOffset + i) *
-                        MESH_COLOR_SIZES.BYTES_PER_VERTEX_COLOR_BUFFER,
-                );
-            }
-        } else {
+        if (entry.changed) {
             const world = object.transform.worldMatrix;
             const texIndex = this.textureIndexProvider?.getTextureIndex(
                 object.material.texture,
@@ -127,6 +105,28 @@ export class MeshColorBatchStorage<O extends TexturedMeshLike> {
                 float32View[offset32++] = uv.y;
 
                 int32View[offset32++] = texIndex;
+
+                TEMP_COLOR.copyToRGBA(
+                    colorUint8View,
+                    (vertexOffset + i) *
+                        MESH_COLOR_SIZES.BYTES_PER_VERTEX_COLOR_BUFFER,
+                );
+            }
+        } else if (entry.colorChanged) {
+            const indices = object.mesh.indices;
+
+            const triangleVertexCount = indices.length;
+
+            colorBuffer.markChanged(
+                vertexOffset,
+                vertexOffset + triangleVertexCount,
+            );
+
+            for (let i = 0; i < triangleVertexCount; i++) {
+                const index = indices[i]!;
+                const { color: vertexColor } = object.mesh.vertices[index]!;
+
+                TEMP_COLOR.copyFrom(vertexColor ?? object.material.color);
 
                 TEMP_COLOR.copyToRGBA(
                     colorUint8View,

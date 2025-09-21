@@ -23,16 +23,16 @@ export class MultipleBuffersApp extends CanvasApp<WGLDriver> {
         this.driver,
     );
 
-    private readonly meshBatches = new MeshColorBatcher(this.changeTracker);
+    private readonly meshBatcher = new MeshColorBatcher(this.changeTracker);
 
     constructor(canvas: HTMLCanvasElement, driver: WGLDriver) {
-        super(canvas, driver, 'always');
+        super(canvas, driver, 'onChange');
     }
 
     override async initialize(): Promise<void> {
         await super.initialize();
 
-        this.meshBatches.setMaximums(this.driver.textures.maxTextureCount);
+        this.meshBatcher.setMaximums(this.driver.textures.maxTextureCount);
 
         const meshEntities: Entity[] = [];
 
@@ -56,7 +56,7 @@ export class MultipleBuffersApp extends CanvasApp<WGLDriver> {
         });
 
         meshEntities.forEach(e => {
-            e.entry = this.meshBatches.add(e.mesh);
+            e.entry = this.meshBatcher.add(e.mesh);
             this.transforms.change(e.mesh);
         });
 
@@ -71,9 +71,9 @@ export class MultipleBuffersApp extends CanvasApp<WGLDriver> {
                 1 - Math.random() * 0.5,
             );
 
-            m.entry!.onlyColorChanged = true;
+            m.entry!.colorChanged = true;
 
-            this.meshBatches.change(m.entry!);
+            this.meshBatcher.change(m.entry!);
         });
     }
 
@@ -84,6 +84,6 @@ export class MultipleBuffersApp extends CanvasApp<WGLDriver> {
 
         this.driver.clear(BACKGROUND_COLOR);
 
-        this.meshRenderer.render(this.meshBatches.finalize(), this.camera);
+        this.meshRenderer.render(this.meshBatcher.finalize(), this.camera);
     }
 }

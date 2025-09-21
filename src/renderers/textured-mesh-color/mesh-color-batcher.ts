@@ -11,12 +11,14 @@ import { MeshColorBatchStorage } from './mesh-color-batch-storage';
 export class MeshColorBatchEntry<
     O extends TexturedMeshLike = TexturedMeshLike,
 > extends MeshBatchEntry<O> {
-    onlyColorChanged = false;
+    changed = false;
+    colorChanged = false;
 
     override reset(): void {
         super.reset();
 
-        this.onlyColorChanged = false;
+        this.changed = false;
+        this.colorChanged = false;
     }
 }
 
@@ -68,6 +70,7 @@ export class MeshColorBatcher<
         entry.object = object;
         entry.size = entry.newSize = object.mesh.triangulatedVertexCount;
         entry.texture = object.material.texture;
+        entry.changed = true;
 
         return entry;
     }
@@ -85,7 +88,8 @@ export class MeshColorBatcher<
 
         batch.storage!.update(entry, offset);
 
-        entry.onlyColorChanged = false;
+        entry.changed = false;
+        entry.colorChanged = false;
 
         super.applyEntryChange(entry, batch, offset);
     }
