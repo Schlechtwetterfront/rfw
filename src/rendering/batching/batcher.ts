@@ -312,12 +312,6 @@ export abstract class Batcher<
         while (changeIndex < changeCount) {
             const entry = queuedChanges[changeIndex]!;
 
-            if (entry.index < 0) {
-                throw new Error(
-                    'Entry must have index because it is already in batch',
-                );
-            }
-
             // An entry can appear twice in the change list if:
             // - we swapped in an entry during deletion,
             // - or the entry was marked as changed more than once.
